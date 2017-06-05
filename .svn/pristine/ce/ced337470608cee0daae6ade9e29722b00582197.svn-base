@@ -1,0 +1,53 @@
+<extend name="Public/base"/>
+<block name="body">
+    <div class="main-title">
+        <h2>推广专员信息管理</h2>
+    </div>
+    <div class="data-table table-striped">
+        <table class="">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>姓名</th>
+                <th>电话</th>
+                <th>身份证号</th>
+                <th>游戏账号</th>
+                <th>推荐人</th>
+                <th>注册时间</th>
+                <th>资金</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>12345</td>
+                <td>周华</td>
+                <td>13888888888</td>
+                <td>342901888888888888</td>
+                <td>13888888888</td>
+                <td>周大华</td>
+                <td>2017年5月20日</td>
+                <td>￥1000.00</td>
+                <td>
+                    <sapn></sapn>&nbsp;&nbsp;
+                    <span></span>
+                </td>
+            </tr>
+            <tr>
+                <td>12345</td>
+                <td>周华</td>
+                <td>13888888888</td>
+                <td>342901888888888888</td>
+                <td>13888888888</td>
+                <td>周大华</td>
+                <td>2017年5月20日</td>
+                <td>￥1000.00</td>
+                <td>
+                    <sapn></sapn>&nbsp;&nbsp;
+                    <span></span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</block>

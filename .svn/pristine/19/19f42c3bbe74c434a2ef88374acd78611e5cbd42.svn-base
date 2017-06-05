@@ -1,0 +1,31 @@
+<extend name="Public/base"/>
+<block name="body">
+    <div class="main-title">
+        <h2>发布消息</h2>
+    </div>
+    <div>
+        <h3>标题:</h3>
+        <br>
+        <form action="" method="post">
+            <select name="">
+                <option value="">请选择标题</option>
+                <option value="0">系统公告信息</option>
+                <option value="1">合肥公告信息</option>
+                <option value="2">尚惠公告信息</option>
+            </select>
+            <br>
+            <h3>内容:</h3>
+            <br>
+            <label class="textarea input-large">
+                <textarea></textarea>
+            </label>
+            <br>
+
+            <input id="files" type="file" onchange="previewImage(this, 'prvid')" multiple="multiple"  value="上传图片" />
+            <br>
+            <div id="prvid"></div><!--预览容器-->
+            <br>
+            <input type="submit" value="发表" class="btn ajax-post" id = "subTextContent"/>
+        </form>
+    </div>
+</block>

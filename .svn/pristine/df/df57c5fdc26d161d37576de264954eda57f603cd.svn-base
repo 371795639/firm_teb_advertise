@@ -1,0 +1,7 @@
+<extend name="Public/base"/>
+<block name="body">
+    <div class="main-title">
+        <h2>接口基本设置</h2>
+    </div>
+
+</block>
