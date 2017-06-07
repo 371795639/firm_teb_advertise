@@ -3,13 +3,14 @@
     <div class="main-title">
         <h2>修改推广专员信息</h2>
     </div>
-    <form action="" method="post" class="form-horizontal">
+    <form action="{:U('')}" method="post" class="form-horizontal">
         <div class="form-item">
+            <input type="hidden" class="text input-large" name="id" value="{$res_staff_edit.id}">
             <label class="item-label">昵称 <span class="check-tips">（请输入新的推广专员的昵称）</span></label>
             <div class="controls">
                 <input type="text" class="text input-large" name="name" value="{$res_staff_edit.staff_name}">
             </div>
-            <label class="item-label">推荐人<span class="check-tips">（请输入推广专员新的邀请人）</span></label>
+            <label class="item-label">推荐人<span class="check-tips">（请输入新的推荐人ID，只能是数字）</span></label>
             <div class="controls">
                 <input type="text" class="text input-large" name="referee" value="{$res_staff_edit.referee}">
             </div>

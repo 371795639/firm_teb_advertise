@@ -138,21 +138,23 @@ class UserController extends AdminController {
      * 新增行为
      * @author huajie <banhuajie@163.com>
      */
+
     public function addAction(){
         $this->meta_title = '新增行为';
         $this->assign('data',null);
         $this->display('editaction');
     }
 
+
     /**
      * 编辑行为
      * @author huajie <banhuajie@163.com>
      */
+
     public function editAction(){
         $id = I('get.id');
         empty($id) && $this->error('参数不能为空！');
         $data = M('Action')->field(true)->find($id);
-
         $this->assign('data',$data);
         $this->meta_title = '编辑行为';
         $this->display();

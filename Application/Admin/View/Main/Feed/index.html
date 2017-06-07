@@ -7,6 +7,7 @@
         <table>
             <thead>
             <tr>
+                <th class="row-selected row-selected"><input class="check-all" type="checkbox"/></th>
                 <th style="text-align: center">ID</th>
                 <th style="text-align: center;width: 80px">代理商ID</th>
                 <th style="text-align: center;width: 100px">回复管理员</th>
@@ -20,6 +21,7 @@
             <tbody style="text-align: center">
                 <volist name="msg" id="vo">
                     <tr>
+                        <td><input class="ids" type="checkbox" name="id[]" value="{$vo.id}" /></td>
                         <td>{$vo.id} </td>
                         <td>{$vo.uid} </td>
                         <td>
@@ -57,5 +59,7 @@
             </tbody>
         </table>
     </div>
-    <div class="pages">{$_page}</div>
+    <div class="page">
+        {$_page}
+    </div>
 </block>

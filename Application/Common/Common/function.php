@@ -953,15 +953,17 @@ function get_stemma($pids,Model &$model, $field='id'){
 
 
 /**
- * print_r()函数简化
+ * print_r()函数优化
  */
 function p($str){
     echo '<div style="border: 1px solid bisque;border-bottom-color:red;border-right-color:red;color:green;background-color: bisque "><pre>';
     print_r($str);
     echo '</pre></div>';
 }
+
+
 /**
- * var_dump()函数简化
+ * var_dump()函数优化
  */
 function v($str){
     echo '<div style="border: 1px solid bisque;color:green;background-color: bisque "><pre>';

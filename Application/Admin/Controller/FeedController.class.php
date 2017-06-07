@@ -11,6 +11,7 @@ class FeedController extends AdminController {
         $db_admin = M('member');
         $where_msg['mid'] = 0;
         $where_msg['status'] = array('lt',3);
+        /*
         $count = $db_msg-> where($where_msg) -> count();
         $Page = new \Think\Page($count, 20);
         foreach ($_POST as $key => $val) {
@@ -18,20 +19,20 @@ class FeedController extends AdminController {
         }
         $show = $Page->show();
         $res_msg = $db_msg->order('id DESC')->limit($Page->firstRow . ',' . $Page->listRows)-> where($where_msg) -> select();
+        */
+        $res_msg = $this -> lists($db_msg,$where_msg);
         foreach($res_msg as $k => $v){
+            $where['admin_id'] = session('user_auth')['uid'];
+            $res_nmsg = $db_admin->where($where)->find();
+            $res_msg[$k]['admin_name'] = $res_nmsg['nickname'];
             if(strlen($res_msg[$k]['content']) < 80){
                 $res_msg[$k]['n_content'] = $res_msg[$k]['content'];
             }else{
                 $res_msg[$k]['n_content'] = substr($res_msg[$k]['content'],0,80).'......';
             }
         }
-        foreach ($res_msg as $k => $v) {
-            $where['admin_id'] = $_SESSION['uid'];
-            $res_nmsg = $db_admin->where($where)->find();
-            $res_msg[$k]['admin_name'] = $res_nmsg['nickname'];
-        }
         $this->assign('msg', $res_msg);
-        $this->assign('_page', $show);
+//        $this->assign('_page', $show);
         $this->meta_title = '反馈列表';
         $this->display('main/feed/index');
     }
@@ -69,6 +70,10 @@ class FeedController extends AdminController {
         $where_re['status'] = array('in','0,1,2') ;
         $res_msg = $db_msg -> where($where_msg) -> order("create_time DESC") -> select();
         $res_re = $db_msg_re -> where($where_re) -> order("create_time DESC") -> select();
+        /*分页
+        $res_msg = $this -> lists($db_msg,$where_msg);
+        $res_re = $this -> lists($db_msg_re,$where_re);
+        */
         foreach ($res_msg as $k => $v) {
             $res_msg[$k]['msgid'] = 0;
             $res_msg[$k]['re_content'] = null;
@@ -94,14 +99,14 @@ class FeedController extends AdminController {
             $this->error('此反馈已关闭，不可再回复。');
         }else{
             /**write into table message**/
-            $date['aid'] = $_SESSION['uid'];
+            $date['aid'] = session('user_auth')['uid'];
             $date['reply_time'] = time();   //修改message表中的回复时间
             $date['status'] = 1 ;
             $where_msg['id'] = I('id');
             /**write into table message_reply**/
             $data['re_content'] = I('content');
             $data['msgid'] = I('id');
-            $data['aid'] = $_SESSION['uid'];
+            $data['aid'] = session('user_auth')['uid'];
             $data['create_time'] = time();
             $data['status'] = 1 ;
             if(!empty($data['re_content'])){
@@ -126,7 +131,7 @@ class FeedController extends AdminController {
         if($res_re && $res_msg){
             $this->success('关闭成功', U('feed/feed'));
         }else{
-            $this->error('关闭成功了，请及时联系技术人员');
+            $this->error('关闭失败了，请及时联系技术人员');
         }
     }
 

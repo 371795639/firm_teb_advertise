@@ -43,9 +43,11 @@
                 </td>
             </tr>
         </table>
-        <br><br>
-        <table class="table table-bordered" style="text-align: center">
-            <th colspan="2">历史消息</th>
+        <hr style="border:none;border-top:5px ridge green;" />
+        <div class="main-title">
+            <h2>历史消息</h2>
+        </div>
+        <table class="table table-bordered" style="text-align: center;width:1000px;margin-left: 300px;">
             <volist name="total" id="vo">
                 <if condition="($vo.mid neq 0) OR ($vo.msgid neq 0)">
                     <if condition="$vo.content neq null ">
@@ -63,14 +65,19 @@
                 </if>
             </volist>
         </table>
+        <!--分页
+            <div class="page">
+                {$_page}
+            </div>
+        -->
         <br><br>
         <form action="{:U('admin/feed/feed_reing',array('id'=>$res_msg_detail['id'],'status'=>$res_msg_detail['status']))}" method="post">
             <input type="hidden" name="id" value="{$res_msg_detail.id}">
             <input type="hidden" name="status" value="{$res_msg_detail.status}">
             <textarea  name="content" rows="6" cols="120" placeholder='在这里回复吧'></textarea>
             <br>
-            <button  type="submit" onclick="javascript:history.back(-1);return false;">返回</button>
-            <button  type="submit">提交</button>
+            <button class="btn submit-btn" id="submit" type="submit" target-form="form-horizontal">确 定</button>
+            <button class="btn btn-return" onclick="javascript:history.back(-1);return false;">返 回</button>
         </form>
     </div>
 </block>
