@@ -38,7 +38,7 @@ class FeedController extends AdminController {
     }
 
     /**删除反馈**/
-    public function feed_del(){
+    public function feedDel(){
         $db_msg = M('message');
         $where['id'] = I('id');
         $res = $db_msg -> where($where) ->limit('1') -> delete();
@@ -50,7 +50,7 @@ class FeedController extends AdminController {
     }
 
     /**查看/回复反馈 - 判断**/
-    public function feed_re(){
+    public function feedRe(){
         $db_msg_re = M('message_reply');
         $db_msg = M('message');
         $where['id'] = I('id');
@@ -88,11 +88,11 @@ class FeedController extends AdminController {
         array_multisort(array_column($total,'create_time'),SORT_ASC,$total);   //将合并数组按照create_time升序排列
         $this->assign('total',$total);
         $this->meta_title = '反馈详情';
-        $this->display('main/feed/feed_re');
+        $this->display('main/feed/feedRe');
     }
 
     /**回复反馈(提交按钮) - 动作**/
-    public function feed_reing(){
+    public function feedReing(){
         $db_msg_re = M('message_reply');
         $db_msg = M('message');
         if(I('status') == 2 ){
@@ -120,7 +120,7 @@ class FeedController extends AdminController {
     }
 
     /**关闭反馈**/
-    public function feed_end(){
+    public function feedEnd(){
         $db_re = M('message_reply');
         $db_msg = M('message');
         $where_re['msgid'] = I('id');

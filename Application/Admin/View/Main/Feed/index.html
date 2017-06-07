@@ -44,11 +44,11 @@
                             </if>
                         </td>
                         <td>
-                            <if condition="$vo.status eq 2"> <a href="{:U('admin/feed/feed_re',array('id'=>$vo['id']))}" style="color:green;" title="点击回复">查看</a>
-                                <else /><a href="{:U('admin/feed/feed_re',array('id'=>$vo['id']))}" style="color:green;" title="点击回复">回复</a>
+                            <if condition="$vo.status eq 2"> <a href="{:U('admin/feed/feedRe',array('id'=>$vo['id']))}" style="color:green;" title="点击回复">查看</a>
+                                <else /><a href="{:U('admin/feed/feedRe',array('id'=>$vo['id']))}" style="color:green;" title="点击回复">回复</a>
                             </if>
                              |
-                            <if condition="$vo.status eq 1"> <a href="{:U('admin/feed/feed_end',array('id'=>$vo['id']))}" style="color:green;" title="关闭此反馈,关闭后不可再回复">关闭它</a>
+                            <if condition="$vo.status eq 1"> <a href="{:U('admin/feed/feedEnd',array('id'=>$vo['id']))}" style="color:green;" title="关闭此反馈,关闭后不可再回复">关闭它</a>
                                 <elseif condition="$vo.status eq 0" /> <a title="回复后才可以关闭哦"><span style="color:red;">请回复</span></a>
                                 <else /><a title="反馈已关闭，只能查看"><span style="color:gray;">已关闭</span></a>
                             </if>
