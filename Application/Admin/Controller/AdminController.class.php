@@ -430,7 +430,7 @@ class AdminController extends Controller {
         if( isset($REQUEST['r']) ){
             $listRows = (int)$REQUEST['r'];
         }else{
-            $listRows = C('LIST_ROWS') > 0 ? C('LIST_ROWS') : 10;
+            $listRows = C('LIST_ROWS2') > 0 ? C('LIST_ROWS2') : 10;
         }
         $page = new \Think\Page($total, $listRows, $REQUEST);
         if($total>$listRows){

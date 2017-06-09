@@ -6,6 +6,21 @@ use Think\Controller;
 
 class MainController extends AdminController {
 
+    private function _queryTime(){
+        $start_time= strtotime(I('start_time'));
+        $end_time= strtotime(I('end_time'));
+        if($start_time || $end_time){
+            if($start_time >= $end_time){
+                $this -> error('查询的开始日期大于结束日期，这让我很为难啊...');
+            }else{
+                $map['create_time'] = array(array('gt', $start_time), array('lt', $end_time));
+            }
+        }
+        $map['status']  =   array('egt',0);
+        return $map;
+    }
+
+
     /**加载项目首页**/
     public function index(){
         $this -> meta_title = '项目首页';
@@ -40,32 +55,22 @@ class MainController extends AdminController {
     /**推广专员信息管理**/
     public function msgList(){
         $dbStaff = M('Staff');
+        $map = $this -> _queryTime();
         $staff_name = I('staff_name');
-        $start_time = strtotime(I('start_time'));
-        $end_time = strtotime(I('end_time'));
-        if($start_time || $end_time){
-            if($start_time >= $end_time){
-                $this -> error('查询的开始日期大于结束日期，这让我很为难啊...');
-            }else{
-                $map['create_time'] = array(array('gt', $start_time), array('lt', $end_time));
-            }
-        }
-        $map['status']  =   array('egt',0);
         if(is_numeric($staff_name)){
-            $map['id|staff_name'] =   array(intval($staff_name),array('like','%'.$staff_name.'%'),'_multi'=>true);
+            $map["id|staff_name"] =   array(intval($staff_name),array('like','%'.$staff_name.'%'),'_multi'=>true);
         }else{
             $map['staff_name']    =   array('like', '%'.(string)$staff_name.'%');
         }
         $resStaff = $this -> lists($dbStaff,$map);
         int_to_string($resStaff);
         $this -> assign('resStaff',$resStaff);
-        $this -> assign('staff_name',$staff_name);
         $this -> meta_title = '推广专员信息管理';
         $this -> display('Main/Msg/msgList');
     }
 
 
-    /**导出信息**/
+    /**导出推广专员信息**/
     public function msgOut(){
         $excel = A('Excel');
         $xlsCell = array(
@@ -81,29 +86,34 @@ class MainController extends AdminController {
             array('create_time', '注册时间'),
             array('status', '状态'),
         );
+        $field = null;
+        foreach ($xlsCell as $key => $value) {
+            if($key == 0){
+                $field = $value[0];
+            }else{
+                $field .= "," . $value[0];
+            }
+        }
         $xlsModel = M('Staff');
         if (IS_POST) {
+            $map = $this -> _queryTime();
             $staff_name = I('staff_name');
-            $start = strtotime(I('start_time'));
-            $end = strtotime(I('end_time'));
-            $map['create_time'] = array(array('gt', $start), array('lt', $end));
-            $map['status'] = array('egt', 0);
-            $map['staff_name'] = array('like', '%' . (string)$staff_name . '%');
-            if (is_numeric($staff_name)) {
-                $map['id|staff_name'] = array(intval($staff_name), array('like', '%' . $staff_name . '%'), '_multi' => true);
-            } else {
-                $map['staff_name'] = array('like', '%' . (string)$staff_name . '%');
+            if(is_numeric($staff_name)){
+                $map["id|staff_name"] =   array(intval($staff_name),array('like','%'.$staff_name.'%'),'_multi'=>true);
+            }else{
+                $map['staff_name']    =   array('like', '%'.(string)$staff_name.'%');
             }
-            if(empty($end) && empty($staff_name)){
+            $end_time = $map['create_time'];
+            if(empty($end_time) && empty($staff_name)){
                 $xlsName = 'Staff全表导出';
-                $xlsData = $xlsModel->Field('id,staff_name,staff_real,mobile,card_id,referee,game_id,money,consume_coin,create_time,status')->order('id DESC')->select();
-            }elseif(empty($end) && $staff_name){
+                $xlsData = $xlsModel->Field($field)->order('id DESC')->select();
+            }elseif(empty($end_time) && $staff_name){
                 $xlsName = 'Staff表专员搜索结果导出';
                 $where['id|staff_name'] = array(intval($staff_name), array('like', '%' . $staff_name . '%'), '_multi' => true);
-                $xlsData = $xlsModel->Field('id,staff_name,staff_real,mobile,card_id,referee,game_id,money,consume_coin,create_time,status')->where($where)->order('id DESC')->select();
+                $xlsData = $xlsModel->Field($field)->where($where)->order('id DESC')->select();
             }else {
                 $xlsName = 'Staff表搜索结果导出';
-                $xlsData = $xlsModel->Field('id,staff_name,staff_real,mobile,card_id,referee,game_id,money,consume_coin,create_time,status')->where($map)->order('id DESC')->select();
+                $xlsData = $xlsModel->Field($field)->where($map)->order('id DESC')->select();
             }
         }
         foreach ($xlsData as $k => $v) {
