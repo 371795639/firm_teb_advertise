@@ -13,7 +13,6 @@ class TaskModel extends Model {
 
     protected $_auto = array(
         array('create_time', NOW_TIME, self::MODEL_INSERT),
-        array('status', '0', self::MODEL_INSERT),
     );
 
     public function task_insert($data){

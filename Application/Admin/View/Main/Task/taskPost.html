@@ -3,7 +3,6 @@
     <div class="main-title">
         <h2>任务发布记录</h2>
     </div>
-
     <div class="cf">
         <div class="fl">
             <a class="btn" href="{:U('Main/taskAdd')}">新 增</a>
@@ -12,8 +11,10 @@
 
         <div class="search-form fr cf">
             <div class="sleft">
-                <input type="text" name="staff_name" class="search-input" value="{:I('staff_name')}" placeholder="请输入任务名称或者ID">
-                <a class="sch-btn" href="javascript:;" id="search" url="{:U('Main/msg_list')}"><i class="btn-search"></i></a>
+                <input type="text" class="search-input" onClick="WdatePicker()" name="start_time" style="cursor: pointer;" value="{:I('start_time')}" placeholder="开始日期" />
+                <input type="text" class="search-input" onClick="WdatePicker()" name="end_time" style="cursor: pointer;" value="{:I('end_time')}" placeholder="结束日期" />
+                <input type="text" name="task_name" class="search-input" value="{:I('task_name')}" placeholder="请输入任务名称或者ID">
+                <a class="sch-btn" href="javascript:;" id="search" url="{:U('Main/taskPost')}"><i class="btn-search"></i></a>
             </div>
         </div>
     </div>
@@ -32,6 +33,7 @@
                     <th class="text-center">过期时间</th>
                     <th class="text-center">发布时间</th>
                     <th class="text-center">发布人</th>
+                    <th class="text-center">状态</th>
                     <th class="text-center">操作</th>
                 </tr>
             </thead>
@@ -65,10 +67,11 @@
                                 </if>
                             </td>
                             <td>{$vo.tasker}</td>
+                            <td>进行中</td>
                             <td>
-                                <a href="">查 看</a>
+                                <a href="">查看</a>
                                 |
-                                <a href="{:U('Main/changeStatus',array('method'=>'deleteUser','id'=>$vo['id'],'dbname'=>'Task'))}">删 除</a>
+                                <a href="{:U('Main/changeStatus',array('method'=>'deleteUser','id'=>$vo['id'],'dbname'=>'Task'))}">删除</a>
                             </td>
                         </tr>
                      </volist>
@@ -84,7 +87,7 @@
 </block>
 <block name="script">
     <script src="__STATIC__/thinkbox/jquery.thinkbox.js"></script>
-
+    <script language="javascript" type="text/javascript" src="__STATIC__/My97DatePicker/WdatePicker.js"></script>
     <script type="text/javascript">
         //搜索功能
         $("#search").click(function(){
@@ -107,6 +110,6 @@
             }
         });
         //导航高亮
-        highlight_subnav('{:U('Main/msg_search')}');
+        highlight_subnav('{:U('Main/taskAdd')}');
     </script>
 </block>

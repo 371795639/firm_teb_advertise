@@ -11,13 +11,18 @@
             <button class="btn ajax-post" url="{:U('Main/changeStatus',array('method'=>'forbidUser','dbname'=>'Staff'))}" target-form="ids">禁 用</button>
             <button class="btn ajax-post confirm" url="{:U('Main/changeStatus',array('method'=>'deleteUser','dbname'=>'Staff'))}" target-form="ids">删 除</button>
         </div>
-
-        <div class="search-form fr cf">
-            <div class="sleft">
-                <input type="text" name="staff_name" class="search-input" value="{:I('staff_name')}" placeholder="请输入推广专员的昵称或者ID">
-                <a class="sch-btn" href="javascript:;" id="search" url="{:U('Main/msgList')}"><i class="btn-search"></i></a>
+        <form action="{:U('Main/msgOut')}" method="post" class="form-horizontal">
+            <div class="search-form fr cf">
+                <div class="sleft">
+                    <input type="text" class="search-input" onClick="WdatePicker()" name="start_time" style="cursor: pointer;" value="{:I('start_time')}" id="start" placeholder="开始日期" />
+                    <input type="text" class="search-input" onClick="WdatePicker()" name="end_time" style="cursor: pointer;" value="{:I('end_time')}" id="end" placeholder="结束日期" />
+                    <input type="text" name="staff_name" class="search-input" value="{:I('staff_name')}" id="name" placeholder="输入推广专员的昵称或者ID">
+                    <a class="btn" href="javascript:;" id="search" url="{:U('Main/msgList')}">搜索</a>
+                    <!--<button type="submit" class="btn" href="{:U('Main/msgOut',array('start_time'=>$start,'end_time'=>$end,'staff_name'=>$staff_name))}" id="out">导出</button>-->
+                    <button type="submit" class="btn" id="out">导出</button>
+                </div>
             </div>
-        </div>
+        </form>
     </div>
     <!-- 数据列表 -->
     <div class="data-table table-striped">
@@ -63,9 +68,9 @@
                             </if>
                             </td>
                             <td>
-                                <a href="{:U('main/msgEdit',array('id'=>$vo['id']))}">修 改</a>
+                                <a href="{:U('main/msgEdit',array('id'=>$vo['id']))}">修改</a>
                                 |
-                                <a href="{:U('Main/changeStatus',array('method'=>'deleteUser','id'=>$vo['id'],'dbname'=>'Staff'))}">删 除</a>
+                                <a href="{:U('Main/changeStatus',array('method'=>'deleteUser','id'=>$vo['id'],'dbname'=>'Staff'))}">删除</a>
                             </td>
                         </tr>
                     </volist>
@@ -81,8 +86,26 @@
 </block>
 <block name="script">
     <script src="__STATIC__/thinkbox/jquery.thinkbox.js"></script>
-
+    <script language="javascript" type="text/javascript" src="__STATIC__/My97DatePicker/WdatePicker.js"></script>
     <script type="text/javascript">
+        /*
+        $('#out').on('click',function(){
+            var name = $('#name').val();
+            var start = $('#start').val();
+            var end = $('#end').val();
+            $.ajax({
+                type:"post",
+                url:"{:U('Main/msgOut')}",
+                data:{"name":name,"start":start,"end":end},
+                dataType:"json",
+                success:function (data) {
+                    if (data['code'] == 1 ){
+                        alert("success");
+                    }
+                }
+            })
+        });
+        */
         //搜索功能
         $("#search").click(function(){
             var url = $(this).attr('url');
@@ -104,6 +127,6 @@
             }
         });
         //导航高亮
-        highlight_subnav('{:U('Main/msgList')}');
+        highlight_subnav("{:U('Main/msgList')}");
     </script>
 </block>
