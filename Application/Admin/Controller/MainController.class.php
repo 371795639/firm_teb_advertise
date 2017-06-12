@@ -304,7 +304,6 @@ class MainController extends AdminController {
         $excel->exportExcel($xlsName,$xlsCell,$xlsData);
     }
 
-
     /**添加任务**/
     public function taskAdd(){
         $db_task = D('Task');
