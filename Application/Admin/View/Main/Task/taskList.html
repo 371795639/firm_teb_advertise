@@ -1,0 +1,123 @@
+<extend name="Public/base"/>
+<block name="body">
+    <div class="main-title">
+        <h2>任务列表</h2>
+    </div>
+    <div class="cf">
+        <div class="fl">
+            <a class="btn" href="{:U('Main/taskAdd')}">新 增</a>
+            <button class="btn ajax-post confirm" url="{:U('Main/changeStatus',array('method'=>'deleteUser','dbname'=>'Task'))}" target-form="ids">删 除</button>
+        </div>
+        <form action="{:U('Main/taskOut')}" method="post" class="form-horizontal">
+            <div class="search-form fr cf">
+                <div class="sleft">
+                    <input type="text" class="search-input" onClick="WdatePicker()" name="start_time" style="cursor: pointer;" value="{:I('start_time')}" placeholder="发布时间/始" />
+                    <input type="text" class="search-input" onClick="WdatePicker()" name="end_time" style="cursor: pointer;" value="{:I('end_time')}" placeholder="发布时间/终" />
+                    <input type="text" name="task_name" class="search-input" value="{:I('task_name')}" placeholder="请输入任务名称或者ID">
+                    <a class="btn" href="javascript:;" id="search" url="{:U('Main/taskList')}">搜索</a>
+                    <button type="submit" class="btn" id="out">导出</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <!-- 数据列表 -->
+    <div class="data-table table-striped">
+        <table>
+            <thead>
+            <tr>
+                <th class="row-selected row-selected"><input class="check-all" type="checkbox"/></th>
+                <th class="text-center">编号</th>
+                <th class="text-center">任务ID</th>
+                <th class="text-center">任务名称</th>
+                <th class="text-center">任务类型</th>
+                <th class="text-center">任务指标</th>
+                <th class="text-center">开始时间</th>
+                <th class="text-center">过期时间</th>
+                <th class="text-center">发布时间</th>
+                <th class="text-center">发布人</th>
+                <th class="text-center">状态</th>
+                <th class="text-center">操作</th>
+            </tr>
+            </thead>
+            <tbody class="text-center">
+            <notempty name="resTask">
+                <volist name="resTask" id="vo">
+                    <tr>
+                        <td><input class="ids" type="checkbox" name="id[]" value="{$vo.id}" /></td>
+                        <td>{$vo.id}</td>
+                        <td>{$vo.task_id}</td>
+                        <td>{$vo.name}</td>
+                        <td>
+                            <if condition="$vo.type eq 1"> 基本任务
+                                <elseif condition="$vo.type eq 2" /> 额外任务
+                                <else/> -
+                            </if>
+                        </td>
+                        <td>{$vo.inneed}</td>
+                        <td>
+                            <if condition="$vo.start_time eq null"> -
+                                <else/>{$vo.start_time|time_format}
+                            </if>
+                        </td>
+                        <td>
+                            <if condition="$vo.end_time eq null"> -
+                                <else/>{$vo.end_time|time_format}
+                            </if>
+                        </td>
+                        <td>
+                            <if condition="$vo.create_time eq null"> -
+                                <else/>{$vo.create_time|time_format}
+                            </if>
+                        </td>
+                        <td>{$vo.tasker}</td>
+                        <td>
+                            <if condition="$vo.status eq 0"> 未发布
+                                <elseif condition="$vo.status eq 1"/> <span style="color:green;">进行中</span>
+                                <elseif condition="$vo.status eq 2"/> 已过期
+                            </if>
+                        </td>
+                        <td>
+                            <a href="">查看</a>
+                            |
+                            <a href="{:U('Main/changeStatus',array('method'=>'deleteUser','id'=>$vo['id'],'dbname'=>'Task'))}">删除</a>
+                        </td>
+                    </tr>
+                </volist>
+                <else />
+                <td colspan="10" class="text-center"> aOh! 暂时还没有内容! </td>
+            </notempty>
+            </tbody>
+        </table>
+    </div>
+    <div class="page">
+        {$_page}
+    </div>
+</block>
+<block name="script">
+    <script src="__STATIC__/thinkbox/jquery.thinkbox.js"></script>
+    <script language="javascript" type="text/javascript" src="__STATIC__/My97DatePicker/WdatePicker.js"></script>
+    <script type="text/javascript">
+        //搜索功能
+        $("#search").click(function(){
+            var url = $(this).attr('url');
+            var query  = $('.search-form').find('input').serialize();
+            query = query.replace(/(&|^)(\w*?\d*?\-*?_*?)*?=?((?=&)|(?=$))/g,'');
+            query = query.replace(/^&/g,'');
+            if( url.indexOf('?')>0 ){
+                url += '&' + query;
+            }else{
+                url += '?' + query;
+            }
+            window.location.href = url;
+        });
+        //回车搜索
+        $(".search-input").keyup(function(e){
+            if(e.keyCode === 13){
+                $("#search").click();
+                return false;
+            }
+        });
+        //导航高亮
+        highlight_subnav('{:U('Main/taskAdd')}');
+    </script>
+</block>

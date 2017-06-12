@@ -1,0 +1,47 @@
+<extend name="Public/base"/>
+
+<block name="body">
+    <div class="main-title">
+        <h2>添加任务</h2>
+    </div>
+    <form method="post" class="form-horizontal">
+        <div class="form-item">
+            <label class="item-label">任务名称 <span class="check-tips">（请输入任务名称）</span></label>
+            <div class="controls">
+                <input type="text" class="text input-large" name="name" value="">
+            </div>
+            <label class="item-label">任务类型<span class="check-tips">（下拉选择任务类型）</span></label>
+            <select class="form-control" name="type">
+                <option value="1">基本任务</option>
+                <option value="2">额外任务</option>
+            </select>
+            <label class="item-label">任务指标<span class="check-tips">（请输入任务指标）</span></label>
+            <div class="controls">
+                <input type="text" class="text input-large" name="inneed" value="">
+            </div>
+            <label class="item-label">开始时间<span class="check-tips">（选择任务的开始时间）</span></label>
+            <div class="controls">
+                <input type="text" class="text input-small" onClick="WdatePicker()" name="start_time" style="cursor: pointer;" value=""/>
+            </div>
+            <label class="item-label">结束时间<span class="check-tips">（选择任务的结束时间）</span></label>
+            <div class="controls">
+                <input type="text" class="text input-small" onClick="WdatePicker()" name="end_time" style="cursor: pointer;"  value=""/>
+            </div>
+            <label class="item-label">发布指示<span class="check-tips">（什么时间发布）</span></label>
+            <div class="controls">
+                <input type="radio" checked="checked" value="0" name="status" /> 暂不发布<br>
+                <input type="radio" value="1" name="status" /> 现在就发布
+            </div>
+        </div>
+        <div class="form-item">
+            <label class="item-label"></label>
+            <div class="controls">
+                <button type="submit" class="btn submit-btn" id="refer" target-form="form-horizontal">确 定</button>
+                <button class="btn btn-return" onclick="javascript:history.back(-1);return false;">返 回</button>
+            </div>
+        </div>
+    </form>
+</block>
+<block name="script">
+    <script language="javascript" type="text/javascript" src="__STATIC__/My97DatePicker/WdatePicker.js"></script>
+</block>

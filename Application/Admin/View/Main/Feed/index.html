@@ -1,0 +1,65 @@
+<extend name="Public/base"/>
+<block name="body">
+    <div class="main-title">
+        <h2>反馈列表</h2>
+    </div>
+    <div class="data-table table-striped">
+        <table>
+            <thead>
+            <tr>
+                <th class="row-selected row-selected"><input class="check-all" type="checkbox"/></th>
+                <th style="text-align: center">ID</th>
+                <th style="text-align: center;width: 80px">代理商ID</th>
+                <th style="text-align: center;width: 100px">回复管理员</th>
+                <th style="text-align: center;width: 450px">内容</th>
+                <th style="text-align: center">反馈时间</th>
+                <th style="text-align: center">上次回复时间</th>
+                <th style="text-align: center">状态</th>
+                <th style="text-align: center">操作</th>
+            </tr>
+            </thead>
+            <tbody style="text-align: center">
+                <volist name="msg" id="vo">
+                    <tr>
+                        <td><input class="ids" type="checkbox" name="id[]" value="{$vo.id}" /></td>
+                        <td>{$vo.id} </td>
+                        <td>{$vo.uid} </td>
+                        <td>
+                        <if condition="$vo.aid eq 0">-
+                            <else/>{$vo.admin_name}
+                        </if>
+                        </td>
+                        <td><a title="点击“回复”查看具体反馈内容" style="color:black">{$vo.n_content}</a></td>
+                        <td>{$vo.create_time|date='Y-m-d H:i:s',###} </td>
+                        <td>
+                            <if condition="$vo.reply_time eq null">-
+                                <else/>{$vo.reply_time|date='Y-m-d H:i:s',###}
+                            </if>
+                        </td>
+                        <td>
+                            <if condition="$vo.status eq 0"> 未回复
+                                <elseif condition="$vo.status eq 1"/>回复中
+                                <elseif condition="$vo.status eq 2"/>已完成
+                                <else /> 客户的再次反馈的信息
+                            </if>
+                        </td>
+                        <td>
+                            <if condition="$vo.status eq 2"> <a href="{:U('admin/feed/feedRe',array('id'=>$vo['id']))}" style="color:green;" title="点击回复">查看</a>
+                                <else /><a href="{:U('admin/feed/feedRe',array('id'=>$vo['id']))}" style="color:green;" title="点击回复">回复</a>
+                            </if>
+                             |
+                            <if condition="$vo.status eq 1"> <a href="{:U('admin/feed/feedEnd',array('id'=>$vo['id']))}" style="color:green;" title="关闭此反馈,关闭后不可再回复">关闭它</a>
+                                <elseif condition="$vo.status eq 0" /> <a title="回复后才可以关闭哦"><span style="color:red;">请回复</span></a>
+                                <else /><a title="反馈已关闭，只能查看"><span style="color:gray;">已关闭</span></a>
+                            </if>
+                            <!--|<a href="{:U('admin/feed/feed_del',array('id'=>$vo['id']))}" style="color:green;" title="点击删除">删除 </a>-->
+                        </td>
+                    </tr>
+                </volist>
+            </tbody>
+        </table>
+    </div>
+    <div class="page">
+        {$_page}
+    </div>
+</block>
