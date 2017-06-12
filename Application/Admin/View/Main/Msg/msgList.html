@@ -6,7 +6,7 @@
 
     <div class="cf">
         <div class="fl">
-            <a class="btn" href="{:U('Main/msgAdd')}">新 增</a>
+            <!--<a class="btn" href="{:U('Main/msgAdd')}">新 增</a>-->
             <button class="btn ajax-post" url="{:U('Main/changeStatus',array('method'=>'resumeUser','dbname'=>'Staff'))}" target-form="ids">启 用</button>
             <button class="btn ajax-post" url="{:U('Main/changeStatus',array('method'=>'forbidUser','dbname'=>'Staff'))}" target-form="ids">禁 用</button>
             <button class="btn ajax-post confirm" url="{:U('Main/changeStatus',array('method'=>'deleteUser','dbname'=>'Staff'))}" target-form="ids">删 除</button>
@@ -69,7 +69,7 @@
                             <td>
                                 <a href="{:U('main/msgEdit',array('id'=>$vo['id']))}">修改</a>
                                 |
-                                <a href="{:U('Main/changeStatus',array('method'=>'deleteUser','id'=>$vo['id'],'dbname'=>'Staff'))}">删除</a>
+                                <a class="confirm ajax-get" href="{:U('Main/changeStatus',array('method'=>'deleteUser','id'=>$vo['id'],'dbname'=>'Staff'))}">删除</a>
                             </td>
                         </tr>
                     </volist>

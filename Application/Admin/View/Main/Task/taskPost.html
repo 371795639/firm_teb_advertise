@@ -8,13 +8,13 @@
             <a class="btn" href="{:U('Main/taskAdd')}">新 增</a>
             <button class="btn ajax-post confirm" url="{:U('Main/changeStatus',array('method'=>'deleteUser','dbname'=>'Task'))}" target-form="ids">删 除</button>
         </div>
-        <form action="{:U('Main/taskPost')}" method="post" class="form-horizontal">
+        <form action="{:U('Main/taskPostOut')}" method="post" class="form-horizontal">
             <div class="search-form fr cf">
                 <div class="sleft">
-                    <input type="text" class="search-input" onClick="WdatePicker()" name="start_time" style="cursor: pointer;" value="{:I('start_time')}" placeholder="开始日期" />
-                    <input type="text" class="search-input" onClick="WdatePicker()" name="end_time" style="cursor: pointer;" value="{:I('end_time')}" placeholder="结束日期" />
+                    <input type="text" class="search-input" onClick="WdatePicker()" name="start_time" style="cursor: pointer;" value="{:I('start_time')}" placeholder="发布时间/始" />
+                    <input type="text" class="search-input" onClick="WdatePicker()" name="end_time" style="cursor: pointer;" value="{:I('end_time')}" placeholder="发布时间/终" />
                     <input type="text" name="task_name" class="search-input" value="{:I('task_name')}" placeholder="请输入任务名称或者ID">
-                    <a class="sch-btn" href="javascript:;" id="search" url="{:U('Main/taskPost')}"></a>
+                    <a class="btn" href="javascript:;" id="search" url="{:U('Main/taskPost')}">搜索</a>
                     <button type="submit" class="btn" id="out">导出</button>
                 </div>
             </div>
@@ -48,8 +48,9 @@
                             <td>{$vo.task_id}</td>
                             <td>{$vo.name}</td>
                             <td>
-                                <if condition="$vo.type eq 0"> 基本任务
-                                  <else /> 额外任务
+                                <if condition="$vo.type eq 1"> 基本任务
+                                  <elseif condition="$vo.type eq 2" /> 额外任务
+                                    <else/> -
                                 </if>
                             </td>
                             <td>{$vo.inneed}</td>
@@ -69,11 +70,17 @@
                                 </if>
                             </td>
                             <td>{$vo.tasker}</td>
-                            <td>进行中</td>
+                            <!--<td>进行中</td>-->
+                            <td>
+                                <if condition="$vo.status eq 0"> 未发布
+                                    <elseif condition="$vo.status eq 1"/> <span style="color:green;">进行中</span>
+                                    <elseif condition="$vo.status eq 2"/> 已过期
+                                </if>
+                            </td>
                             <td>
                                 <a href="">查看</a>
                                 |
-                                <a href="{:U('Main/changeStatus',array('method'=>'deleteUser','id'=>$vo['id'],'dbname'=>'Task'))}">删除</a>
+                                <a class="confirm ajax-get" href="{:U('Main/changeStatus',array('method'=>'deleteUser','id'=>$vo['id'],'dbname'=>'Task'))}">删除</a>
                             </td>
                         </tr>
                      </volist>
