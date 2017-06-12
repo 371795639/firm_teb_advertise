@@ -11,6 +11,18 @@ class FeedController extends AdminController {
         $db_admin = M('member');
         $where_msg['mid'] = 0;
         $where_msg['status'] = array('lt',3);
+<<<<<<< HEAD
+=======
+        /*
+        $count = $db_msg-> where($where_msg) -> count();
+        $Page = new \Think\Page($count, 20);
+        foreach ($_POST as $key => $val) {
+            $Page->parameter[$key] = urlencode($val);
+        }
+        $show = $Page->show();
+        $res_msg = $db_msg->order('id DESC')->limit($Page->firstRow . ',' . $Page->listRows)-> where($where_msg) -> select();
+        */
+>>>>>>> 90bddb6fa3e2105190cf59ef72f3629d63adddd2
         $res_msg = $this -> lists($db_msg,$where_msg);
         foreach($res_msg as $k => $v){
             $where['admin_id'] = session('user_auth')['uid'];
@@ -19,10 +31,18 @@ class FeedController extends AdminController {
             if(strlen($res_msg[$k]['content']) < 80){
                 $res_msg[$k]['n_content'] = $res_msg[$k]['content'];
             }else{
+<<<<<<< HEAD
                 $res_msg[$k]['n_content'] = msubstr($res_msg[$k]['content'],0,30);
             }
         }
         $this->assign('msg', $res_msg);
+=======
+                $res_msg[$k]['n_content'] = substr($res_msg[$k]['content'],0,80).'......';
+            }
+        }
+        $this->assign('msg', $res_msg);
+//        $this->assign('_page', $show);
+>>>>>>> 90bddb6fa3e2105190cf59ef72f3629d63adddd2
         $this->meta_title = '反馈列表';
         $this->display('main/feed/index');
     }
