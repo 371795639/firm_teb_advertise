@@ -52,7 +52,7 @@ class MainController extends AdminController {
     }
 
 
-    /**推广专员信息管理**/
+    /**推广专员信息管理及导出**/
     public function msgList($method = null){
         $dbStaff = M('Staff');
         $map = $this -> _queryTime();
@@ -113,59 +113,6 @@ class MainController extends AdminController {
         $this -> assign('resStaff',$resStaff);
         $this -> meta_title = '推广专员信息管理';
         $this -> display('Main/Msg/msgList');
-    }
-
-
-    /**推广专员信息-导出**/
-    public function msgOut(){
-        $excel = A('Excel');
-        $xlsCell = array(
-            array('id', 'ID'),
-            array('staff_name', '昵称'),
-            array('staff_real', '真实姓名'),
-            array('mobile', '手机号'),
-            array('card_id', '身份证号'),
-            array('referee', '推荐人'),
-            array('game_id', '游戏ID'),
-            array('money', '余额'),
-            array('consume_coin', '消费币'),
-            array('create_time', '注册时间'),
-            array('status', '状态'),
-        );
-        $field = null;
-        foreach ($xlsCell as $key => $value) {
-            if($key == 0){
-                $field = $value[0];
-            }else{
-                $field .= "," . $value[0];
-            }
-        }
-        $xlsModel = M('Staff');
-        if (IS_POST) {
-            $map = $this -> _queryTime();
-            $staff_name = I('staff_name');
-            if($staff_name) {
-                if (is_numeric($staff_name)) {
-                    $map["id|staff_name"] = array(intval($staff_name), array('like', '%' . $staff_name . '%'), '_multi' => true);
-                } else {
-                    $map['staff_name'] = array('like', '%' . (string)$staff_name . '%');
-                }
-            }
-            $end_time = $map['create_time'];
-            if(empty($end_time) && empty($staff_name)){
-                $xlsName = 'Staff全表导出';
-            }elseif(empty($end_time) && $staff_name){
-                $xlsName = 'Staff表专员搜索结果导出';
-            }else {
-                $xlsName = 'Staff表搜索结果导出';
-            }
-            $xlsData = $xlsModel->Field($field)->where($map)->order('id DESC')->select();
-        }
-        foreach ($xlsData as $k => $v) {
-            $xlsData[$k]['create_time'] = $v['create_time'] == 0 ? '-' : date("Y-m-d H:i",$v['create_time']);
-            $xlsData[$k]['status']      = $v['status']      == 1 ? '正常' : '禁用';
-        }
-        $excel->exportExcel($xlsName,$xlsCell,$xlsData);
     }
 
 
@@ -271,8 +218,17 @@ class MainController extends AdminController {
         $dbTask = M('Task');
         $map = $this -> _queryTime();
         $task_name = I('task_name');
-//        $map['type'] = I('type');
-//        $map['status'] = I('status');
+        $type = I('type');
+        if($type) {
+            $map['type'] = $type;
+        }
+        $status = I('status');
+        if($status) {
+            $map['status'] = $status;
+        }
+        //The following code can't be moved to other palce!
+        $this -> assign('type',$type);
+        $this -> assign('status',$status);
         if($task_name) {
             if (is_numeric($task_name)) {
                 $map['id|name'] = array(intval($task_name), array('like', '%' . $task_name . '%'), '_multi' => true);
@@ -310,7 +266,7 @@ class MainController extends AdminController {
         }else {
             $xlsName = 'Task表搜索结果导出';
         }
-        $status = array('未发布','进行中','已过期');
+        $status = array('-','未发布','进行中','已过期');
         $type = array('-','基本任务','额外任务');
         $xlsData = $dbTask->Field($field)->where($map)->order('id DESC')->select();
         foreach ($xlsData as $k => $v) {
@@ -326,6 +282,7 @@ class MainController extends AdminController {
                 $resTask = $this -> lists($dbTask,$map);
                 break;
             case 'out':
+                echo $dbTask -> _sql();
                 $excel->exportExcel($xlsName,$xlsCell,$xlsData);
                 break;
         }
@@ -367,10 +324,12 @@ class MainController extends AdminController {
         $map = $this -> _queryTime();
         $task_name = I('task_name');
         $map['status']  = 1;
-        if(is_numeric($task_name)){
-            $map['id|name'] =   array(intval($task_name),array('like','%'.$task_name.'%'),'_multi'=>true);
-        }else{
-            $map['name']    =   array('like', '%'.(string)$task_name.'%');
+        if($task_name) {
+            if (is_numeric($task_name)) {
+                $map['id|name'] = array(intval($task_name), array('like', '%' . $task_name . '%'), '_multi' => true);
+            } else {
+                $map['name'] = array('like', '%' . (string)$task_name . '%');
+            }
         }
         $resTask = $this -> lists($dbTask,$map);
         int_to_string($resTask);
@@ -378,66 +337,7 @@ class MainController extends AdminController {
         $this -> meta_title = '任务发布记录';
         $this -> display('Main/task/taskPost');
     }
-
-
-    /**任务发布记录-导出**/
-    public function taskPostOut(){
-        $excel = A('Excel');
-        $xlsCell = array(
-            array('id', 'ID'),
-            array('name', '任务名称'),
-            array('type', '任务类型'),
-            array('inneed', '任务指标'),
-            array('start_time', '开始时间'),
-            array('end_time', '结束时间'),
-            array('create_time', '注册时间'),
-            array('tasker', '发布者'),
-            array('status', '状态'),
-        );
-        $field = null;
-        foreach ($xlsCell as $key => $value) {
-            if($key == 0){
-                $field = $value[0];
-            }else{
-                $field .= "," . $value[0];
-            }
-        }
-        $xlsModel = M('Task');
-        if (IS_POST) {
-            $map = $this -> _queryTime();
-            $map['status'] = 1;
-            $task_name = I('task_name');
-            if($task_name) {
-                if (is_numeric($task_name)) {
-                    $map["id|name"] = array(intval($task_name), array('like', '%' . $task_name . '%'), '_multi' => true);
-                } else {
-                    $map['name'] = array('like', '%' . (string)$task_name . '%');
-                }
-            }
-            $end_time = $map['create_time'];
-            if(empty($end_time) && empty($task_name)){
-                $xlsName = 'Task全表导出';
-            }elseif(empty($end_time) && $task_name){
-                $xlsName = 'Task表专员搜索结果导出';
-            }else {
-                $xlsName = 'Task表搜索结果导出';
-            }
-            $xlsData = $xlsModel->Field($field)->where($map)->order('id DESC')->select();
-        }
-        $type = array('-','基本任务','额外任务');
-        foreach ($xlsData as $k => $v) {
-            $xlsData[$k]['start_time']    = $v['start_time']  == 0 ? '-' : date("Y-m-d H:i",$v['start_time']);
-            $xlsData[$k]['end_time']      = $v['end_time']    == 0 ? '-' : date("Y-m-d H:i",$v['end_time']);
-            $xlsData[$k]['create_time']   = $v['create_time'] == 0 ? '-' : date("Y-m-d H:i",$v['create_time']);
-            $xlsData[$k]['tasker']        = $v['tasker']      =='' ? '-' : $v['tasker'];
-            //$xlsData[$k]['status']        = [$v['status']]    == 1 ? '进行中' :'-' ;
-            $xlsData[$k]['type']          = $type[$v['type']];
-        }
-        echo $xlsModel -> _sql();
-        p($map);p($xlsData);die;
-        $excel->exportExcel($xlsName,$xlsCell,$xlsData);
-    }
-
+    
 
     /**分红管理**/
     public function cashGiven(){

@@ -10,21 +10,19 @@
         </div>
         <div class="search-form fr cf">
             <div class="sleft">
-                <input type="text" class="search-input" onClick="WdatePicker()" name="start_time" style="cursor: pointer;" value="{:I('start_time')}" placeholder="发布时间/始" />
-                <input type="text" class="search-input" onClick="WdatePicker()" name="end_time" style="cursor: pointer;" value="{:I('end_time')}" placeholder="发布时间/终" />
-                <!--
                 <select name="type" id="type">
-                    <option value="null">任务类型</option>
-                    <option value="1">基本任务</option>
-                    <option value="2">额外任务</option>
+                    <option value="">任务类型</option>
+                    <option value="1" <eq name="type.value" value="1">selected</eq> >基本任务</option>
+                    <option value="2" <eq name="type.value" value="2">selected</eq> >额外任务</option>
                 </select>
                 <select name="status" id="status">
-                    <option value="null">任务状态</option>
-                    <option value="0">未发布</option>
-                    <option value="1">进行中</option>
-                    <option value="2">已过期</option>
+                    <option value="">任务状态</option>
+                    <option value="1" <eq name="status.value" value="1">selected</eq> >未发布</option>
+                    <option value="2" <eq name="status.value" value="2">selected</eq> >进行中</option>
+                    <option value="3" <eq name="status.value" value="3">selected</eq> >已过期</option>
                 </select>
-                -->
+                <input type="text" class="search-input" onClick="WdatePicker()" name="start_time" style="cursor: pointer;" value="{:I('start_time')}" placeholder="发布时间/始" />
+                <input type="text" class="search-input" onClick="WdatePicker()" name="end_time" style="cursor: pointer;" value="{:I('end_time')}" placeholder="发布时间/终" />
                 <input type="text" name="task_name" class="search-input" value="{:I('task_name')}" placeholder="请输入任务名称或者ID">
                 <a class="btn" href="javascript:;"  url="{:U('Main/taskList',array('method'=>'list'))}" id="search">搜索</a>
                 <a class="btn" href="javascript:;"  url="{:U('Main/taskList',array('method'=>'out'))}" id="out">导出</a>
@@ -82,9 +80,9 @@
                         </td>
                         <td>{$vo.tasker}</td>
                         <td>
-                            <if condition="$vo.status eq 0"> 未发布
-                                <elseif condition="$vo.status eq 1"/> <span style="color:green;">进行中</span>
-                                <elseif condition="$vo.status eq 2"/> 已过期
+                            <if condition="$vo.status eq 1"> 未发布
+                                <elseif condition="$vo.status eq 2"/> <span style="color:green;">进行中</span>
+                                <elseif condition="$vo.status eq 3"/> 已过期
                             </if>
                         </td>
                         <td>
@@ -108,43 +106,35 @@
     <script src="__STATIC__/thinkbox/jquery.thinkbox.js"></script>
     <script language="javascript" type="text/javascript" src="__STATIC__/My97DatePicker/WdatePicker.js"></script>
     <script type="text/javascript">
-        /*
-        $('#search').on('click',function(){
-            var type = $('#type').val();
-            var status = $('#status').val();
-            $.ajax({
-                type:"post",
-                url:"{:U('Main/taskList')}",
-                data:{"type":type,"status":status},
-                dataType:"json",
-                success:function (data) {
-                }
-            })
-        });
-        */
-        //导出功能
-        $("#out").click(function(){
-            var url = $(this).attr('url');
-            var query  = $('.search-form').find('input').serialize();
-            query = query.replace(/(&|^)(\w*?\d*?\-*?_*?)*?=?((?=&)|(?=$))/g,'');
-            query = query.replace(/^&/g,'');
-            if( url.indexOf('?')>0 ){
-                url += '&' + query;
-            }else{
-                url += '?' + query;
-            }
-            window.location.href = url;
-        });
         //搜索功能
         $("#search").click(function(){
             var url = $(this).attr('url');
             var query  = $('.search-form').find('input').serialize();
+            var query_select  = $('.search-form').find('select').serialize();
             query = query.replace(/(&|^)(\w*?\d*?\-*?_*?)*?=?((?=&)|(?=$))/g,'');
             query = query.replace(/^&/g,'');
+            query_select = query_select.replace(/(&|^)(\w*?\d*?\-*?_*?)*?=?((?=&)|(?=$))/g,'');
+            query_select = query_select.replace(/^&/g,'');
             if( url.indexOf('?')>0 ){
-                url += '&' + query;
+                url += '&' + query + '&' + query_select;
             }else{
-                url += '?' + query;
+                url += '?' + query + '?' + query_select;
+            }
+            window.location.href = url;
+        });
+        //导出
+        $("#out").click(function(){
+            var url = $(this).attr('url');
+            var query  = $('.search-form').find('input').serialize();
+            var query_select  = $('.search-form').find('select').serialize();
+            query = query.replace(/(&|^)(\w*?\d*?\-*?_*?)*?=?((?=&)|(?=$))/g,'');
+            query = query.replace(/^&/g,'');
+            query_select = query_select.replace(/(&|^)(\w*?\d*?\-*?_*?)*?=?((?=&)|(?=$))/g,'');
+            query_select = query_select.replace(/^&/g,'');
+            if( url.indexOf('?')>0 ){
+                url += '&' + query + '&' + query_select;
+            }else{
+                url += '?' + query + '?' + query_select;
             }
             window.location.href = url;
         });
