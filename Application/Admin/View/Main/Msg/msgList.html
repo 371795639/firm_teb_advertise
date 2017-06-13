@@ -11,17 +11,15 @@
             <button class="btn ajax-post" url="{:U('Main/changeStatus',array('method'=>'forbidUser','dbname'=>'Staff'))}" target-form="ids">禁 用</button>
             <button class="btn ajax-post confirm" url="{:U('Main/changeStatus',array('method'=>'deleteUser','dbname'=>'Staff'))}" target-form="ids">删 除</button>
         </div>
-        <form action="{:U('Main/msgOut')}" method="post" class="form-horizontal">
-            <div class="search-form fr cf">
-                <div class="sleft">
-                    <input type="text" class="search-input" onClick="WdatePicker()" name="start_time" style="cursor: pointer;" value="{:I('start_time')}" id="start" placeholder="开始日期" />
-                    <input type="text" class="search-input" onClick="WdatePicker()" name="end_time" style="cursor: pointer;" value="{:I('end_time')}" id="end" placeholder="结束日期" />
-                    <input type="text" name="staff_name" class="search-input" value="{:I('staff_name')}" id="name" placeholder="输入推广专员的昵称或者ID">
-                    <a class="btn" href="javascript:;" id="search" url="{:U('Main/msgList')}">搜索</a>
-                    <button type="submit" class="btn" id="out">导出</button>
-                </div>
+        <div class="search-form fr cf">
+            <div class="sleft">
+                <input type="text" class="search-input" onClick="WdatePicker()" name="start_time" style="cursor: pointer;" value="{:I('start_time')}" id="start" placeholder="开始日期" />
+                <input type="text" class="search-input" onClick="WdatePicker()" name="end_time" style="cursor: pointer;" value="{:I('end_time')}" id="end" placeholder="结束日期" />
+                <input type="text" name="staff_name" class="search-input" value="{:I('staff_name')}" id="name" placeholder="输入推广专员的昵称或者ID">
+                <a class="btn" href="javascript:;" url="{:U('Main/msgList',array('method'=>'list'))}" id="search">搜索</a>
+                <a class="btn" href="javascript:;" url="{:U('Main/msgList',array('method'=>'out'))}" id="out">导出</a>
             </div>
-        </form>
+        </div>
     </div>
     <!-- 数据列表 -->
     <div class="data-table table-striped">
@@ -107,6 +105,19 @@
         */
         //搜索功能
         $("#search").click(function(){
+            var url = $(this).attr('url');
+            var query  = $('.search-form').find('input').serialize();
+            query = query.replace(/(&|^)(\w*?\d*?\-*?_*?)*?=?((?=&)|(?=$))/g,'');
+            query = query.replace(/^&/g,'');
+            if( url.indexOf('?')>0 ){
+                url += '&' + query;
+            }else{
+                url += '?' + query;
+            }
+            window.location.href = url;
+        });
+        //导出功能
+        $("#out").click(function(){
             var url = $(this).attr('url');
             var query  = $('.search-form').find('input').serialize();
             query = query.replace(/(&|^)(\w*?\d*?\-*?_*?)*?=?((?=&)|(?=$))/g,'');

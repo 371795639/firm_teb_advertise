@@ -53,16 +53,62 @@ class MainController extends AdminController {
 
 
     /**推广专员信息管理**/
-    public function msgList(){
+    public function msgList($method = null){
         $dbStaff = M('Staff');
         $map = $this -> _queryTime();
         $staff_name = I('staff_name');
-        if(is_numeric($staff_name)){
-            $map["id|staff_name"] =   array(intval($staff_name),array('like','%'.$staff_name.'%'),'_multi'=>true);
-        }else{
-            $map['staff_name']    =   array('like', '%'.(string)$staff_name.'%');
+        if($staff_name) {
+            if (is_numeric($staff_name)) {
+                $map["id|staff_name"] = array(intval($staff_name), array('like', '%' . $staff_name . '%'), '_multi' => true);
+            } else {
+                $map['staff_name'] = array('like', '%' . (string)$staff_name . '%');
+            }
         }
-        $resStaff = $this -> lists($dbStaff,$map);
+        $resStaff = $this -> lists($dbStaff);
+        //导出查询到的数据（不含分页）
+        $excel = A('Excel');
+        $xlsCell = array(
+            array('id', 'ID'),
+            array('staff_name', '昵称'),
+            array('staff_real', '真实姓名'),
+            array('mobile', '手机号'),
+            array('card_id', '身份证号'),
+            array('referee', '推荐人'),
+            array('game_id', '游戏ID'),
+            array('money', '余额'),
+            array('consume_coin', '消费币'),
+            array('create_time', '注册时间'),
+            array('status', '状态'),
+        );
+        $field = null;
+        foreach ($xlsCell as $key => $value) {
+            if($key == 0){
+                $field = $value[0];
+            }else{
+                $field .= "," . $value[0];
+            }
+        }
+        $end_time = $map['create_time'];
+        if(empty($end_time) && empty($staff_name)){
+            $xlsName = 'Staff全表导出';
+        }elseif(empty($end_time) && $staff_name){
+            $xlsName = 'Staff表专员搜索结果导出';
+        }else {
+            $xlsName = 'Staff表搜索结果导出';
+        }
+        $xlsData = $dbStaff->Field($field)->where($map)->order('id DESC')->select();
+        foreach ($xlsData as $k => $v) {
+            $xlsData[$k]['create_time'] = $v['create_time'] == 0 ? '-' : date("Y-m-d H:i",$v['create_time']);
+            $xlsData[$k]['status']      = $v['status']      == 1 ? '正常' : '禁用';
+        }
+        switch (strtolower($method)){
+            case 'list':
+                $resStaff = $this -> lists($dbStaff,$map);
+                break;
+            case 'out':
+                $excel->exportExcel($xlsName,$xlsCell,$xlsData);
+                break;
+        }
         int_to_string($resStaff);
         $this -> assign('resStaff',$resStaff);
         $this -> meta_title = '推广专员信息管理';
@@ -220,27 +266,22 @@ class MainController extends AdminController {
     }
 
 
-    /**任务列表**/
-    public function taskList(){
+    /**任务列表及导出**/
+    public function taskList($method=null){
         $dbTask = M('Task');
         $map = $this -> _queryTime();
         $task_name = I('task_name');
-        if(is_numeric($task_name)){
-            $map['id|name'] =   array(intval($task_name),array('like','%'.$task_name.'%'),'_multi'=>true);
-        }else{
-            $map['name']    =   array('like', '%'.(string)$task_name.'%');
+//        $map['type'] = I('type');
+//        $map['status'] = I('status');
+        if($task_name) {
+            if (is_numeric($task_name)) {
+                $map['id|name'] = array(intval($task_name), array('like', '%' . $task_name . '%'), '_multi' => true);
+            } else {
+                $map['name'] = array('like', '%' . (string)$task_name . '%');
+            }
         }
-        //p($map);
-        $resTask = $this -> lists($dbTask,$map);
-        int_to_string($resTask);
-        $this -> assign('resTask',$resTask);
-        $this -> meta_title = '任务列表';
-        $this -> display('Main/task/taskList');
-    }
-
-
-    /**任务列表-导出**/
-    public function taskOut(){
+        $resTask = $this -> lists($dbTask);
+        //导出查询到的数据（不含分页）
         $excel = A('Excel');
         $xlsCell = array(
             array('id', 'ID'),
@@ -261,29 +302,17 @@ class MainController extends AdminController {
                 $field .= "," . $value[0];
             }
         }
-        $xlsModel = M('Task');
-        if (IS_POST) {
-            $map = $this -> _queryTime();
-            $task_name = I('task_name');
-            if($task_name) {
-                if (is_numeric($task_name)) {
-                    $map["id|name"] = array(intval($task_name), array('like', '%' . $task_name . '%'), '_multi' => true);
-                } else {
-                    $map['name'] = array('like', '%' . (string)$task_name . '%');
-                }
-            }
-            $end_time = $map['create_time'];
-            if(empty($end_time) && empty($task_name)){
-                $xlsName = 'Task全表导出';
-            }elseif(empty($end_time) && $task_name){
-                $xlsName = 'Task表专员搜索结果导出';
-            }else {
-                $xlsName = 'Task表搜索结果导出';
-            }
-            $xlsData = $xlsModel->Field($field)->where($map)->order('id DESC')->select();
+        $end_time = $map['create_time'];
+        if(empty($end_time) && empty($staff_name)){
+            $xlsName = 'Task全表导出';
+        }elseif(empty($end_time) && $staff_name){
+            $xlsName = 'Task表专员搜索结果导出';
+        }else {
+            $xlsName = 'Task表搜索结果导出';
         }
         $status = array('未发布','进行中','已过期');
         $type = array('-','基本任务','额外任务');
+        $xlsData = $dbTask->Field($field)->where($map)->order('id DESC')->select();
         foreach ($xlsData as $k => $v) {
             $xlsData[$k]['start_time']  = $v['start_time']  == 0 ? '-' : date("Y-m-d H:i",$v['start_time']);
             $xlsData[$k]['end_time']    = $v['end_time']    == 0 ? '-' : date("Y-m-d H:i",$v['end_time']);
@@ -292,7 +321,18 @@ class MainController extends AdminController {
             $xlsData[$k]['status']      = $status[$v['status']];
             $xlsData[$k]['type']        = $type[$v['type']];
         }
-        $excel->exportExcel($xlsName,$xlsCell,$xlsData);
+        switch (strtolower($method)){
+            case 'list':
+                $resTask = $this -> lists($dbTask,$map);
+                break;
+            case 'out':
+                $excel->exportExcel($xlsName,$xlsCell,$xlsData);
+                break;
+        }
+        int_to_string($resTask);
+        $this -> assign('resTask',$resTask);
+        $this -> meta_title = '任务列表';
+        $this -> display('Main/task/taskList');
     }
 
 
