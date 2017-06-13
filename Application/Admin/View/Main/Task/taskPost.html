@@ -10,6 +10,11 @@
         </div>
         <div class="search-form fr cf">
             <div class="sleft">
+                <select name="type" id="type">
+                    <option value="">任务类型</option>
+                    <option value="1" <eq name="type.value" value="1">selected</eq> >基本任务</option>
+                    <option value="2" <eq name="type.value" value="2">selected</eq> >额外任务</option>
+                </select>
                 <input type="text" class="search-input" onClick="WdatePicker()" name="start_time" style="cursor: pointer;" value="{:I('start_time')}" placeholder="发布时间/始" />
                 <input type="text" class="search-input" onClick="WdatePicker()" name="end_time" style="cursor: pointer;" value="{:I('end_time')}" placeholder="发布时间/终" />
                 <input type="text" name="task_name" class="search-input" value="{:I('task_name')}" placeholder="请输入任务名称或者ID">
@@ -99,12 +104,15 @@
         $("#search").click(function(){
             var url = $(this).attr('url');
             var query  = $('.search-form').find('input').serialize();
+            var query_select  = $('.search-form').find('select').serialize();
             query = query.replace(/(&|^)(\w*?\d*?\-*?_*?)*?=?((?=&)|(?=$))/g,'');
             query = query.replace(/^&/g,'');
+            query_select = query_select.replace(/(&|^)(\w*?\d*?\-*?_*?)*?=?((?=&)|(?=$))/g,'');
+            query_select = query_select.replace(/^&/g,'');
             if( url.indexOf('?')>0 ){
-                url += '&' + query;
+                url += '&' + query + '&' + query_select;
             }else{
-                url += '?' + query;
+                url += '?' + query + '?' + query_select;
             }
             window.location.href = url;
         });

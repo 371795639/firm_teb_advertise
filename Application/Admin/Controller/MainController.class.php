@@ -324,6 +324,11 @@ class MainController extends AdminController {
         $map = $this -> _queryTime();
         $task_name = I('task_name');
         $map['status']  = 1;
+        $type = I('type');
+        if($type) {
+            $map['type'] = $type;
+        }
+        $this -> assign('type',$type);
         if($task_name) {
             if (is_numeric($task_name)) {
                 $map['id|name'] = array(intval($task_name), array('like', '%' . $task_name . '%'), '_multi' => true);
@@ -337,7 +342,7 @@ class MainController extends AdminController {
         $this -> meta_title = '任务发布记录';
         $this -> display('Main/task/taskPost');
     }
-    
+
 
     /**分红管理**/
     public function cashGiven(){
