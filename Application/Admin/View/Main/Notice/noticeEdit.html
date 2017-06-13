@@ -1,0 +1,41 @@
+<extend name="Public/base"/>
+<block name="body">
+    <div class="main-title">
+        <h2>修改消息信息</h2>
+    </div>
+    <form action="{:U('Main/noticeEdit')}" method="post" enctype="multipart/form-data" class="form-horizontal" >
+        <div class="form-item">
+
+            <input type="hidden" class="text input-large" name="noticeID" value="{$noticeID.id}">
+            <label class="item-label">消息类型
+                <span class="check-tips">
+                <select name="noticeType" class="form-control">
+                    <option name="noticeType" value="{$noticeType.notice_type_name}">{$noticeType.notice_type_name}</option>
+                    <volist name="noticeAllType" id="vo">
+                        <option value="{$vo.notice_type_name}">{$vo.notice_type_name}</option>
+                    </volist>
+                </select>
+                </span>
+            </label>
+            <div class="controls">
+
+            </div>
+            <label class="item-label">消息主题 <span class="check-tips">（请输入新的消息主题）</span></label>
+            <div class="controls">
+                <input type="text" class="text input-large" name="noticeTitle" value="{$noticeTitle.notice_title}">
+            </div>
+            <label class="item-label">消息内容 <span class="check-tips">（请输入新的消息内容）</span></label>
+            <div class="controls">
+                <input type="text" class="text input-large" name="noticeContent" value="{$noticeContent.notice_content}">
+            </div>
+        </div>
+        <input id="files" type="file" name="photo" onchange="previewImage(this, 'prvid')" multiple="multiple"  value="上传图片" />
+            <div class="form-item">
+                <label class="item-label"></label>
+                <div class="controls">
+                    <button type="submit" class="btn submit-btn" id="refer" target-form="form-horizontal">确 定</button>
+                    <button class="btn btn-return" onclick="javascript:history.back(-1);return false;">返 回</button>
+                </div>
+            </div>
+    </form>
+</block>

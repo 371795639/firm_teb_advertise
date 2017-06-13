@@ -86,7 +86,11 @@
                             </if>
                         </td>
                         <td>
-                            <a href="">查看</a>
+                            <if condition="$vo.status eq 3">
+                                    <a href="{:U('Main/taskView',array('id'=>$vo['id']))}">查看</a>
+                                <else/>
+                                <a href="{:U('Main/taskEdit',array('id'=>$vo['id']))}">编辑</a>
+                            </if>
                             |
                             <a class="confirm ajax-get" href="{:U('Main/changeStatus',array('method'=>'deleteUser','id'=>$vo['id'],'dbname'=>'Task'))}">删除</a>
                         </td>

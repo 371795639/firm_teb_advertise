@@ -3,51 +3,111 @@
     <div class="main-title">
         <h2>消息列表</h2>
     </div>
+    <div class="cf">
+        <div class="fl">
+            <a class="btn" href="{:U('Main/noticePost')}">新 增</a>
+        </div>
+        <div class="search-form fr cf">
+            <div class="sleft">
+                <select name="notice_type" class="form-control">
+                    <option value="">选择公告类型</option>
+                    <volist name="type" id="vo">
+                        <option value="{$vo.id}">{$vo.notice_type_name}</option>
+                    </volist>
+                </select>
+                <input type="text" class="search-input" onClick="WdatePicker()" name="start_time" style="cursor: pointer;" value="{:I('start_time')}" placeholder="发布时间/始" />
+                <input type="text" class="search-input" onClick="WdatePicker()" name="end_time" style="cursor: pointer;" value="{:I('end_time')}" placeholder="发布时间/止" />
+                <input type="text" name="notice_name" class="search-input" value="{:I('notice_name')}" placeholder="输入公告ID或者主题">
+                <a class="btn" href="javascript:;"  url="{:U('Main/notice',array('method'=>'list'))}" id="search">搜索</a>
+                <a class="btn" href="javascript:;"  url="{:U('Main/notice',array('method'=>'out'))}" id="out">导出</a>
+            </div>
+        </div>
+    </div>
     <div class="data-table table-striped">
-        <table class="">
+        <table  id="" class="display">
             <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>姓名</th>
-                    <th>电话</th>
-                    <th>身份证号</th>
-                    <th>游戏账号</th>
-                    <th>推荐人</th>
-                    <th>注册时间</th>
-                    <th>资金</th>
-                    <th>操作</th>
-                </tr>
+            <tr>
+                <th class="row-selected row-selected"><input class="check-all" type="checkbox"/></th>
+                <th class="text-center">ID</th>
+                <th class="text-center">公告类型</th>
+                <th class="text-center">公告主题</th>
+                <th class="text-center">公告内容</th>
+                <th class="text-center">发布IP</th>
+                <th class="text-center">图片查看</th>
+                <th class="text-center">发布时间</th>
+                <th class="text-center">操作</th>
+            </tr>
             </thead>
-            <tbody>
+            <tbody class="text-center">
+            <volist name="notice" id="vo">
                 <tr>
-                    <td>12345</td>
-                    <td>周华</td>
-                    <td>13888888888</td>
-                    <td>342901888888888888</td>
-                    <td>13888888888</td>
-                    <td>周大华</td>
-                    <td>2017年5月20日</td>
-                    <td>￥1000.00</td>
+                    <td><input class="ids" type="checkbox" name="id[]" value="{$vo.id}" /></td>
+                    <td>{$vo.id}</td>
+                    <td>{$vo.type.notice_type_name}</td>
+                    <td>{$vo.notice_title}</td>
+                    <td><a title="点击“编辑”可查看详情" style="color:black;">{$vo.n_content}</a></td>
+                    <td>{$vo.create_ip}</td>
+                    <td><a href="{$vo.img_url}" target="_blank">图片查看</a></td>
+                    <td>{$vo.create_time|time_format}</td>
                     <td>
-                        <sapn></sapn>&nbsp;&nbsp;
-                        <span></span>
+                        <a href="{:U('Main/noticeEdit',array('id'=>$vo['id']))}">编辑</a>
+                        |
+                        <a class="confirm ajax-get" href="{:U('Main/noticeDelete',array('id'=>$vo['id']))}">删除</a>
                     </td>
                 </tr>
-                <tr>
-                    <td>12345</td>
-                    <td>周华</td>
-                    <td>13888888888</td>
-                    <td>342901888888888888</td>
-                    <td>13888888888</td>
-                    <td>周大华</td>
-                    <td>2017年5月20日</td>
-                    <td>￥1000.00</td>
-                    <td>
-                        <sapn></sapn>&nbsp;&nbsp;
-                        <span></span>
-                    </td>
-                </tr>
+            </volist>
             </tbody>
         </table>
     </div>
+    <div class="page">
+        {$_page}
+    </div>
+</block>
+
+<block name="script">
+    <script src="__STATIC__/thinkbox/jquery.thinkbox.js"></script>
+    <script language="javascript" type="text/javascript" src="__STATIC__/My97DatePicker/WdatePicker.js"></script>
+    <script type="text/javascript">
+        //搜索功能
+        $("#search").click(function(){
+            var url = $(this).attr('url');
+            var query  = $('.search-form').find('input').serialize();
+            var query_select  = $('.search-form').find('select').serialize();
+            query = query.replace(/(&|^)(\w*?\d*?\-*?_*?)*?=?((?=&)|(?=$))/g,'');
+            query = query.replace(/^&/g,'');
+            query_select = query_select.replace(/(&|^)(\w*?\d*?\-*?_*?)*?=?((?=&)|(?=$))/g,'');
+            query_select = query_select.replace(/^&/g,'');
+            if( url.indexOf('?')>0 ){
+                url += '&' + query + '&' + query_select;
+            }else{
+                url += '?' + query + '?' + query_select;
+            }
+            window.location.href = url;
+        });
+        //导出
+        $("#out").click(function(){
+            var url = $(this).attr('url');
+            var query  = $('.search-form').find('input').serialize();
+            var query_select  = $('.search-form').find('select').serialize();
+            query = query.replace(/(&|^)(\w*?\d*?\-*?_*?)*?=?((?=&)|(?=$))/g,'');
+            query = query.replace(/^&/g,'');
+            query_select = query_select.replace(/(&|^)(\w*?\d*?\-*?_*?)*?=?((?=&)|(?=$))/g,'');
+            query_select = query_select.replace(/^&/g,'');
+            if( url.indexOf('?')>0 ){
+                url += '&' + query + '&' + query_select;
+            }else{
+                url += '?' + query + '?' + query_select;
+            }
+            window.location.href = url;
+        });
+        //回车搜索
+        $(".search-input").keyup(function(e){
+            if(e.keyCode === 13){
+                $("#search").click();
+                return false;
+            }
+        });
+        //导航高亮
+        highlight_subnav("{:U('Main/taskList')}");
+    </script>
 </block>

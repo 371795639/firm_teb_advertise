@@ -3,29 +3,34 @@
     <div class="main-title">
         <h2>发布消息</h2>
     </div>
-    <div>
-        <h3>标题:</h3>
-        <br>
-        <form action="" method="post">
-            <select name="">
-                <option value="">请选择标题</option>
-                <option value="0">系统公告信息</option>
-                <option value="1">合肥公告信息</option>
-                <option value="2">尚惠公告信息</option>
+    <div class="form-item">
+        <form action="{:U('Main/noticePost')}" method="post" enctype="multipart/form-data" class="form-horizontal">
+            <label class="item-label">主题 </label>
+            <div class="controls">
+                <input type="text" class="text" id="notice_title" name="notice_title" value="" >
+            </div>
+            <label class="item-label">公告类型 </label>
+            <div class="controls">
+            <select name="notice_type" class="form-control">
+                <option value="">选择公告类型</option>
+                    <volist name="type" id="vo">
+                        <option value="{$vo.id}">{$vo.notice_type_name}</option>
+                    </volist>
             </select>
-            <br>
-            <h3>内容:</h3>
-            <br>
+            </div>
+            <label class="item-label">内容 </label>
             <label class="textarea input-large">
-                <textarea></textarea>
+                <textarea name="content"></textarea>
             </label>
-            <br>
-
-            <input id="files" type="file" onchange="previewImage(this, 'prvid')" multiple="multiple"  value="上传图片" />
-            <br>
-            <div id="prvid"></div><!--预览容器-->
-            <br>
-            <input type="submit" value="发表" class="btn ajax-post" id = "subTextContent"/>
+            <input id="files" type="file" name="photo1" onchange="previewImage(this, 'prvid')" multiple="multiple"  value="上传图片" />
+            <div class="form-item">
+                <label class="item-label"></label>
+                <div class="controls">
+                    <button type="submit" class="btn submit-btn" id="refer" target-form="form-horizontal">确 定</button>
+                    <button class="btn btn-return" onclick="javascript:history.back(-1);return false;">返 回</button>
+                </div>
+            </div>
         </form>
+        <div id="prvid"></div><!--预览容器--><br>
     </div>
 </block>
