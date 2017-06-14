@@ -1,0 +1,52 @@
+.mui-segmented-control .mui-control-item.mui-active{
+	background: #EFEFF4;
+	color: #000;
+	border-bottom:1px solid #F2D7AA;
+}
+.mui-segmented-control .mui-control-item{
+	border-color: none;
+	border-left: none;
+	color: #000;
+}
+.mui-segmented-control{
+	border: transparent;
+	border-bottom: 1px solid #eaeaea;
+}
+#list{
+	padding: 0 20px;
+}
+#list .content{
+	width: 100%;
+	margin-bottom: 10px;
+}
+#list .content p{
+	border-bottom: 1px solid #FBFBFB;
+	padding: 3px 10px;
+	font-size: 16px;
+}
+#list .right{
+	float: right;
+}
+#list .compelet{
+	border: 1px solid #94D599;
+	border-radius:3px ;
+	color:#94D599 ;
+	font-weight: 600;
+}
+#list .compeleting{
+	border: 1px solid #FDD061;
+	border-radius:3px ;
+	color:#FDD061 ;
+	font-weight: 600;
+}
+#list .unCompelet{
+	border: 1px solid #FF6092;
+	border-radius:3px ;
+	color:#FF6092 ;
+	font-weight: 600;
+}
+#list .childList{
+	padding: 15px 10px;
+	font-size: 14px;
+	font-weight: 500;
+}

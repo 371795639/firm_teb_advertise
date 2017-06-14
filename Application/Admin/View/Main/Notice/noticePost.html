@@ -1,0 +1,36 @@
+<extend name="Public/base"/>
+<block name="body">
+    <div class="main-title">
+        <h2>发布消息</h2>
+    </div>
+    <div class="form-item">
+        <form action="{:U('Main/noticePost')}" method="post" enctype="multipart/form-data" class="form-horizontal">
+            <label class="item-label">主题 </label>
+            <div class="controls">
+                <input type="text" class="text" id="notice_title" name="notice_title" value="" >
+            </div>
+            <label class="item-label">公告类型 </label>
+            <div class="controls">
+            <select name="notice_type" class="form-control">
+                <option value="">选择公告类型</option>
+                    <volist name="type" id="vo">
+                        <option value="{$vo.id}">{$vo.notice_type_name}</option>
+                    </volist>
+            </select>
+            </div>
+            <label class="item-label">内容 </label>
+            <label class="textarea input-large">
+                <textarea name="content"></textarea>
+            </label>
+            <input id="files" type="file" name="photo1" onchange="previewImage(this, 'prvid')" multiple="multiple"  value="上传图片" />
+            <div class="form-item">
+                <label class="item-label"></label>
+                <div class="controls">
+                    <button type="submit" class="btn submit-btn" id="refer" target-form="form-horizontal">确 定</button>
+                    <button class="btn btn-return" onclick="javascript:history.back(-1);return false;">返 回</button>
+                </div>
+            </div>
+        </form>
+        <div id="prvid"></div><!--预览容器--><br>
+    </div>
+</block>

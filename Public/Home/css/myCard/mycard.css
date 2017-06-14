@@ -1,0 +1,25 @@
+.mui-content a{
+	color: #AAAAAA;
+	display: block;
+	text-align: center;
+}
+.mui-content a .mui-icon.mui-icon-plusempty{
+	font-size: 10rem;
+}
+.mui-content a span{
+	font-weight: 500;
+}
+/*************************卡列表*********************/
+.mui-media-object.mui-pull-left{
+	height:42px ;
+	width: 42px;
+	border-radius: 50%;
+	border: 1px solid #000000;
+}
+.mui-media-body{
+	text-align: left;
+}
+.mui-table-view-cell.mui-media{
+	border-top:1px solid #DDDDDD ;
+	margin: 10px 0;
+}

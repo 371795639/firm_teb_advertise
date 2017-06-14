@@ -1,0 +1,40 @@
+html{font-size:62.5%;} 
+*{
+	margin: 0;
+	padding: 0;
+}
+@media only screen and (min-width: 320px){
+html {
+    font-size: 62.5% !important;
+  }
+}
+@media only screen and (min-width: 640px){
+html {
+    font-size: 125% !important;
+  }
+}
+@media only screen and (min-width: 750px){
+html {
+    font-size: 150% !important;
+  }
+}
+/*************************渐变*****************************/
+.gradient{
+	background: linear-gradient(to right, #4EB8EA, #7E6FFF); 
+}
+.gradient-btn{
+	background: linear-gradient(to right, #5ECCFC, #29AEE7); 
+}
+a{
+	color: #fff;
+}
+.mui-title{
+	color: #FFF;
+}
+/******************去除heade上的边框影音****************/
+.mui-bar-nav{
+	box-shadow: none;
+}
+.right{
+	float: right;
+}
