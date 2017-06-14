@@ -1,0 +1,36 @@
+.mui-table-view.head{
+	height:9rem;
+	padding: 0;
+}
+.right{
+	float: right;
+}
+.right img{
+	width: 8rem;
+	height: 8rem;
+}
+.mui-table-view .head a{
+	font-size: 2rem;
+}
+.mui-table-view.head a span{
+	display: inline-block;
+	height: 80px;
+	line-height: 80px;
+	font-size: 2rem;
+}
+.mui-input-row>.mui-input{
+	/*margin-right: -40px;*/
+	width: calc(65% - 40px);
+	float: left;
+}
+ .mui-input-row{
+	padding: 10px 10px;
+	height: 60px;
+}
+#btn{
+	display: block;
+	width: 80%;
+	height: 40px;
+	margin: 20px auto;
+}
+

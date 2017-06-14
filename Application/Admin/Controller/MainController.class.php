@@ -21,10 +21,8 @@ class MainController extends AdminController {
     }
 
 
-    /**加载项目首页**/
     public function index(){
-        $this -> meta_title = '项目首页';
-        $this -> display();
+        //Nothing need to do here.
     }
 
 
@@ -210,14 +208,6 @@ class MainController extends AdminController {
     }
 
 
-    /**系统设置**/
-    public function sysSet(){
-
-        $this -> meta_title = '系统设置';
-        $this -> display('user/index');
-    }
-
-
     /**推广专员信息管理及导出**/
     public function msgList($method = null){
         $dbStaff = M('Staff');
@@ -354,29 +344,6 @@ class MainController extends AdminController {
             default:
                 $this->error('参数非法');
         }
-    }
-
-
-    /**关系管理**/
-    public function relation(){
-
-        $this -> meta_title = '关系管理';
-        $this -> display('Main/relation/index');
-    }
-
-
-    /**接口基本设置**/
-    public function apiSet(){
-
-        $this -> meta_title = '接口基本设置';
-        $this -> display('Main/apiSet/apiSet');
-    }
-
-    /**添加接口**/
-    public function apiAdd(){
-
-        $this -> meta_title = '添加接口';
-        $this -> display('Main/apiSet/apiAdd');
     }
 
 
@@ -551,60 +518,34 @@ class MainController extends AdminController {
     }
 
 
-    /**分红管理**/
-    public function cashGiven(){
+    /**关系管理**/
+    public function relation(){
 
-        $this -> meta_title = '分红管理';
-        $this -> display('Main/cash/cashGiven');
+        $this -> meta_title = '关系管理';
+        $this -> display('Main/relation/index');
     }
 
 
-    /**出入帐理**/
-    public function cashIo(){
+    /**接口基本设置**/
+    public function apiSet(){
 
-        $this -> meta_title = '出入帐理';
-        $this -> display('Main/cash/cashIo');
+        $this -> meta_title = '接口基本设置';
+        $this -> display('Main/apiSet/apiSet');
     }
 
 
-    /**财务总表**/
-    public function cashTotal(){
+    /**添加接口**/
+    public function apiAdd(){
 
-        $this -> meta_title = '财务总表';
-        $this -> display('Main/cash/cashTotal');
+        $this -> meta_title = '添加接口';
+        $this -> display('Main/apiSet/apiAdd');
     }
 
 
-    /**奖励明细**/
-    public function cashDetail(){
+    /**系统设置**/
+    public function sysSet(){
 
-        $this -> meta_title = '奖励明细';
-        $this -> display('Main/cash/cashDetail');
+        $this -> meta_title = '系统设置';
+        $this -> display('user/index');
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
