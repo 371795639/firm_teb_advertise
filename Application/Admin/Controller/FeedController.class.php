@@ -75,7 +75,7 @@ class FeedController extends AdminController {
             $res_re[$k]['cid'] = I('id');
         }
         $total = array_merge($res_msg,$res_re);
-        array_multisort(array_column($total,'create_time'),SORT_ASC,$total);   //将合并数组按照create_time升序排列
+        array_multisort(array_column($total,'create_time'),SORT_ASC,$total);   //将合并的数组按照create_time升序排列
         $this->assign('total',$total);
         $this->meta_title = '反馈详情';
         $this->display('main/feed/feedRe');
