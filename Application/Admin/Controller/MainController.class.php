@@ -75,6 +75,7 @@ class MainController extends AdminController {
             array('img_url', '图片地址'),
             array('create_time', '创建时间'),
         );
+        /*
         $field = null;
         foreach ($xlsCell as $key => $value) {
             if($key == 0){
@@ -83,6 +84,7 @@ class MainController extends AdminController {
                 $field .= "," . $value[0];
             }
         }
+        */
         $end_time = $map['create_time'];
         if(empty($end_time) && empty($staff_name)){
             $xlsName = 'Notice全表导出';
@@ -91,7 +93,8 @@ class MainController extends AdminController {
         }else {
             $xlsName = 'Notice表搜索结果导出';
         }
-        $xlsData = $dbNotice->Field($field)->where($map)->order('id DESC')->select();
+//        $xlsData = $dbNotice->Field($field)->where($map)->order('id DESC')->select();
+        $xlsData = $dbNotice->where($map)->order('id DESC')->select();
         foreach ($xlsData as $k => $v) {
             $xlsData[$k]['create_time'] = $v['create_time'] == 0 ? '-' : date("Y-m-d H:i",$v['create_time']);
             $xlsData[$k]['status']      = $v['status']      == 1 ? '正常' : '禁用';
