@@ -12,7 +12,7 @@
                 <select name="notice_type" class="form-control">
                     <option value="">选择公告类型</option>
                     <volist name="type" id="vo">
-                        <option value="{$vo.id}">{$vo.notice_type_name}</option>
+                        <option value="{$vo.id}" <eq name="notice_type" value="$vo.id"> selected </eq> >{$vo.notice_type_name}</option>
                     </volist>
                 </select>
                 <input type="text" class="search-input" onClick="WdatePicker()" name="start_time" style="cursor: pointer;" value="{:I('start_time')}" placeholder="发布时间/始" />
@@ -31,24 +31,28 @@
                 <th class="text-center">ID</th>
                 <th class="text-center">公告类型</th>
                 <th class="text-center">公告主题</th>
-                <th class="text-center">公告内容</th>
+                <th class="text-center" style="width:40%">公告内容</th>
                 <th class="text-center">发布IP</th>
                 <th class="text-center">图片查看</th>
                 <th class="text-center">发布时间</th>
+                <th class="text-center">发布人</th>
                 <th class="text-center">操作</th>
             </tr>
             </thead>
             <tbody class="text-center">
-            <volist name="notice" id="vo">
+            <volist name="resNotice" id="vo">
                 <tr>
                     <td><input class="ids" type="checkbox" name="id[]" value="{$vo.id}" /></td>
                     <td>{$vo.id}</td>
-                    <td>{$vo.type.notice_type_name}</td>
+                    <td>{$vo.notice_type_name}</td>
                     <td>{$vo.notice_title}</td>
                     <td><a title="点击“编辑”可查看详情" style="color:black;">{$vo.n_content}</a></td>
                     <td>{$vo.create_ip}</td>
-                    <td><a href="{$vo.img_url}" target="_blank">图片查看</a></td>
+                    <td>
+                        <a href="{$vo.img_url}" target="_blank">图片查看</a>
+                    </td>
                     <td>{$vo.create_time|time_format}</td>
+                    <td>{$vo.aid}</td>
                     <td>
                         <a href="{:U('Main/noticeEdit',array('id'=>$vo['id']))}">编辑</a>
                         |

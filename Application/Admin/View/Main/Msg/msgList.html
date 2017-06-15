@@ -65,7 +65,12 @@
                             </if>
                             </td>
                             <td>
-                                <a href="{:U('main/msgEdit',array('id'=>$vo['id']))}">修改</a>
+                                <if condition="$vo.status eq 1">
+                                    <a href="{:U('main/msgEdit',array('id'=>$vo['id']))}">修改</a>
+                                    <else />
+                                    修改
+                                </if>
+
                                 |
                                 <a class="confirm ajax-get" href="{:U('Main/changeStatus',array('method'=>'deleteUser','id'=>$vo['id'],'dbname'=>'Staff'))}">删除</a>
                             </td>
@@ -85,24 +90,6 @@
     <script src="__STATIC__/thinkbox/jquery.thinkbox.js"></script>
     <script language="javascript" type="text/javascript" src="__STATIC__/My97DatePicker/WdatePicker.js"></script>
     <script type="text/javascript">
-        /*
-        $('#out').on('click',function(){
-            var name = $('#name').val();
-            var start = $('#start').val();
-            var end = $('#end').val();
-            $.ajax({
-                type:"post",
-                url:"{:U('Main/msgOut')}",
-                data:{"name":name,"start":start,"end":end},
-                dataType:"json",
-                success:function (data) {
-                    if (data['code'] == 1 ){
-                        alert("success");
-                    }
-                }
-            })
-        });
-        */
         //搜索功能
         $("#search").click(function(){
             var url = $(this).attr('url');
