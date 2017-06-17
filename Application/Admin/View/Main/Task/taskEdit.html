@@ -20,18 +20,13 @@
             <div class="controls">
                 <input type="text" class="text input-large" name="inneed" value="{$resTask.inneed}">
             </div>
-            <label class="item-label">开始时间<span class="check-tips">（选择任务的开始时间）</span></label>
+            <label class="item-label">任务金额<span class="check-tips">（请输入任务指标）</span></label>
             <div class="controls">
-                <input type="text" class="text input" onClick="WdatePicker()" name="start_time" style="cursor: pointer;" value="{$resTask.start_time|time_format}"/>
+                <input type="text" class="text input-large" name="money" value="{$resTask.money}">
             </div>
-            <label class="item-label">结束时间<span class="check-tips">（选择任务的结束时间）</span></label>
+            <label class="item-label">创建时间<span class="check-tips">（选择任务的开始时间）</span></label>
             <div class="controls">
-                <input type="text" class="text input" onClick="WdatePicker()" name="end_time" style="cursor: pointer;"  value="{$resTask.end_time|time_format}"/>
-            </div>
-            <label class="item-label">发布指示<span class="check-tips">（什么时间发布）</span></label>
-            <div class="controls">
-                <input type="radio" value="1" name="status" <eq name="resTask.status" value="1"> checked </eq> /> 暂不发布<br>
-                <input type="radio" value="2" name="status" <eq name="resTask.status" value="2"> checked </eq> /> 现在就发布
+                <input type="text" class="text input" style="cursor: not-allowed ;" value="{$resTask.create_time}"/>
             </div>
         </div>
         <div class="form-item">

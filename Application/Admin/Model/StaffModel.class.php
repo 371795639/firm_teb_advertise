@@ -15,6 +15,11 @@ class StaffModel extends Model {
         array('status', '1', self::MODEL_INSERT),
     );
 
+    /*
+     * 插入数据
+     * @param  array    $data 数据
+     * @return boolean  ture-插入数据成功，false-插入数据失败
+     */
     public function msg_insert($data){
         if($this -> create($data)){
            $re = $this -> add();
@@ -29,11 +34,45 @@ class StaffModel extends Model {
         }
     }
 
-    public function msg_find($where=null){
-        $re = $this -> where('id = '.$where) -> find();
-//        $re = $this -> where($where) -> find();
+    /*
+      * 根据ID查找推广专员
+      * @param  integer  $staff_id   推广专员ID
+      * @return array    $re         查找的数据
+      */
+    public function msg_find($staff_id){
+        $re = $this -> where(array('id'=>(int)$staff_id)) -> find();
         if($re){
-            return true;
+            return $re;
+        }else{
+            return false;
+        }
+    }
+
+    /*
+      * 根据ID更新推广专员的信息
+      * @param  integer  $staff_id   推广专员ID
+      * @param  array    $data       要更新的数据
+      * @return array    $re         更新结果
+      */
+    public function msg_save($staff_id,$data){
+        $re = $this -> where(array('id' => (int)$staff_id)) -> save($data);
+        if($re){
+            return $re;
+        }else{
+            return false;
+        }
+    }
+
+    /*
+     * 根据条件获取推广专员的信息
+     * @param   string  $field  字段组成的字符串
+     * @param   array   $map    搜索条件
+     * @return array    $re     搜索结果
+     */
+    public function get_all_msg($field,$map){
+        $re = $this -> Field($field) -> where($map) -> order('id DESC') -> select();
+        if($re){
+            return $re;
         }else{
             return false;
         }

@@ -28,7 +28,7 @@ class MainController extends AdminController {
 
     /**推广专员信息管理及导出**/
     public function msgList($method = null){
-        $dbStaff = M('Staff');
+        $dbStaff = D('Staff');
         $map = $this -> _queryTime();
         $staff_name = I('staff_name');
         $map['status'] = array('egt',0);
@@ -71,7 +71,7 @@ class MainController extends AdminController {
         }else {
             $xlsName = 'Staff表搜索结果导出';
         }
-        $xlsData = $dbStaff->Field($field)->where($map)->order('id DESC')->select();
+        $xlsData = $dbStaff -> get_all_msg($field,$map);
         foreach ($xlsData as $k => $v) {
             $xlsData[$k]['create_time'] = $v['create_time'] == 0 ? '-' : date("Y-m-d H:i",$v['create_time']);
             $xlsData[$k]['status']      = $v['status']      == 1 ? '正常' : '禁用';
@@ -93,25 +93,25 @@ class MainController extends AdminController {
 
     /**修改推广专员信息**/
     public function msgEdit(){
-        $dbStaff = M('staff');
-        $where['id'] = I('id');
+        $dbStaff = D('staff');
+        $where = I('id');
         if(IS_POST){
-            $id['id'] = $_POST['id'];
+            $id = $_POST['id'];
             $data = array(
                 'staff_name' => I('name'),
                 'referee' => I('referee'),
                 'mobile' => I('mobile'),
             );
-            $resStaff = $dbStaff -> where($id) -> save($data);
+            $resStaff = $dbStaff -> msg_save($id,$data);
             if($resStaff == 0){
-                $this -> success('什么都没修改，跳转至列表页',U('Main/msgList'));
+                $this -> success('什么都没修改，正跳转至列表页...',U('Main/msgList'));
             }elseif($resStaff == 1){
                 $this -> success('修改成功',U('Main/msgList'));
             }else{
                 $this -> error('修改失败');
             }
         }else {
-            $resStaffEdit = $dbStaff->where($where)->find();
+            $resStaffEdit = $dbStaff -> msg_find($where);
             $this->assign('resStaffEdit', $resStaffEdit);
             $this->meta_title = '修改推广专员信息';
             $this->display('Main/msg/msgEdit');
@@ -169,21 +169,14 @@ class MainController extends AdminController {
 
     /**任务列表及导出**/
     public function taskList($method=null){
-        $dbTask = M('Task');
+        $dbTask = D('Task');
         $map = $this -> _queryTime();
         $task_name = I('task_name');
         $type = I('type');
         if($type) {
             $map['type'] = $type;
         }
-        $status = I('status');
-        if($status) {
-            $map['status'] = $status;
-        }
-        //Begin >>The following code can't be moved to other palce!
         $this -> assign('type',$type);
-        $this -> assign('status',$status);
-        //End<<
         if($task_name) {
             if (is_numeric($task_name)) {
                 $map['id|name'] = array(intval($task_name), array('like', '%' . $task_name . '%'), '_multi' => true);
@@ -197,11 +190,11 @@ class MainController extends AdminController {
         $xlsCell = array(
             array('id', 'ID'),
             array('name', '任务名称'),
+            array('isgame', '是否游戏任务'),
             array('type', '任务类型'),
             array('inneed', '任务指标'),
-            array('start_time', '开始时间'),
-            array('end_time', '结束时间'),
-            array('create_time', '注册时间'),
+            array('create_time', '创建时间'),
+            array('money', '任务金额'),
             array('tasker', '发布者'),
             array('status', '状态'),
         );
@@ -221,16 +214,14 @@ class MainController extends AdminController {
         }else {
             $xlsName = 'Task表搜索结果导出';
         }
-        $status = array('-','未发布','进行中','已过期');
         $type = array('-','基本任务','额外任务');
-        $xlsData = $dbTask->Field($field)->where($map)->order('id DESC')->select();
+        $xlsData = $dbTask -> get_all_task($field,$map);
         foreach ($xlsData as $k => $v) {
-            $xlsData[$k]['start_time']  = $v['start_time']  == 0 ? '-' : date("Y-m-d H:i",$v['start_time']);
-            $xlsData[$k]['end_time']    = $v['end_time']    == 0 ? '-' : date("Y-m-d H:i",$v['end_time']);
-            $xlsData[$k]['create_time'] = $v['create_time'] == 0 ? '-' : date("Y-m-d H:i",$v['create_time']);
+            $xlsData[$k]['create_time'] = $v['create_time'] == 0 ? '-' : $v['create_time'];
+            $xlsData[$k]['isgame']      = $v['isgame']      == 0 ? '是': '否';
             $xlsData[$k]['tasker']      = $v['tasker']      =='' ? '-' : $v['tasker'];
-            $xlsData[$k]['status']      = $status[$v['status']];
             $xlsData[$k]['type']        = $type[$v['type']];
+            $xlsData[$k]['status']      = $v['status']      == 0 ? '无效' : '有效';
         }
         switch (strtolower($method)){
             case 'list':
@@ -252,13 +243,11 @@ class MainController extends AdminController {
         $dbTask = D('Task');
         if(IS_POST) {
             $data = array(
-                'name' => I('name', '', 'htmlspecialchars'),
-                'type' => I('post.type'),
+                'name'   => I('name', '', 'htmlspecialchars'),
+                'type'   => I('post.type'),
                 'inneed' => I('post.inneed'),
-                'start_time' => strtotime(I('post.start_time')),
-                'end_time' => strtotime(I('post.end_time')),
+                'money'  => I('post.money'),
                 'tasker' => session('user_auth')['username'],
-                'status' => I('status'),
             );
             if($dbTask -> task_insert($data)){
                 $this -> success('增加成功', U('Main/taskList'));
@@ -272,8 +261,38 @@ class MainController extends AdminController {
     }
 
 
-    /**任务发布记录**/
+    /**发布下周任务**/
     public function taskPost(){
+        date_default_timezone_set('PRC');
+        $task_id = I('id');
+        $dbTask = D('Task');
+        $resTask = $dbTask -> get_task_by_id($task_id);
+        $dbTaskWeekly = M('TaskWeekly');
+        $start_time = date('Y-m-d 02:00:00',strtotime('+1 week Monday'));
+        $ss = strtotime($start_time);
+        $end_time = date('Y-m-d 11:59:59',strtotime('Sunday',$ss));
+        $data = array(
+            'task_id'   => $task_id,
+            'name'      => $resTask['name'],
+            'post_time' => date('Y-m-d H:i:s'),
+            'tasker'    => session('user_auth')['username'],
+            'status'    => '1',
+            'start_time'=> $start_time,
+            'end_time'  => $end_time,
+        );
+        $resTaskWeekly = $dbTaskWeekly -> add($data);
+        if($resTaskWeekly){
+            $date['status'] = 1;
+            $dbTask -> save_task_by_id($task_id,$data);
+            $this -> success('发布成功',U('Main/taskList'));
+        }else{
+            $this -> error('发布失败');
+        }
+    }
+
+
+    /**周计划任务**/
+    public function taskWeekly(){
         $dbTask = M('Task');
         $map = $this -> _queryTime();
         $task_name = I('task_name');
@@ -293,26 +312,24 @@ class MainController extends AdminController {
         $resTask = $this -> lists($dbTask,$map);
         int_to_string($resTask);
         $this -> assign('resTask',$resTask);
-        $this -> meta_title = '任务发布记录';
-        $this -> display('Main/task/taskPost');
+        $this -> meta_title = '周计划任务';
+        $this -> display('Main/task/taskWeekly');
     }
 
     /**编辑任务**/
     public function taskEdit(){
-        $dbTask = M('Task');
-        $where['id'] = I('id');
+        $dbTask = D('Task');
+        $where = I('id');
         if(IS_POST){
-            $id['id'] = $_POST['id'];
+            $id = $_POST['id'];
             $data = array(
-                'name' => I('name', '', 'htmlspecialchars'),
-                'type' => I('post.type'),
+                'name'   => I('name', '', 'htmlspecialchars'),
+                'type'   => I('post.type'),
                 'inneed' => I('post.inneed'),
-                'start_time' => strtotime(I('post.start_time')),
-                'end_time' => strtotime(I('post.end_time')),
+                'money'  => I('post.money'),
                 'tasker' => session('user_auth')['username'],
-                'status' => I('status'),
             );
-            $resStaff = $dbTask -> where($id) -> data($data) -> save();
+            $resStaff = $dbTask -> save_task_by_id($id,$data);
             if($resStaff == 0){
                 $this -> success('什么都没更改，正跳转至列表页...',U('Main/taskList'));
             }elseif($resStaff == 1){
@@ -321,7 +338,7 @@ class MainController extends AdminController {
                 $this -> error('修改失败');
             }
         }else {
-            $resTask = $dbTask->where($where)->find();
+            $resTask = $dbTask -> get_task_by_id($where);
             $this->assign('resTask', $resTask);
             $this->meta_title = '编辑任务';
             $this->display('Main/task/taskEdit');
@@ -331,18 +348,26 @@ class MainController extends AdminController {
 
     /**查看任务**/
     public function taskView(){
-        $dbTask = M('Task');
-        $where['id'] = I('id');
-        $resTask = $dbTask->where($where)->find();
+        $dbTask = D('Task');
+        $where = I('id');
+        $resTask = $dbTask -> get_task_by_id($where);
         $this->assign('resTask', $resTask);
         $this->meta_title = '编辑任务';
         $this->display('Main/task/taskView');
     }
 
 
+    /**已完成任务**/
+    public function taskDone(){
+
+        $this->meta_title = '已完成任务';
+        $this->display('Main/task/taskDone');
+    }
+
+
     /**消息管理**/
     public function notice($method = null){
-        $dbNotice = M('notice');
+        $dbNotice = D('notice');
         $noticeType = M('notice_type');
         $map = $this -> _queryTime();
         $notice_name = I('notice_name');
@@ -381,6 +406,7 @@ class MainController extends AdminController {
             array('notice_content', '功能内容'),
             array('notice_type_id', '公告类型'),
             array('img_url', '图片地址'),
+            array('aid', '发布人'),
             array('create_time', '创建时间'),
         );
         $field = null;
@@ -399,7 +425,7 @@ class MainController extends AdminController {
         }else {
             $xlsName = 'Notice表搜索结果导出';
         }
-        $xlsData = $dbNotice->Field($field)->where($map)->order('id DESC')->select();
+        $xlsData = $dbNotice -> get_all_notice($field,$map);
         foreach ($xlsData as $k => $v) {
             $xlsData[$k]['create_time'] = $v['create_time'] == 0 ? '-' : date("Y-m-d H:i",$v['create_time']);
             $xlsData[$k]['status']      = $v['status']      == 1 ? '正常' : '禁用';
@@ -451,7 +477,7 @@ class MainController extends AdminController {
                 echo "<script>alert('请正确输入信息');history.go(-1); </script>";
             }
         }else {
-            $result = D('notice_type')->select();
+            $result = M('notice_type')->select();
             $this->assign('type', $result);
             $this->meta_title = '消息管理';
             $this->display('Main/notice/noticePost');
@@ -541,11 +567,4 @@ class MainController extends AdminController {
         $this -> display('Main/apiSet/apiAdd');
     }
 
-
-    /**系统设置**/
-    public function sysSet(){
-
-        $this -> meta_title = '系统设置';
-        $this -> display('user/index');
-    }
 }
