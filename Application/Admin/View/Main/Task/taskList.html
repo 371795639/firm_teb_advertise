@@ -16,8 +16,8 @@
                     <option value="1" <eq name="type.value" value="1">selected</eq> >基本任务</option>
                     <option value="2" <eq name="type.value" value="2">selected</eq> >额外任务</option>
                 </select>
-                <input type="text" class="search-input" onClick="WdatePicker()" name="start_time" style="cursor: pointer;" value="{:I('start_time')}" placeholder="发布时间/始" />
-                <input type="text" class="search-input" onClick="WdatePicker()" name="end_time" style="cursor: pointer;" value="{:I('end_time')}" placeholder="发布时间/终" />
+                <input type="text" class="search-input" onClick="WdatePicker()" name="start_time" style="cursor: pointer;" value="{:I('start_time')}" placeholder="时间/始" />
+                <input type="text" class="search-input" onClick="WdatePicker()" name="end_time" style="cursor: pointer;" value="{:I('end_time')}" placeholder="时间/终" />
                 <input type="text" name="task_name" class="search-input" value="{:I('task_name')}" placeholder="请输入任务名称或者ID">
                 <a class="btn" href="javascript:;"  url="{:U('Main/taskList',array('method'=>'list'))}" id="search">搜索</a>
                 <a class="btn" href="javascript:;"  url="{:U('Main/taskList',array('method'=>'out'))}" id="out">导出</a>

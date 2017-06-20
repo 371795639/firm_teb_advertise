@@ -10,8 +10,8 @@ class MainController extends AdminController {
 
     /**提取起止日期**/
     private function _queryTime(){
-        $start_time= strtotime(I('start_time'));
-        $end_time= strtotime(I('end_time'));
+        $start_time = strtotime(I('start_time'));
+        $end_time   = strtotime(I('end_time'));
         if($start_time || $end_time){
             if($start_time >= $end_time){
                 $this -> error('查询的开始日期大于结束日期，这让我很为难啊...');
@@ -174,7 +174,8 @@ class MainController extends AdminController {
     /**任务列表及导出**/
     public function taskList($method=null){
         $dbTask = D('Task');
-        $map = $this -> _queryTime();
+        $timeNew = A('Cash');
+        $map = $timeNew -> _queryCreateTime();
         $task_name = I('task_name');
         $type = I('type');
         if($type) {
@@ -317,15 +318,8 @@ class MainController extends AdminController {
         $dbTaskWeekly = D('TaskWeekly');
         $dbTask = D('Task');
         $task_name = I('task_name');
-        $start_time= I('start_time');
-        $end_time= I('end_time');
-        if($start_time || $end_time){
-            if($start_time >= $end_time){
-                $this -> error('查询的开始日期大于结束日期，这让我很为难啊...');
-            }else{
-                $map['post_time'] = array(array('gt', $start_time), array('lt', $end_time));
-            }
-        }
+        $timeNew = A('Cash');
+        $map = $timeNew -> _queryPostTime();
         if($task_name) {
             if (is_numeric($task_name)) {
                 $map['id|name'] = array(intval($task_name), array('like', '%' . $task_name . '%'), '_multi' => true);

@@ -6,15 +6,29 @@ use Think\Controller;
 
 class CashController extends AdminController {
 
-    /**提取起止日期**/
-    private function _queryTime(){
-        $start_time= strtotime(I('start_time'));
-        $end_time= strtotime(I('end_time'));
+    /**提取起止日期 表中字段是create_time**/
+    public function _queryCreateTime(){
+        $start_time = I('start_time');
+        $end_time   = I('end_time');
         if($start_time || $end_time){
             if($start_time >= $end_time){
                 $this -> error('查询的开始日期大于结束日期，这让我很为难啊...');
             }else{
                 $map['create_time'] = array(array('gt', $start_time), array('lt', $end_time));
+            }
+        }
+        return $map;
+    }
+
+    /**提取起止日期 表中字段是post_time**/
+    public function _queryPostTime(){
+        $start_time = I('start_time');
+        $end_time   = I('end_time');
+        if($start_time || $end_time){
+            if($start_time >= $end_time){
+                $this -> error('查询的开始日期大于结束日期，这让我很为难啊...');
+            }else{
+                $map['post_time'] = array(array('gt', $start_time), array('lt', $end_time));
             }
         }
         return $map;
