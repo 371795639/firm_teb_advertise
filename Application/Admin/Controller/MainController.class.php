@@ -6,6 +6,8 @@ use Think\Controller;
 
 class MainController extends AdminController {
 
+    public $a = '';
+
     /**提取起止日期**/
     private function _queryTime(){
         $start_time= strtotime(I('start_time'));
@@ -99,8 +101,8 @@ class MainController extends AdminController {
             $id = $_POST['id'];
             $data = array(
                 'staff_name' => I('name'),
-                'referee' => I('referee'),
-                'mobile' => I('mobile'),
+                'referee'    => I('referee'),
+                'mobile'     => I('mobile'),
             );
             $resStaff = $dbStaff -> msg_save($id,$data);
             if($resStaff == 0){
@@ -143,11 +145,8 @@ class MainController extends AdminController {
     /**状态修改**/
     public function changeStatus($method=null,$dbname=null){
         $id = array_unique((array)I('id',0));
-        if( in_array(C('USER_ADMINISTRATOR'), $id)){
-            $this->error("不允许对超级管理员执行该操作!");
-        }
         $id = in_array($id) ? implode(',',$id) : $id;
-        if ( empty($id) ) {
+        if ( empty($id) || $id[0] == 0) {
             $this->error('请选择要操作的数据!');
         }
         $map['uid'] =   array('in',$id);
@@ -160,6 +159,11 @@ class MainController extends AdminController {
                 break;
             case 'deleteuser':
                 $this->delete($dbname, $map );
+                break;
+            case 'ipost':
+                $abc = $this -> a = $id;
+                $bc['id'] = array('in',$abc);
+                return $bc;
                 break;
             default:
                 $this->error('参数非法');
@@ -261,47 +265,67 @@ class MainController extends AdminController {
     }
 
 
-    /**发布下周任务**/
-    public function taskPost(){
-        date_default_timezone_set('PRC');
-        $task_id = I('id');
+    /**发布周任务**/
+    public function taskPost($abc = null){
         $dbTask = D('Task');
-        $resTask = $dbTask -> get_task_by_id($task_id);
         $dbTaskWeekly = M('TaskWeekly');
-        $start_time = date('Y-m-d 02:00:00',strtotime('+1 week Monday'));
+        date_default_timezone_set('PRC');
+        // Begin: the 3 line codes below are for getting next Monday 2:00 am and next Sunday 11:59:59 pm
+        $start_time = date('Y-m-d 02:00:00',strtotime('Monday'));  //TODO 待定
         $ss = strtotime($start_time);
         $end_time = date('Y-m-d 11:59:59',strtotime('Sunday',$ss));
         $data = array(
-            'task_id'   => $task_id,
-            'name'      => $resTask['name'],
-            'post_time' => date('Y-m-d H:i:s'),
-            'tasker'    => session('user_auth')['username'],
-            'status'    => '1',
             'start_time'=> $start_time,
             'end_time'  => $end_time,
+            'post_time' => date('Y-m-d H:i:s'),
+            'tasker'    => session('user_auth')['username'],
+            'status'    => '3',
         );
-        $resTaskWeekly = $dbTaskWeekly -> add($data);
-        if($resTaskWeekly){
-            $date['status'] = 1;
-            $dbTask -> save_task_by_id($task_id,$data);
+        $date['status'] = 1;
+        if($abc == 2) {
+            $task_id = $this -> changeStatus('ipost', null);
+            $resTask = $dbTask -> where($task_id) -> select(); //数组查询结果
+            foreach($resTask as $k => $v){
+                $new = $resTask[$k]['id'];
+                $data['task_id']= $resTask[$k]['id'];
+                $data['name']   = $resTask[$k]['name'];
+                if($resTask[$k]['status'] == 0){    //避免重复发布
+                    $resTaskWeekly  = $dbTaskWeekly -> add($data);
+                    $result = $dbTask -> save_task_by_id($new, $date);
+                }
+            }
+        }else {
+            $task_id = I('id');
+            $resTask = $dbTask -> get_task_by_id($task_id);
+            $data['task_id']    = $task_id;
+            $data['name']       = $resTask['name'];
+            if($resTask['status'] == 0) {       //避免重复发布
+                $resTaskWeekly = $dbTaskWeekly -> add($data);
+                $result = $dbTask -> save_task_by_id($task_id, $date);
+            }
+        }
+        if($resTaskWeekly && $result){
             $this -> success('发布成功',U('Main/taskList'));
         }else{
-            $this -> error('发布失败');
+            $this -> error('发布失败,发布时请勿选择已发布的任务！');
         }
     }
 
 
     /**周计划任务**/
     public function taskWeekly(){
-        $dbTask = M('Task');
-        $map = $this -> _queryTime();
+        $dbTaskWeekly = D('TaskWeekly');
+        $dbTask = D('Task');
         $task_name = I('task_name');
-        $map['status']  = 2;
-        $type = I('type');
-        if($type) {
-            $map['type'] = $type;
+        $start_time= I('start_time');
+        $end_time= I('end_time');
+        if($start_time || $end_time){
+            if($start_time >= $end_time){
+                $this -> error('查询的开始日期大于结束日期，这让我很为难啊...');
+            }else{
+                $map['post_time'] = array(array('gt', $start_time), array('lt', $end_time));
+            }
         }
-        $this -> assign('type',$type);
         if($task_name) {
             if (is_numeric($task_name)) {
                 $map['id|name'] = array(intval($task_name), array('like', '%' . $task_name . '%'), '_multi' => true);
@@ -309,9 +333,35 @@ class MainController extends AdminController {
                 $map['name'] = array('like', '%' . (string)$task_name . '%');
             }
         }
-        $resTask = $this -> lists($dbTask,$map);
-        int_to_string($resTask);
-        $this -> assign('resTask',$resTask);
+        $resWeekly = $dbTaskWeekly -> get_all_weekly('',$map);
+        $time = date('Y-m-d H:i:s');
+        foreach($resWeekly as $k => $v){
+            $where = $resWeekly[$k]['task_id'];
+            switch($time) {
+                case $time < $resWeekly[$k]['start_time'] :
+                    $res['status'] = '3';
+                    break;
+                case ($resWeekly[$k]['start_time']) < $time && ($resWeekly[$k]['end_time']) > $time:
+                    $res['status'] = '1';
+                    break;
+                case $resWeekly[$k]['end_time'] < $time:
+                    $res['status'] = '2';
+                    break;
+            }
+            $dbTaskWeekly->save_weekly_by_id($where, $res);
+        }
+        $resTaskWeekly = $this -> lists($dbTaskWeekly,$map);
+        foreach($resTaskWeekly as $k => $v){
+            $where = $resWeekly[$k]['task_id'];
+            if(!empty($where)) {
+                $resTask = $dbTask->get_task_by_id($where);
+                $resTaskWeekly[$k]['type'] = $resTask['type'];
+                $resTaskWeekly[$k]['inneed'] = $resTask['inneed'];
+                $resTaskWeekly[$k]['money'] = $resTask['money'];
+            }
+        }
+        int_to_string($resTaskWeekly);
+        $this -> assign('resTaskWeekly',$resTaskWeekly);
         $this -> meta_title = '周计划任务';
         $this -> display('Main/task/taskWeekly');
     }
@@ -346,14 +396,35 @@ class MainController extends AdminController {
     }
 
 
-    /**查看任务**/
-    public function taskView(){
+    /**取消发布周任务**/
+    public function taskWeeklyCancle($abc = null){
         $dbTask = D('Task');
-        $where = I('id');
-        $resTask = $dbTask -> get_task_by_id($where);
-        $this->assign('resTask', $resTask);
-        $this->meta_title = '编辑任务';
-        $this->display('Main/task/taskView');
+        $dbTaskWeekly = D('TaskWeekly');
+        $data['status'] = 0;
+        if($abc == 2) {
+            $id = $this -> changeStatus('ipost', null);
+            $resWeekly = $dbTaskWeekly -> where($id) -> select(); //数组查询结果
+            foreach($resWeekly as $k => $v){
+                $task_id = $resWeekly[$k]['task_id'];
+                $resTask = $dbTask -> save_task_by_id($task_id, $data);
+                $nid = $dbTaskWeekly -> where("task_id = $task_id") -> select();
+                foreach($nid as $kk => $vv){
+                    $nids  = $nid[$kk]['id'];
+                    $resTaskWeekly = $dbTaskWeekly -> delete_weekly_by_id($nids);
+                }
+            }
+        }else{
+            $id = I('id');
+            $resWeekly = $dbTaskWeekly-> get_weekly_by_id($id);
+            $task_id = $resWeekly['task_id'];
+            $resTask = $dbTask -> save_task_by_id($task_id, $data);
+            $resTaskWeekly = $dbTaskWeekly -> delete_weekly_by_id($id);
+        }
+        if($resTask && $resTaskWeekly){
+            $this -> success('取消发布成功',U('Main/taskWeekly'));
+        }else{
+            $this -> error('取消发布失败');
+        }
     }
 
 
@@ -406,7 +477,7 @@ class MainController extends AdminController {
             array('notice_content', '功能内容'),
             array('notice_type_id', '公告类型'),
             array('img_url', '图片地址'),
-            array('aid', '发布人'),
+            array('poster', '发布人'),
             array('create_time', '创建时间'),
         );
         $field = null;
@@ -451,7 +522,7 @@ class MainController extends AdminController {
             if($_POST['notice_type']>0&&$_POST['notice_title']&&$_POST['content']){
                 $notice = D('notice');
                 $data['create_ip'] = $_SERVER['REMOTE_ADDR'];
-                $data['aid'] = session('user_auth')['username'];
+                $data['poster'] = session('user_auth')['username'];
                 $data['notice_content'] = $_POST['content'];
                 $data['notice_type_id'] = $_POST['notice_type'];
                 $data['notice_title'] = $_POST['notice_title'];
@@ -501,13 +572,13 @@ class MainController extends AdminController {
             $resNoticeTypeData = $dbNoticeType -> where(array('notice_type_name' => $noticeTypeName))->find();
             $resNoticeTypeID = $resNoticeTypeData['id'];
             $data = array(
-                'id' => I('post.noticeID'), //消息id
-                'notice_title' => I('post.noticeTitle'),//消息标题
+                'id'            => I('post.noticeID'), //消息id
+                'notice_title'  => I('post.noticeTitle'),//消息标题
                 'notice_content'=> I('post.noticeContent'),//消息内容
+                'create_time'   => time(),
+                'create_ip'     => $_SERVER['REMOTE_ADDR'],
+                'notice_type_id'=> $resNoticeTypeID,
             );
-            $data['create_time'] = time();
-            $data['create_ip'] = $_SERVER['REMOTE_ADDR'];
-            $data['notice_type_id'] = $resNoticeTypeID;
             //图片信息
             $upload = new \Think\Upload();
             $upload->maxSize   =     2*1024*1024 ;// 设置附件上传大小
@@ -524,14 +595,15 @@ class MainController extends AdminController {
             }else{
                 $this -> error('修改失败',U('Main/notice'));
             }
+        }else {
+            $this->assign('noticeID', $resNotice);
+            $this->assign('noticeTitle', $resNotice);
+            $this->assign('noticeContent', $resNotice);
+            $this->assign('noticeType', $resNoticeType);
+            $this->assign('noticeAllType', $resNoticeAllType);
+            $this->meta_title = '修改消息信息';
+            $this->display('Main/Notice/noticeEdit');
         }
-        $this -> assign('noticeID',$resNotice);
-        $this -> assign('noticeTitle',$resNotice);
-        $this -> assign('noticeContent',$resNotice);
-        $this -> assign('noticeType',$resNoticeType);
-        $this -> assign('noticeAllType', $resNoticeAllType);
-        $this -> meta_title = '修改消息信息';
-        $this -> display('Main/Notice/noticeEdit');
     }
 
     /**删除消息**/

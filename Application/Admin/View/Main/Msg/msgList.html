@@ -10,7 +10,6 @@
             <button class="btn ajax-post" url="{:U('Main/changeStatus',array('method'=>'resumeUser','dbname'=>'Staff'))}" target-form="ids">启 用</button>
             <button class="btn ajax-post" url="{:U('Main/changeStatus',array('method'=>'forbidUser','dbname'=>'Staff'))}" target-form="ids">禁 用</button>
             <button class="btn ajax-post confirm" url="{:U('Main/changeStatus',array('method'=>'deleteUser','dbname'=>'Staff'))}" target-form="ids">删 除</button>
-            <span style="color:gray">"启用"、"禁用"、"删除"需要选择信息后再操作，否则无效。</span>
         </div>
         <div class="search-form fr cf">
             <div class="sleft">
@@ -78,7 +77,7 @@
                         </tr>
                     </volist>
                     <else/>
-                    <td colspan="12" class="text-center"> aOh! 暂时还没有内容! </td>
+                    <td colspan="12" class="text-center"> @_@ 暂时还没有内容哦，快去添加吧。 </td>
                 </notempty>
             </tbody>
         </table>
