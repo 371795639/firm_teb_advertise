@@ -1,20 +1,21 @@
 mui.init();
     		//表单验证；
-$("#btn").attr("disabled","disabled").removeClass("gradient-btn").css("background-color","#999");
+$("#btn").attr("disabled","disabled")
 var test = function(){
 	var oldPsd = $("#oldPassword").val();
 	var newPsd = $("#newPassword").val();
 	var psd = $("#password").val();
+	var testNum = $("#testNum").val();
 //	console.log(oldPsd+newPsd+psd);
-	var isOk = oldPsd&&newPsd&&psd;
+	var isOk = oldPsd&&newPsd&&psd&&testNum;
 	btn( isOk );
 }
 
 var btn = function(a){
 	if( a ){
-     	$("#btn").removeAttr("disabled").addClass("gradient-btn");
+     	$("#btn").removeAttr("disabled")
     }else{
-     	$("#btn").attr("disabled","disabled").removeClass("gradient-btn").css("background-color","#999");
+     	$("#btn").attr("disabled","disabled")
     }
 }
 $('input').bind('keyup',function(){
@@ -50,4 +51,24 @@ var set = function( id ){//对应input id
 		$(id).attr('type','password');
 	}
 } 
-			
+
+//获取验证码事件（时间在绑定调用处传入，）
+function showtime(t){ 
+	//TODO请求验证码
+	
+    $("#getTestNum").attr("disabled","disabled");
+    for(i=1;i<=t;i++){ 
+        window.setTimeout("update_p(" + i + ","+t+")", i * 1000); 
+    } 
+} 
+ 
+function update_p(num,t) { 
+    if(num == t) { 
+       $("#getTestNum").val("重新获取");
+       $("#getTestNum").removeAttr("disabled");
+    } 
+    else { 
+        printnr = t-num; 
+		$("#getTestNum").val("重新获取"+" ("+ printnr +")");
+    } 
+}	

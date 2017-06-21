@@ -1,8 +1,12 @@
-html{font-size:62.5%;} 
+
 *{
 	margin: 0;
 	padding: 0;
 }
+.mui-title{
+	font-size: 20px;
+}
+/********屏幕适配*********/
 @media only screen and (min-width: 320px){
 html {
     font-size: 62.5% !important;
@@ -21,9 +25,15 @@ html {
 /*************************渐变*****************************/
 .gradient{
 	background: linear-gradient(to right, #4EB8EA, #7E6FFF); 
+	background: -webkit-linear-gradient(left, #4EB8EA, #7E6FFF); /* Safari 5.1 - 6.0 */
+	background: -o-linear-gradient(right,  #4EB8EA, #7E6FFF); /* Opera 11.1 - 12.0 */
+	background: -moz-linear-gradient(right,  #4EB8EA, #7E6FFF); /* Firefox 3.6 - 15 */
 }
 .gradient-btn{
 	background: linear-gradient(to right, #5ECCFC, #29AEE7); 
+	background: -webkit-linear-gradient(left, #5ECCFC, #29AEE7); /* Safari 5.1 - 6.0 */
+	background: -o-linear-gradient(right,  #5ECCFC, #29AEE7); /* Opera 11.1 - 12.0 */
+	background: -moz-linear-gradient(right,  #5ECCFC, #29AEE7); /* Firefox 3.6 - 15 */
 }
 a{
 	color: #fff;
@@ -37,4 +47,22 @@ a{
 }
 .right{
 	float: right;
+}
+/************************底部导航***************************/
+.mui-bar.mui-bar-tab a{
+	float: left;
+	width: 25%;
+	color:#999;
+	text-align: center;
+	font-size: 1rem;
+}
+.clearfloat{
+	display: block;
+	clear:both;
+}
+.col-ye{
+	color: #febe20;
+}
+.col-red{
+	color: #FF3334;
 }

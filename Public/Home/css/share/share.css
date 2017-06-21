@@ -1,22 +1,22 @@
 .pad{
-	padding: 5px 10px;
+	padding: 2rem 1rem;
 	text-align: center;
 }
 .pad img{
-	width:80%
-	height:80%;
-	margin-top: 10px;
+	width:16.2rem;
+	height:16.2rem;
+	margin-top: 3.5rem;
 }
 .pad button{
-	width:15rem;
-	height:5rem;
+	width:14rem;
+	height:4rem;
 	border:none;
-	border-radius: 2.5rem;
+	border-radius: 2rem;
 	background-color: #FF0000;
 	color: #fff;
-	font-size: 2rem;
+	font-size: 1.5rem;
 	font-weight:600;
-	margin-top: 20px;
+	margin-top: 1.5rem;
 }
 .pad span{
 	display: block;
@@ -30,10 +30,13 @@
 	width: 20%;
 	text-align: center;	
 }
+.pad p img{
+	margin-top: 2rem;
+}
 .clear{
 	clear:both;
 }
 .pad p img{
-	width: 4.5rem;
-	height: 4.5rem;
+	width: 4rem;
+	height: 4rem;
 }

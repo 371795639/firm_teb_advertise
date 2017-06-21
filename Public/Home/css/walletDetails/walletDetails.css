@@ -1,6 +1,4 @@
-/*.mui-content{
-	padding-top:34px ;
-}*/
+
 .gradient{
 	padding: 10px 0;
 }
@@ -13,13 +11,15 @@
 	color: #fff;
 }
 #profit{
-	padding: 15px;
-	height: 100px;
+	/*padding:0.3rem 1.5rem;*/
+	height: 8rem;
+	margin-top: 1.4rem;
 }
 #profit div{
 	width: 50%;
-	height: 70px;
+	height: 6rem;
 	text-align: center;
+	background: #fff;
 	
 }
 #profit p{
@@ -27,6 +27,9 @@
 }
 #profit .right{
 	float: right;
+}
+#profit .right h3{
+	color: #333;
 }
 .mui-navigate-right:after, .mui-push-left:after, .mui-push-right:after{
 	color: #6AD0F1;

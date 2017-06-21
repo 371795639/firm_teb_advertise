@@ -2,9 +2,6 @@
 	height:9rem;
 	padding: 0;
 }
-.right{
-	float: right;
-}
 .right img{
 	width: 8rem;
 	height: 8rem;
@@ -19,18 +16,31 @@
 	font-size: 2rem;
 }
 .mui-input-row>.mui-input{
-	/*margin-right: -40px;*/
 	width: calc(65% - 40px);
 	float: left;
 }
  .mui-input-row{
-	padding: 10px 10px;
-	height: 60px;
+	padding: 10px ;
+	height: 40px;
 }
 #btn{
 	display: block;
 	width: 80%;
 	height: 40px;
 	margin: 20px auto;
+	color: #FFF;
+	font-size: 1.5rem;
 }
-
+.mui-input-row img{
+	vertical-align: middle;
+	height: 1.3rem;
+	width: 1.6rem;
+	margin-top: 12px;
+}
+.mui-input-row{
+	border-bottom: 1px solid #ddd;
+	background: #FFF;
+}
+.border-top{
+	border-top: 1px solid #ddd;
+}
