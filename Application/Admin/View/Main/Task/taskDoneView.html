@@ -1,0 +1,68 @@
+<extend name="Public/base"/>
+
+<block name="body">
+    <div class="main-title">
+        <h2>查看已完成的任务</h2>
+    </div>
+    <div class="data-table table-striped">
+        <table>
+            <tr>
+                <td>用户ID：</td>
+                <td>{$resTaskDone['uid']}</td>
+            </tr>
+            <tr>
+                <td>用户名：</td>
+                <td>{$staff['staff_name']}</td>
+            </tr>
+            <tr>
+                <td>用户真实姓名：</td>
+                <td>{$staff['staff_real']}</td>
+            </tr>
+            <tr>
+                <td>用户手机号：</td>
+                <td>{$staff['mobile']}</td>
+            </tr>
+            <tr>
+                <td>用户游戏ID：</td>
+                <td>{$staff['game_id']}</td>
+            </tr>
+            <tr>
+                <td>任务名称：</td>
+                <td>{$resTask['name']}</td>
+            </tr>
+            <tr>
+                <td>任务类型：</td>
+                <td>
+                    <if condition="$resTask['type'] eq 1"> 基本任务
+                    <else/> 额外任务
+                    </if>
+                </td>
+            </tr>
+            <tr>
+                <td>任务指标：</td>
+                <td>{$resTask['inneed']}</td>
+            </tr>
+            <tr>
+                <td>任务金额：</td>
+                <td>{$resTask['money']}</td>
+            </tr>
+            <tr>
+                <td>任务领取时间：</td>
+                <td>{$resTaskDone['get_time']}</td>
+            </tr>
+            <tr>
+                <td>任务完成时间：</td>
+                <td>{$resTaskDone['done_time']}</td>
+            </tr>
+        </table>
+    </div><br>
+    <div class="form-item">
+        <label class="item-label"></label>
+        <div class="controls">
+            <button class="btn btn-return" onclick="javascript:history.back(-1);return false;">返&nbsp;&nbsp;&nbsp;&nbsp;回</button>
+        </div>
+    </div>
+</block>
+<block name="script">
+    <script language="javascript" type="text/javascript" src="__STATIC__/My97DatePicker/WdatePicker.js"></script>
+</block>

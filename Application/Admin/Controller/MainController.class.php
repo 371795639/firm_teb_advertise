@@ -424,9 +424,47 @@ class MainController extends AdminController {
 
     /**已完成任务**/
     public function taskDone(){
-
+        $dbTask     = D('Task');
+        $dbTaskDone = D("TaskDone");
+        $uid = I('uid');
+        if($uid) {
+            $map['id|uid|task_id'] = $uid;
+        }
+        $resTaskDone = $this -> lists($dbTaskDone,$map);
+        foreach($resTaskDone as $k => $v){
+            $task_id = $resTaskDone[$k]['task_id'];
+            $resTask = $dbTask -> get_task_by_id($task_id);
+            $resTaskDone[$k]['name']    = $resTask['name'];
+            $resTaskDone[$k]['money']   = $resTask['money'];
+            $resTaskDone[$k]['type']    = $resTask['type'];
+        }
+        $this->assign('resTaskDone',$resTaskDone);
         $this->meta_title = '已完成任务';
         $this->display('Main/task/taskDone');
+    }
+
+
+    /**查看已完成任务**/
+    public function taskDoneView(){
+        $dbTask     = D('Task');
+        $dbStaff    = D('Staff');
+        $dbTaskDone = D("TaskDone");
+        $id = I('id');
+        $resTaskDone = $dbTaskDone -> get_done_by_id($id);
+        $resStaff = $dbStaff -> msg_find($resTaskDone['uid']);
+        $staff = array(
+            'staff_name'    => $resStaff['staff_name'],
+            'staff_real'    => $resStaff['staff_real'],
+            'mobile'        => $resStaff['mobile'],
+            'game_id'       => $resStaff['game_id'],
+        );
+        $resTask = $dbTask -> get_task_by_id($resTaskDone['task_id']);
+        $this->assign('resTaskDone',$resTaskDone);
+        $this->assign('staff',$staff);
+        $this->assign('resTask',$resTask);
+        $this->meta_title = '查看已完成任务';
+        $this->display('Main/task/taskDoneView');
+
     }
 
 
