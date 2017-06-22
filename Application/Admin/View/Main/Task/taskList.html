@@ -57,7 +57,7 @@
                         <td>{$vo.inneed}</td>
                         <td>{$vo.money}</td>
                         <td>
-                            <if condition="$vo.create_time eq null"> -
+                            <if condition="$vo.create_time eq 0"> -
                                 <else/>{$vo.create_time}
                             </if>
                         </td>

@@ -290,6 +290,7 @@ class MainController extends AdminController {
                 $new = $resTask[$k]['id'];
                 $data['task_id']= $resTask[$k]['id'];
                 $data['name']   = $resTask[$k]['name'];
+                $data['type']   = $resTask[$k]['type'];
                 if($resTask[$k]['status'] == 0){    //避免重复发布
                     $resTaskWeekly  = $dbTaskWeekly -> add($data);
                     $result = $dbTask -> save_task_by_id($new, $date);

@@ -54,17 +54,17 @@
                             <td>{$vo.inneed}</td>
                             <td>{$vo.money}</td>
                             <td>
-                                <if condition="$vo.post_time eq null"> -
+                                <if condition="$vo.post_time eq 0"> -
                                     <else/>{$vo.post_time}
                                 </if>
                             </td>
                             <td>
-                                <if condition="$vo.start_time eq null"> -
+                                <if condition="$vo.start_time eq 0"> -
                                     <else/>{$vo.start_time}
                                 </if>
                             </td>
                             <td>
-                                <if condition="$vo.end_time eq null"> -
+                                <if condition="$vo.end_time eq 0"> -
                                     <else/>{$vo.end_time}
                                 </if>
                             </td>

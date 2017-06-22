@@ -69,46 +69,51 @@
 			<div class="model">
 				<p><img src="/Public/Home/img/imgRed.png"/></p>
 				<p>日常任务</p>
-                <notempty name="taskWeekly">
-				<p class="small">
-					本周内全部完成并交付，预计收益5000元
-					<button id="" class="right geted" onclick="gotaskOfficeDetail()">已领取</button>
-				</p>
-				<ul class="mui-table-view">
-                    <volist name="taskWeekly" id="vo">
-                        <if condition="$vo.type eq 1">
-                            <li class="mui-table-view-cell">{$vo.name}
-                                <span class="right col-ye">{$vo.money}<img src="/Public/Home/img/money.png"/> </span>
-                            </li>
-                        </if>
-                    </volist>
-                    <else /> 暂时没有任务哦。
-				</ul>
+                <notempty name="weeklyTypeOne">
+                    <p class="small">
+                        本周内全部完成并交付，预计收益5000元
+                        <button id="btn1" href="javascript:;" url="{:U('Home/Task/taskOfficeDetail',array('method'=>'daily'))}">
+                            <if condition="$weeklyTypeOne.status eq 1"><span class="right geted">进行中-{$weeklyTypeOne.status}</span>
+                                <else /><span class="right get">未领取-{$weeklyTypeOne.status}</span>
+                            </if>
+                        </button>
+                    </p>
+                    <ul class="mui-table-view">
+                        <volist name="weeklyTypeOne" id="vo">
+                            <if condition="$vo.type eq 1">
+                                <li class="mui-table-view-cell">{$vo.name}
+                                    <span class="right col-ye">{$vo.money}<img src="/Public/Home/img/money.png"/></span>
+                                </li>
+                            </if>
+                        </volist>
+                        <else /> 暂时没有待做任务哦。
+                    </ul>
                 </notempty>
 			</div>
 			<!--额外-->
 			<div class="model">
 				<p><img src="/Public/Home/img/imgYello.png"/></p>
 				<p>额外任务【完成日常任务以后才能领取】</p>
-                <notempty name="taskWeekly">
+                <notempty name="weeklyTypeTwo">
                     <p class="small">
                         本周内全部完成并交付，预计收益5000元
                     </p>
                     <ul class="mui-table-view">
-                        <volist name="taskWeekly" id="vo">
+                        <volist name="weeklyTypeTwo" id="vo">
                             <if condition="$vo.type eq 2">
                                 <li class="mui-table-view-cell">{$vo.name}
-                                    <button id="" class="right geted">领取</button>
-                                    <span class="right col-ye">{$vo.money}<img src="/Public/Home/img/money.png"/> </span>
+                                    <button id="btn2" class="right geted" href="javascript:;" url="{:U('Home/Task/taskOfficeDetail',array('method'=>'extra'))}">领取</button>
+                                    <span class="right col-ye">{$vo.money}<img src="/Public/Home/img/money.png"/></span>
                                 </li>
                             </if>
                         </volist>
-                        <else /> 暂时没有任务哦。
+                        <else /> 暂时没有待做任务哦。
                     </ul>
                 </notempty>
 			</div>
 		</div>
 		<script src="/Public/Home/js/mui.min.js"></script>
+        <script src="__STATIC__/thinkbox/jquery.thinkbox.js"></script>
 		<script>
 			mui.init({
 				swipeBack:true //启用右滑关闭功能	
@@ -116,6 +121,30 @@
 			function gotaskOfficeDetail(){
                     mui.openWindow("/Home/task/taskOfficeDetail");
 			}
+            $("#btn1").click(function(){
+                var url = $(this).attr('url');
+                var query  = $('.model').find('input').serialize();
+                query = query.replace(/(&|^)(\w*?\d*?\-*?_*?)*?=?((?=&)|(?=$))/g,'');
+                query = query.replace(/^&/g,'');
+                if( url.indexOf('?')>0 ){
+                    url += '&' + query;
+                }else{
+                    url += '?' + query;
+                }
+                window.location.href = url;
+            });
+            $("#btn2").click(function(){
+                var url = $(this).attr('url');
+                var query  = $('.model').find('input').serialize();
+                query = query.replace(/(&|^)(\w*?\d*?\-*?_*?)*?=?((?=&)|(?=$))/g,'');
+                query = query.replace(/^&/g,'');
+                if( url.indexOf('?')>0 ){
+                    url += '&' + query;
+                }else{
+                    url += '?' + query;
+                }
+                window.location.href = url;
+            });
 		</script>	
 	</body>
 </html>
