@@ -970,3 +970,15 @@ function v($str){
     var_dump($str);
     echo '</pre></div>';
 }
+
+
+/**
+ * 打印最近使用的SQL语句
+ * @param $model
+ */
+function ps($model){
+    $re = $model -> _sql();
+    p($re);
+}
+
+

@@ -18,7 +18,7 @@ class UserController extends HomeController {
 
 	/* 用户中心首页 */
 	public function index(){
-		
+		$this -> display();
 	}
 
 	/* 注册页面 */

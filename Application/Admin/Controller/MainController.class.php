@@ -271,10 +271,10 @@ class MainController extends AdminController {
         $dbTask = D('Task');
         $dbTaskWeekly = M('TaskWeekly');
         date_default_timezone_set('PRC');
-        // Begin: the 3 line codes below are for getting next Monday 2:00 am and next Sunday 11:59:59 pm
+        // Begin: the 3 line codes below are for getting next Monday 2:00 am and next Sunday 23:59:59
         $start_time = date('Y-m-d 02:00:00',strtotime('Monday'));  //TODO 待定
         $ss = strtotime($start_time);
-        $end_time = date('Y-m-d 11:59:59',strtotime('Sunday',$ss));
+        $end_time = date('Y-m-d 23:59:59',strtotime('Sunday',$ss));
         $data = array(
             'start_time'=> $start_time,
             'end_time'  => $end_time,

@@ -30,7 +30,7 @@ class TaskWeeklyModel extends Model{
     public function get_weekly_by_time(){
         $start_time = date('Y-m-d 02:00:00',strtotime('Monday'));  //TODO 待定
         $ss = strtotime($start_time);
-        $end_time = date('Y-m-d 11:59:59',strtotime('Sunday',$ss));
+        $end_time = date('Y-m-d 23:59:59',strtotime('Sunday',$ss));
         $re = $this -> where(array('start_time'=>$start_time,'end_time'=>$end_time)) -> select();
         if($re){
             return $re;
