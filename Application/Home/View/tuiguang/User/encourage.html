@@ -38,7 +38,7 @@
 				<div id="item1" class="mui-control-content mui-active">					
 					<ul class="mui-table-view">
 						<volist name="taskReward" id="vo">
-						<li class="mui-table-view-cell">任务奖励<span class="right">{$vo.base_money}</span> </li>
+						<li class="mui-table-view-cell">{$vo.base_money}<span class="right">{$vo.create_time}</span> </li>
 						</volist>
 					</ul>
 				</div>
@@ -50,7 +50,7 @@
 				<div id="item2" class="mui-control-content">
 					<ul class="mui-table-view">
 						<volist name="spreadReward" id="vo">
-						<li class="mui-table-view-cell">推广奖励<span class="right">{$vo.base_money}</span> </li>
+						<li class="mui-table-view-cell">{$vo.base_money}<span class="right">{$vo.create_time}</span> </li>
 						</volist>
 					</ul>
 				</div>
@@ -62,7 +62,7 @@
 				<div id="item3" class="mui-control-content">
 					<ul class="mui-table-view">
 						<volist name="bonusReward" id="vo">
-				        <li class="mui-table-view-cell">游戏分红<span class="right">{$vo.base_money}</span> </li>
+				        <li class="mui-table-view-cell">{$vo.base_money}<span class="right">{$vo.create_time}</span> </li>
 						</volist>
 					</ul>
 				</div>

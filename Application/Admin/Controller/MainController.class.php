@@ -75,7 +75,7 @@ class MainController extends AdminController {
         }
         $xlsData = $dbStaff -> get_all_msg($field,$map);
         foreach ($xlsData as $k => $v) {
-            $xlsData[$k]['create_time'] = $v['create_time'] == 0 ? '-' : date("Y-m-d H:i",$v['create_time']);
+            $xlsData[$k]['create_time'] = $v['create_time'] == 0 ? '-' : $v['create_time'];
             $xlsData[$k]['status']      = $v['status']      == 1 ? '正常' : '禁用';
         }
         switch (strtolower($method)){

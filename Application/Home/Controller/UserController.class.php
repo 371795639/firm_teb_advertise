@@ -107,18 +107,21 @@ class UserController extends HomeController {
 
     /* 奖励中心 */
     public function encourage(){
-        //任务奖励
         $dbReward  = M('reward');
         $userid    = $_SESSION['userid'];
-        $taskReward = $dbReward->where(array('uid' => $userid , 'type' => 2))->select();
-        $this->assign('taskReward',$taskReward);
-        /* 推荐奖励 */
-        $spreadReward = $dbReward->where(array('uid' => $userid , 'type' => 3))->select();
-        $this->assign('spreadReward',$spreadReward);
-        /* 游戏分红 */
+        //游戏分红
         $bonusReward = $dbReward->where(array('uid' => $userid , 'type' => 1))->select();
+        //任务奖励
+        $taskReward = $dbReward->where(array('uid' => $userid , 'type' => 2))->select();
+        //推荐奖励
+        $map['create_time'] = array('EGT',date('Y-m-d 00:00:00'));
+        $map['uid'] = array('EQ',$userid);
+        $map['type'] = array('EQ',3);
+        $spreadReward = $dbReward->where($map)->select();
+        //输出模板
         $this->assign('bonusReward',$bonusReward);
-
+        $this->assign('taskReward',$taskReward);
+        $this->assign('spreadReward',$spreadReward);
         $this->display();
     }
 

@@ -56,8 +56,8 @@
                             <td>{$vo.money}</td>
                             <td>{$vo.consume_coin}</td>
                             <td>
-                                <if condition="$vo.create_time eq null"> -
-                                    <else/>{$vo.create_time|time_format}
+                                <if condition="$vo.create_time eq 0"> -
+                                    <else/>{$vo.create_time}
                                 </if>
                             </td>
                             <td><if condition="$vo.status eq 1"> 正常

@@ -72,11 +72,7 @@
                 <notempty name="weeklyTypeOne">
                     <p class="small">
                         本周内全部完成并交付，预计收益{$moneyOne}元
-                        <a id="btn1"  href="{:U('Home/Task/taskOfficeDetail')}">
-                            <if condition="$weeklyTypeOne.status eq 1"><span class="right geted">进行中</span>
-                                <else /><span class="right get">未领取</span>
-                            </if>
-                        </a>
+                        <a id="btn1"  href="{:U('Home/Task/taskOfficeDetail',array('method'=>'daily'))}">{$daily}</a>
                     </p>
                     <ul class="mui-table-view">
                         <volist name="weeklyTypeOne" id="vo">
@@ -102,7 +98,7 @@
                         <volist name="weeklyTypeTwo" id="vo">
                             <if condition="$vo.type eq 2">
                                 <li class="mui-table-view-cell">{$vo.name}
-                                    <button id="btn2" class="right geted" href="javascript:;" url="{:U('Home/Task/taskOfficeDetail',array('method'=>'extra'))}">领取</button>
+                                    <a id="btn2" class="right geted" href="{:U('Home/Task/taskOfficeDetail',array('task_id'=>$vo['task_id'],'method'=>'extra'))}">领取</a>
                                     <span class="right col-ye">{$vo.money}<img src="/Public/Home/img/money.png"/></span>
                                 </li>
                             </if>
@@ -113,7 +109,6 @@
 			</div>
 		</div>
 		<script src="/Public/Home/js/mui.min.js"></script>
-        <script src="__STATIC__/thinkbox/jquery.thinkbox.js"></script>
 		<script>
 			mui.init({
 				swipeBack:true //启用右滑关闭功能	
