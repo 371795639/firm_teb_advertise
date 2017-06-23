@@ -71,7 +71,7 @@
 				<p>日常任务</p>
                 <notempty name="weeklyTypeOne">
                     <p class="small">
-                        本周内全部完成并交付，预计收益5000元
+                        本周内全部完成并交付，预计收益{$moneyOne}元
                         <a id="btn1"  href="{:U('Home/Task/taskOfficeDetail')}">
                             <if condition="$weeklyTypeOne.status eq 1"><span class="right geted">进行中</span>
                                 <else /><span class="right get">未领取</span>
@@ -96,7 +96,7 @@
 				<p>额外任务【完成日常任务以后才能领取】</p>
                 <notempty name="weeklyTypeTwo">
                     <p class="small">
-                        本周内全部完成并交付，预计收益5000元
+                        本周内全部完成并交付，预计收益{$moneyTwo}元
                     </p>
                     <ul class="mui-table-view">
                         <volist name="weeklyTypeTwo" id="vo">

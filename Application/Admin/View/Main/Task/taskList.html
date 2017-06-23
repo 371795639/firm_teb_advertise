@@ -3,91 +3,142 @@
     <div class="main-title">
         <h2>任务列表</h2>
     </div>
-    <form action="" method="post">
-        <div class="data-table table-striped">
-             <table>
-                 <div class="text-right">
-                    ID： <input type="text" class="text input-small"/>
-                    名称：<input type="text" class="text input-small"/>
-                    类型：
-                    <select name="" id="">
-                        <option value="">11111</option>
-                        <option value="">22222</option>
-                    </select>
-                    <button class="btn ajax-post">搜索</button>
-                    <button class="btn ajax-post">导出</button>
-                 </div>
-                 <thead>
+    <div class="cf">
+        <div class="fl">
+            <a class="btn" href="{:U('Main/taskAdd')}">新 增</a>
+            <button class="btn ajax-post confirm" url="{:U('Main/changeStatus',array('method'=>'deleteUser','dbname'=>'Task'))}" target-form="ids">删 除</button>
+            <button class="btn ajax-post" url="{:U('Main/taskPost',array('abc'=>'2'))}" target-form="ids">发 布</button>
+        </div>
+        <div class="search-form fr cf">
+            <div class="sleft">
+                <select name="type" id="type">
+                    <option value="">任务类型</option>
+                    <option value="1" <eq name="type.value" value="1">selected</eq> >基本任务</option>
+                    <option value="2" <eq name="type.value" value="2">selected</eq> >额外任务</option>
+                </select>
+                <input type="text" class="search-input" onClick="WdatePicker()" name="start_time" style="cursor: pointer;" value="{:I('start_time')}" placeholder="时间/始" />
+                <input type="text" class="search-input" onClick="WdatePicker()" name="end_time" style="cursor: pointer;" value="{:I('end_time')}" placeholder="时间/终" />
+                <input type="text" name="task_name" class="search-input" value="{:I('task_name')}" placeholder="请输入任务名称或者ID">
+                <a class="btn" href="javascript:;"  url="{:U('Main/taskList',array('method'=>'list'))}" id="search">搜索</a>
+                <a class="btn" href="javascript:;"  url="{:U('Main/taskList',array('method'=>'out'))}" id="out">导出</a>
+            </div>
+        </div>
+    </div>
+    <!-- 数据列表 -->
+    <div class="data-table table-striped">
+        <table>
+            <thead>
+            <tr>
+                <th class="row-selected row-selected"><input class="check-all" type="checkbox"/></th>
+                <th class="text-center">任务ID</th>
+                <th class="text-center" style="width:20%">任务名称</th>
+                <th class="text-center">任务类型</th>
+                <th class="text-center">任务指标</th>
+                <th class="text-center">任务金额</th>
+                <th class="text-center">创建时间</th>
+                <th class="text-center">发布人</th>
+                <th class="text-center">状态</th>
+                <th class="text-center">操作</th>
+            </tr>
+            </thead>
+            <tbody class="text-center">
+            <notempty name="resTask">
+                <volist name="resTask" id="vo">
                     <tr>
-                        <th></th>
-                        <th>编号</th>
-                        <th>任务ID</th>
-                        <th>任务名称</th>
-                        <th>任务类型</th>
-                        <th>任务指标</th>
-                        <th>任务周期</th>
-                    </tr>
-                 </thead>
-                 <tbody>
-                    <tr>
-                        <td rowspan="2" class="rowspan2">分享类任务</td>
-                        <td>1</td>
-                        <td>13888888888</td>
-                        <td>dddd</td>
-                        <td>ffff</td>
+                        <td><input class="ids" type="checkbox" name="id[]" value="{$vo.id}" /></td>
+                        <td>{$vo.id}</td>
+                        <td>{$vo.name}</td>
                         <td>
-                            <label><input type="checkbox" style="width:20px;"> 额外任务</label>
-                            <label style="margin-left:30px ;"><input type="checkbox" style="width:20px;"> 基本任务</label>
-                        </td>
-                        <td>
-<<<<<<< .mine
-                            <span>5.20</span>到
-                            <span>6.20</span>
-||||||| .r1
-                            <if condition="$vo.create_time eq null"> -
-                                <else/>{$vo.create_time}
+                            <if condition="$vo.type eq 1"> 基本任务
+                                <elseif condition="$vo.type eq 2" /> 额外任务
+                                <else/> -
                             </if>
-=======
+                        </td>
+                        <td>{$vo.inneed}</td>
+                        <td>{$vo.money}</td>
+                        <td>
                             <if condition="$vo.create_time eq 0"> -
                                 <else/>{$vo.create_time}
                             </if>
->>>>>>> .r4
+                        </td>
+                        <td>{$vo.tasker}</td>
+                        <td>
+                            <if condition="$vo.status eq 0"> 未发布
+                                <elseif condition="$vo.status eq 1"/> 已发布
+                                <else/> 见鬼了
+                            </if>
+                        </td>
+                        <td>
+                            <if condition="$vo.status eq 3">
+                                    <a href="{:U('Main/taskView',array('id'=>$vo['id']))}"> 查看</a>
+                                <else/>
+                                <a href="{:U('Main/taskEdit',array('id'=>$vo['id']))}">编辑</a>
+                            </if>
+                            |
+                            <if condition="$vo.status eq 0">
+                                <a href="{:U('Main/taskPost',array('id'=>$vo['id'],'abc'=>'1'))}">发布</a>
+                                <else />
+                                已发
+                            </if>
+                            |
+                            <a class="confirm ajax-get" href="{:U('Main/changeStatus',array('method'=>'deleteUser','id'=>$vo['id'],'dbname'=>'Task'))}">删除</a>
                         </td>
                     </tr>
-                    <tr>
-                        <td>1</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <!--垮三列的-->
-                    <tr>
-                        <td rowspan="3" class="rowspan3">充值类任务</td>
-                        <td>1</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    <tr>
-                        <td>1</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                 </tbody>
-            </table>
-        </div>
-    </form>
+                </volist>
+                <else />
+                <td colspan="10" class="text-center"> @_@ 暂时还没有内容哦，快去添加吧。 </td>
+            </notempty>
+            </tbody>
+        </table>
+    </div>
+    <div class="page">
+        {$_page}
+    </div>
+</block>
+<block name="script">
+    <script src="__STATIC__/thinkbox/jquery.thinkbox.js"></script>
+    <script src="__STATIC__/My97DatePicker/WdatePicker.js"></script>
+    <script type="text/javascript">
+        //搜索功能
+        $("#search").click(function(){
+            var url = $(this).attr('url');
+            var query  = $('.search-form').find('input').serialize();
+            var query_select  = $('.search-form').find('select').serialize();
+            query = query.replace(/(&|^)(\w*?\d*?\-*?_*?)*?=?((?=&)|(?=$))/g,'');
+            query = query.replace(/^&/g,'');
+            query_select = query_select.replace(/(&|^)(\w*?\d*?\-*?_*?)*?=?((?=&)|(?=$))/g,'');
+            query_select = query_select.replace(/^&/g,'');
+            if( url.indexOf('?')>0 ){
+                url += '&' + query + '&' + query_select;
+            }else{
+                url += '?' + query + '?' + query_select;
+            }
+            window.location.href = url;
+        });
+        //导出
+        $("#out").click(function(){
+            var url = $(this).attr('url');
+            var query  = $('.search-form').find('input').serialize();
+            var query_select  = $('.search-form').find('select').serialize();
+            query = query.replace(/(&|^)(\w*?\d*?\-*?_*?)*?=?((?=&)|(?=$))/g,'');
+            query = query.replace(/^&/g,'');
+            query_select = query_select.replace(/(&|^)(\w*?\d*?\-*?_*?)*?=?((?=&)|(?=$))/g,'');
+            query_select = query_select.replace(/^&/g,'');
+            if( url.indexOf('?')>0 ){
+                url += '&' + query + '&' + query_select;
+            }else{
+                url += '?' + query + '?' + query_select;
+            }
+            window.location.href = url;
+        });
+        //回车搜索
+        $(".search-input").keyup(function(e){
+            if(e.keyCode === 13){
+                $("#search").click();
+                return false;
+            }
+        });
+        //导航高亮
+        highlight_subnav('{:U('Main/taskList')}');
+    </script>
 </block>

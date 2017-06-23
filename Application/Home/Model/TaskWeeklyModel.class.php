@@ -72,4 +72,14 @@ class TaskWeeklyModel extends Model{
     }
 
 
+    public function get_weekly_money($type){
+        $taskWeekly = $this -> get_weekly_type($type);
+        $money = '';
+        foreach($taskWeekly as $k => $v){
+            $money += $taskWeekly[$k]['money'];
+        }
+        return $money;
+    }
+
+
 }

@@ -15,6 +15,10 @@ class TaskController extends HomeController {
         $dbTaskWeekly = D('TaskWeekly');
         $weeklyTypeOne = $dbTaskWeekly -> get_weekly_type('1');
         $weeklyTypeTwo = $dbTaskWeekly -> get_weekly_type('2');
+        $moneyOne = $dbTaskWeekly -> get_weekly_money('1');
+        $moneyTwo = $dbTaskWeekly -> get_weekly_money('2');
+        $this -> assign('moneyOne',$moneyOne);
+        $this -> assign('moneyTwo',$moneyTwo);
         $this -> assign('weeklyTypeOne',$weeklyTypeOne);
         $this -> assign('weeklyTypeTwo',$weeklyTypeTwo);
         $this -> display();
@@ -35,9 +39,10 @@ class TaskController extends HomeController {
         foreach($weeklyTypeOne as $k => $v){
             $data['task_id']    = $weeklyTypeOne[$k]['task_id'];
             $data['inneed']     = $weeklyTypeOne[$k]['inneed'];
-            $dbTaskDone -> add_done($data);
+//            $dbTaskDone -> add_done($data);
         }
         $this -> assign('weeklyTypeOne',$weeklyTypeOne);
+
 
         //href="{:U('Home/Task/taskOfficeDetail',array('method'=>'extra'))}"
 

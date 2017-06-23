@@ -3,53 +3,60 @@
     <div class="main-title">
         <h2>消息列表</h2>
     </div>
-    <!--时间查询!-->
-    <form action="{:U('Main/notice')}" method="post">
+    <div class="cf">
+        <div class="fl">
+            <a class="btn" href="{:U('Main/noticePost')}">新 增</a>
+        </div>
         <div class="search-form fr cf">
             <div class="sleft">
                 <select name="notice_type" class="form-control">
                     <option value="">选择公告类型</option>
                     <volist name="type" id="vo">
-                        <option value="{$vo.id}">{$vo.notice_type_name}</option>
+                        <option value="{$vo.id}" <eq name="notice_type" value="$vo.id"> selected </eq> >{$vo.notice_type_name}</option>
                     </volist>
                 </select>
-                <input type="text" class="search-input" onClick="WdatePicker()" name="time_start" style="cursor: pointer;" value="{:I('start')}" placeholder="开始日期" />
-                <input type="text" class="search-input" onClick="WdatePicker()" name="time_end" style="cursor: pointer;" value="{:I('end')}" placeholder="结束日期" />
-                <input type="text" name="notice_name" class="search-input" value="{:I('notice_name')}" placeholder="输入公告ID或者公告主题">
-                <button class="submit" style="width: 50px" id="search" ><i class="btn-search"></i></button>
+                <input type="text" class="search-input" onClick="WdatePicker()" name="start_time" style="cursor: pointer;" value="{:I('start_time')}" placeholder="发布时间/始" />
+                <input type="text" class="search-input" onClick="WdatePicker()" name="end_time" style="cursor: pointer;" value="{:I('end_time')}" placeholder="发布时间/止" />
+                <input type="text" name="notice_name" class="search-input" value="{:I('notice_name')}" placeholder="输入公告ID或者主题">
+                <a class="btn" href="javascript:;"  url="{:U('Main/notice',array('method'=>'list'))}" id="search">搜索</a>
+                <a class="btn" href="javascript:;"  url="{:U('Main/notice',array('method'=>'out'))}" id="out">导出</a>
             </div>
         </div>
-    </form>
+    </div>
     <div class="data-table table-striped">
         <table  id="" class="display">
             <thead>
             <tr>
                 <th class="row-selected row-selected"><input class="check-all" type="checkbox"/></th>
-                <th>ID</th>
-                <th>公告类型</th>
-                <th>公告主题</th>
-                <th>发布时间</th>
-                <th>发布IP</th>
-                <th>图片查看</th>
-                <th>公告内容</th>
-                <th>操作</th>
+                <th class="text-center">ID</th>
+                <th class="text-center">公告类型</th>
+                <th class="text-center">公告主题</th>
+                <th class="text-center" style="width:40%">公告内容</th>
+                <th class="text-center">发布IP</th>
+                <th class="text-center">图片查看</th>
+                <th class="text-center">发布时间</th>
+                <th class="text-center">发布人</th>
+                <th class="text-center">操作</th>
             </tr>
             </thead>
-            <tbody>
-            <volist name="notice" id="vo">
+            <tbody class="text-center">
+            <volist name="resNotice" id="vo">
                 <tr>
                     <td><input class="ids" type="checkbox" name="id[]" value="{$vo.id}" /></td>
                     <td>{$vo.id}</td>
-                    <td>{$vo.type.notice_type_name}</td>
+                    <td>{$vo.notice_type_name}</td>
                     <td>{$vo.notice_title}</td>
-                    <td>{$vo.create_time|time_format}</td>
+                    <td><a title="点击“编辑”可查看详情" style="color:black;">{$vo.n_content}</a></td>
                     <td>{$vo.create_ip}</td>
-                    <td><a href="{$vo.img_url}">图片查看</a></td>
-                    <td>{$vo.notice_content}</td>
+                    <td>
+                        <a href="{$vo.img_url}" target="_blank">图片查看</a>
+                    </td>
+                    <td>{$vo.create_time|time_format}</td>
+                    <td>{$vo.poster}</td>
                     <td>
                         <a href="{:U('Main/noticeEdit',array('id'=>$vo['id']))}">编辑</a>
                         |
-                        <a href="{:U('Main/noticeDelete',array('id'=>$vo['id']))}">删除</a>
+                        <a class="confirm ajax-get" href="{:U('Main/noticeDelete',array('id'=>$vo['id']))}">删除</a>
                     </td>
                 </tr>
             </volist>
@@ -62,5 +69,49 @@
 </block>
 
 <block name="script">
+    <script src="__STATIC__/thinkbox/jquery.thinkbox.js"></script>
     <script language="javascript" type="text/javascript" src="__STATIC__/My97DatePicker/WdatePicker.js"></script>
+    <script type="text/javascript">
+        //搜索功能
+        $("#search").click(function(){
+            var url = $(this).attr('url');
+            var query  = $('.search-form').find('input').serialize();
+            var query_select  = $('.search-form').find('select').serialize();
+            query = query.replace(/(&|^)(\w*?\d*?\-*?_*?)*?=?((?=&)|(?=$))/g,'');
+            query = query.replace(/^&/g,'');
+            query_select = query_select.replace(/(&|^)(\w*?\d*?\-*?_*?)*?=?((?=&)|(?=$))/g,'');
+            query_select = query_select.replace(/^&/g,'');
+            if( url.indexOf('?')>0 ){
+                url += '&' + query + '&' + query_select;
+            }else{
+                url += '?' + query + '?' + query_select;
+            }
+            window.location.href = url;
+        });
+        //导出
+        $("#out").click(function(){
+            var url = $(this).attr('url');
+            var query  = $('.search-form').find('input').serialize();
+            var query_select  = $('.search-form').find('select').serialize();
+            query = query.replace(/(&|^)(\w*?\d*?\-*?_*?)*?=?((?=&)|(?=$))/g,'');
+            query = query.replace(/^&/g,'');
+            query_select = query_select.replace(/(&|^)(\w*?\d*?\-*?_*?)*?=?((?=&)|(?=$))/g,'');
+            query_select = query_select.replace(/^&/g,'');
+            if( url.indexOf('?')>0 ){
+                url += '&' + query + '&' + query_select;
+            }else{
+                url += '?' + query + '?' + query_select;
+            }
+            window.location.href = url;
+        });
+        //回车搜索
+        $(".search-input").keyup(function(e){
+            if(e.keyCode === 13){
+                $("#search").click();
+                return false;
+            }
+        });
+        //导航高亮
+        highlight_subnav("{:U('Main/taskList')}");
+    </script>
 </block>

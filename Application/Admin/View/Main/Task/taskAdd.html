@@ -6,26 +6,22 @@
     </div>
     <form method="post" class="form-horizontal">
         <div class="form-item">
-            <label class="item-label">任务名称 <span class="check-tips">（输入任务名称）</span></label>
+            <label class="item-label">任务名称 <span class="check-tips">（请输入任务名称）</span></label>
             <div class="controls">
                 <input type="text" class="text input-large" name="name" value="">
             </div>
             <label class="item-label">任务类型<span class="check-tips">（下拉选择任务类型）</span></label>
             <select class="form-control" name="type">
-                <option value="0">基本任务</option>
-                <option value="1">额外任务</option>
+                <option value="1">基本任务</option>
+                <option value="2">额外任务</option>
             </select>
-            <label class="item-label">任务指标<span class="check-tips">（输入任务指标）</span></label>
+            <label class="item-label">任务指标<span class="check-tips">（请输入任务指标）</span></label>
             <div class="controls">
                 <input type="text" class="text input-large" name="inneed" value="">
             </div>
-            <label class="item-label">开始时间<span class="check-tips">（选择任务的开始时间）</span></label>
+            <label class="item-label">任务金额<span class="check-tips">（请输入任务金额）</span></label>
             <div class="controls">
-                <input type="text" onClick="WdatePicker()" name="start_time" style="cursor: pointer;" value=""/>
-            </div>
-            <label class="item-label">结束时间<span class="check-tips">（选择任务的结束时间）</span></label>
-            <div class="controls">
-                <input type="text" onClick="WdatePicker()" name="end_time" style="cursor: pointer;"  value=""/>
+                <input type="text" class="text input-large" name="money" value="">
             </div>
         </div>
         <div class="form-item">

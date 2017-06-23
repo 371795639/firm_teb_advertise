@@ -11,27 +11,6 @@ class FeedController extends AdminController {
         $db_admin = M('member');
         $where_msg['mid'] = 0;
         $where_msg['status'] = array('lt',3);
-
-        /*
-        $count = $db_msg-> where($where_msg) -> count();
-        $Page = new \Think\Page($count, 20);
-        foreach ($_POST as $key => $val) {
-            $Page->parameter[$key] = urlencode($val);
-        }
-        $show = $Page->show();
-        $res_msg = $db_msg->order('id DESC')->limit($Page->firstRow . ',' . $Page->listRows)-> where($where_msg) -> select();
-||||||| .r8
-        $count = $db_msg-> where($where_msg) -> count();
-        $Page = new \Think\Page($count, 20);
-        foreach ($_POST as $key => $val) {
-            $Page->parameter[$key] = urlencode($val);
-        }
-        $show = $Page->show();
-        $res_msg = $db_msg->order('id DESC')->limit($Page->firstRow . ',' . $Page->listRows)-> where($where_msg) -> select();
-=======
-        $res_msg = $this -> lists($db_msg,$where_msg);
->>>>>>> .r30
-        */
         $res_msg = $this -> lists($db_msg,$where_msg);
         foreach($res_msg as $k => $v){
             $where['admin_id'] = session('user_auth')['uid'];
@@ -44,12 +23,6 @@ class FeedController extends AdminController {
             }
         }
         $this->assign('msg', $res_msg);
-<<<<<<< .mine
-//        $this->assign('_page', $show);
-||||||| .r8
-        $this->assign('_page', $show);
-=======
->>>>>>> .r30
         $this->meta_title = '反馈列表';
         $this->display('main/feed/index');
     }
@@ -102,7 +75,7 @@ class FeedController extends AdminController {
             $res_re[$k]['cid'] = I('id');
         }
         $total = array_merge($res_msg,$res_re);
-        array_multisort(array_column($total,'create_time'),SORT_ASC,$total);   //将合并数组按照create_time升序排列
+        array_multisort(array_column($total,'create_time'),SORT_ASC,$total);   //将合并的数组按照create_time升序排列
         $this->assign('total',$total);
         $this->meta_title = '反馈详情';
         $this->display('main/feed/feedRe');
