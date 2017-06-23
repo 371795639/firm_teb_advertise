@@ -1,0 +1,72 @@
+.mui-segmented-control .mui-control-item.mui-active{
+	color: #FFF !important;
+	background-color:#52c6f9 ;
+	border-radius:2rem;
+}
+.mui-segmented-control .mui-control-item{
+	display: inline-block;
+	color: #52c6f9 !important;
+	line-height: 3rem;
+	border-color: none;
+	border-left: none;
+	color: #000;
+	width:7.8rem !important;
+	border: 1px solid #CCCCCC;
+	border-radius: 1.5rem;	
+	box-shadow:3px 3px 3px rgba(204,204,204, 0.55); 
+	-moz-box-shadow:3px 3px 3px rgba(204,204,204,0.55); 
+	-webkit-box-shadow:3px 3px 3px rgba(204,204,204, 0.55);	
+}
+.mui-segmented-control{
+	border: transparent;
+}
+/**********************列表样式**************************/
+.mui-control-content{
+	background: #fff;
+	
+}
+.mui-control-content ul{
+	list-style: none;
+}
+
+.mui-control-content ul li{
+	border-bottom:1px solid #e8e8e8 ;
+	padding: 0 1.5rem;
+}
+.mui-control-content ul li:first-child{
+	border-top:1px solid #e8e8e8 ;
+}
+.mui-control-content .right{
+	height: 5rem;
+	line-height: 5rem;
+	width:7.5rem;
+	display: inline-block;
+	font-size: 1.6rem;
+	text-align: right;
+}
+.mui-control-content .left{
+	height: 5rem;
+	font-size: 1.6rem;
+	width:calc(100% -7rem);
+	display: inline-block;
+	padding: 0.7rem 0;
+}
+.mui-control-content .left span{
+	display: block;
+	font-size: 1.6rem;
+}
+.mui-control-content .time{
+	font-size: 1.3rem !important;
+	color: #ccc;
+}
+#list{
+	margin-top: 14px;
+}
+/*************************选像卡********************************/
+.inline{
+	display: inline-block;
+	width: 33.3%;
+	text-align: center;
+	padding: 0;
+	margin: 0;
+}

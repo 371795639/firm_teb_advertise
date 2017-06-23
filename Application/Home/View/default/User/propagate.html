@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>兔尔宝</title>
+    <link href="../../css/mui.css" rel="stylesheet"/>
+    <!--自定义样式-->
+    <link rel="stylesheet" href="__STATIC__/css/mui.min.css" />
+    <link rel="stylesheet" type="text/css" href="__STATIC__/css/common/common.css"/>
+    <style type="text/css">
+    	.mui-content{
+    		padding-left: 1rem;
+    		padding-right: 1rem;
+    	}
+    	.content{
+    		margin-top: 1rem;
+    		text-align: center;
+		    position: relative;
+    	}
+	    .content video{
+		  	display: block;
+		  	width: 100%;
+		  	height: 100%;
+	    }
+	    .content img {
+		  	position: absolute;
+		  	top: calc( (100% - 4rem)/2);
+		  	left: calc( (100% - 4rem)/2);
+		  	height: 4rem;
+		  	width: 4rem;
+		    cursor: pointer;		
+		    border-radius: 50%;
+		    background: rgba(255,255,255,0.2);
+	    }
+	    #media>p{
+	    	margin-top: 1rem;
+	    }
+	    #media>p>.title{
+	    	
+			color: #333;
+			font-size: 1.8rem;
+			padding-left: 5px;
+			padding-right: 5px;
+	    }
+	    .txt{
+	    	display: block;
+	    	padding-left: 5px;
+			padding-right: 5px;
+			background: #FFF;
+	    }
+    </style>
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav gradient">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left "></a>
+			<h1 class="mui-title">宣传中心</h1>
+		</header>
+		<div class="mui-content ">
+			<div id="media">
+				<div class="content">
+					<video id="player" src="__STATIC__/resource/birds.mp4" controls="controls" >
+				    	您的浏览器不支持H5 VIDEO标签
+				    </video>
+				    <img id="playOrPause" src="__STATIC__/resource/play.png" width="50px">
+				</div>
+				<p>
+					<span class="title txt">标题</span>
+					<span class="txt">
+						Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+					</span>
+				</p>
+			</div>
+		</div>
+		<script src="__STATIC__/js/mui.min.js"></script>
+		<script>
+		  	//当点击“播放|暂停”按钮时，开始播放/暂停影片
+			playOrPause.onclick = function(){
+			    if(player.paused === true){ //当前处于暂停状态
+				    player.play();  //播放影片
+				    playOrPause.src = '__STATIC__/resource/pause.png';
+				    playOrPause.style.display="none";
+			    }else { //当前处于播放状态
+				    player.pause();
+				    playOrPause.src = '__STATIC__/resource/play.png';
+			    }
+			} 
+		</script>
+	</body>
+</html>
+
+

@@ -1,0 +1,42 @@
+.pad{
+	padding: 2rem 1rem;
+	text-align: center;
+}
+.pad img{
+	width:16.2rem;
+	height:16.2rem;
+	margin-top: 3.5rem;
+}
+.pad button{
+	width:14rem;
+	height:4rem;
+	border:none;
+	border-radius: 2rem;
+	background-color: #FF0000;
+	color: #fff;
+	font-size: 1.5rem;
+	font-weight:600;
+	margin-top: 1.5rem;
+}
+.pad span{
+	display: block;
+	width: 100%;
+	text-align: center;
+	color: #A1A1A1;
+	
+}
+.pad p{
+	float: left;
+	width: 20%;
+	text-align: center;	
+}
+.pad p img{
+	margin-top: 2rem;
+}
+.clear{
+	clear:both;
+}
+.pad p img{
+	width: 4rem;
+	height: 4rem;
+}

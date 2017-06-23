@@ -1,0 +1,18 @@
+.mui-segmented-control .mui-control-item.mui-active{
+	color: #FFF;
+	background-color:#52c6f9 ;
+	border-radius: 1.9rem;
+}
+.mui-segmented-control .mui-control-item{
+	border-color: none;
+	border-left: none;
+	color: #000;
+}
+.mui-segmented-control{
+	border: transparent;
+	border-bottom: 1px solid #eaeaea;
+}
+
+.mui-segmented-control .mui-control-item{
+	color: #52c6f9;
+}

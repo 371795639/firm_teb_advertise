@@ -22,7 +22,7 @@ class TaskController extends HomeController {
 
 
     /**领取任务**/
-    public function taskOfficeDetail($method = null){
+    public function taskOfficeDetail(){
         $dbTaskDone = D('TaskDone');
         $dbTaskWeekly = D('TaskWeekly');
         $data = array(
@@ -31,22 +31,17 @@ class TaskController extends HomeController {
             'done_time' => '',  //不可用null，否则无法插入数据
             'status'    => 1,
         );
-        switch($method){
-            case 'daily':
-                $weeklyTypeOne = $dbTaskWeekly -> get_weekly_type('1');
-                foreach($weeklyTypeOne as $k => $v){
-                    $data['task_id']    = $weeklyTypeOne[$k]['task_id'];
-                    $data['inneed']     = $weeklyTypeOne[$k]['inneed'];
-//                    $dbTaskDone -> add_done($data);
-                }
-                echo 123;
-                $this -> assign('weeklyTypeOne',$weeklyTypeOne);
-                break;
-            case 'extra':
-                echo 123;
-                //href="{:U('Home/Task/taskOfficeDetail',array('method'=>'extra'))}"
-                break;
+        $weeklyTypeOne = $dbTaskWeekly -> get_weekly_type('1');
+        foreach($weeklyTypeOne as $k => $v){
+            $data['task_id']    = $weeklyTypeOne[$k]['task_id'];
+            $data['inneed']     = $weeklyTypeOne[$k]['inneed'];
+            $dbTaskDone -> add_done($data);
         }
+        $this -> assign('weeklyTypeOne',$weeklyTypeOne);
+
+        //href="{:U('Home/Task/taskOfficeDetail',array('method'=>'extra'))}"
+
+
 
 
         $this -> display();

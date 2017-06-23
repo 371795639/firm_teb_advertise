@@ -71,7 +71,7 @@
             </div>
         -->
         <br><br>
-        <form action="{:U('admin/feed/feedReing',array('id'=>$res_msg_detail['id'],'status'=>$res_msg_detail['status']))}" method="post">
+        <form action="{:U('admin/feed/feed_reing',array('id'=>$res_msg_detail['id'],'status'=>$res_msg_detail['status']))}" method="post">
             <input type="hidden" name="id" value="{$res_msg_detail.id}">
             <input type="hidden" name="status" value="{$res_msg_detail.status}">
             <textarea  name="content" rows="6" cols="120" placeholder='在这里回复吧'></textarea>

@@ -1,0 +1,36 @@
+
+.gradient{
+	padding: 10px 0;
+}
+.gradient p{
+	text-align: center;
+	color: #fff;
+}
+.gradient h2{
+	text-align: center;
+	color: #fff;
+}
+#profit{
+	/*padding:0.3rem 1.5rem;*/
+	height: 8rem;
+	margin-top: 1.4rem;
+}
+#profit div{
+	width: 50%;
+	height: 6rem;
+	text-align: center;
+	background: #fff;
+	
+}
+#profit p{
+	color:#B3B3B3;
+}
+#profit .right{
+	float: right;
+}
+#profit .right h3{
+	color: #333;
+}
+.mui-navigate-right:after, .mui-push-left:after, .mui-push-right:after{
+	color: #6AD0F1;
+}

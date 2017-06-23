@@ -39,7 +39,7 @@ return array(
 
     /* 数据库配置 */
     'DB_TYPE'   => 'mysqli', // 数据库类型
-    'DB_HOST'   => '192.168.0.136', // 服务器地址
+    'DB_HOST'   => '192.168.0.114', // 服务器地址
     'DB_NAME'   => 'ot_tg', // 数据库名
     'DB_USER'   => 'tuiguang', // 用户名
     'DB_PWD'    => '123456',  // 密码

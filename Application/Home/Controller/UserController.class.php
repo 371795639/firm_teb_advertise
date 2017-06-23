@@ -16,149 +16,137 @@ use User\Api\UserApi;
  */
 class UserController extends HomeController {
 
-	/* 用户中心首页 */
-	public function index(){
-		$this -> display();
-	}
+    /* 完善用户信息 */
+    public function compeleInfo(){
+        if(IS_POST){
+            //解决中文乱码
+            header('Content-Type:text/html;charset=utf-8');
+            $dbStaff = D('staff');
+            $userid = $_SESSION['userid'];
+            $refData = array(
+                'game_id'     => $_POST['gameId'],
+                'card_id'     => $_POST['cardNum'],
+            );
+            //判断是否存在该推荐人以及该手机号是否匹配
+            $refStaffExist = $dbStaff->where(array('staff_real' => $_POST['staffName'] ,'mobile' => $_POST['refPhoneNum']))->find();
+            if($refStaffExist){
+                $refData['referee'] = $refStaffExist['id'];
+                $ref = $dbStaff->where('id='.$userid)->save($refData);
+                if($ref){
+                    $this->success('完善信息成功，正在跳转到个人页面', U('User/index'));exit();
+                }
 
-	/* 注册页面 */
-	public function register($username = '', $password = '', $repassword = '', $email = '', $verify = ''){
-        if(!C('USER_ALLOW_REGISTER')){
-            $this->error('注册已关闭');
+            }
+           else{
+                $this->error('推荐人和手机号不匹配！', U('User/compeleInfo'));
+                //TODO 输出该手机号不存在或者推荐人不存在信息
+           }
         }
-		if(IS_POST){ //注册用户
-			/* 检测验证码 */
-			if(!check_verify($verify)){
-				$this->error('验证码输入错误！');
-			}
-
-			/* 检测密码 */
-			if($password != $repassword){
-				$this->error('密码和重复密码不一致！');
-			}			
-
-			/* 调用注册接口注册用户 */
-            $User = new UserApi;
-			$uid = $User->register($username, $password, $email);
-			if(0 < $uid){ //注册成功
-				//TODO: 发送验证邮件
-				$this->success('注册成功！',U('login'));
-			} else { //注册失败，显示错误信息
-				$this->error($this->showRegError($uid));
-			}
-
-		} else { //显示注册表单
-			$this->display();
-		}
-	}
-
-	/* 登录页面 */
-	public function login($username = '', $password = '', $verify = ''){
-		if(IS_POST){ //登录验证
-			/* 检测验证码 */
-			if(!check_verify($verify)){
-				$this->error('验证码输入错误！');
-			}
-
-			/* 调用UC登录接口登录 */
-			$user = new UserApi;
-			$uid = $user->login($username, $password);
-			if(0 < $uid){ //UC登录成功
-				/* 登录用户 */
-				$Member = D('Member');
-				if($Member->login($uid)){ //登录用户
-					//TODO:跳转到登录前页面
-					$this->success('登录成功！',U('Home/Index/index'));
-				} else {
-					$this->error($Member->getError());
-				}
-
-			} else { //登录失败
-				switch($uid) {
-					case -1: $error = '用户不存在或被禁用！'; break; //系统级别禁用
-					case -2: $error = '密码错误！'; break;
-					default: $error = '未知错误！'; break; // 0-接口参数错误（调试阶段使用）
-				}
-				$this->error($error);
-			}
-
-		} else { //显示登录表单
-			$this->display();
-		}
-	}
-
-	/* 退出登录 */
-	public function logout(){
-		if(is_login()){
-			D('Member')->logout();
-			$this->success('退出成功！', U('User/login'));
-		} else {
-			$this->redirect('User/login');
-		}
-	}
-
-	/* 验证码，用于登录和注册 */
-	public function verify(){
-		$verify = new \Think\Verify();
-		$verify->entry(1);
-	}
-
-	/**
-	 * 获取用户注册错误信息
-	 * @param  integer $code 错误编码
-	 * @return string        错误信息
-	 */
-	private function showRegError($code = 0){
-		switch ($code) {
-			case -1:  $error = '用户名长度必须在16个字符以内！'; break;
-			case -2:  $error = '用户名被禁止注册！'; break;
-			case -3:  $error = '用户名被占用！'; break;
-			case -4:  $error = '密码长度必须在6-30个字符之间！'; break;
-			case -5:  $error = '邮箱格式不正确！'; break;
-			case -6:  $error = '邮箱长度必须在1-32个字符之间！'; break;
-			case -7:  $error = '邮箱被禁止注册！'; break;
-			case -8:  $error = '邮箱被占用！'; break;
-			case -9:  $error = '手机格式不正确！'; break;
-			case -10: $error = '手机被禁止注册！'; break;
-			case -11: $error = '手机号被占用！'; break;
-			default:  $error = '未知错误';
-		}
-		return $error;
-	}
-
-
-    /**
-     * 修改密码提交
-     * @author huajie <banhuajie@163.com>
-     */
-    public function profile(){
-		if ( !is_login() ) {
-			$this->error( '您还没有登陆',U('User/login') );
-		}
-        if ( IS_POST ) {
-            //获取参数
-            $uid        =   is_login();
-            $password   =   I('post.old');
-            $repassword = I('post.repassword');
-            $data['password'] = I('post.password');
-            empty($password) && $this->error('请输入原密码');
-            empty($data['password']) && $this->error('请输入新密码');
-            empty($repassword) && $this->error('请输入确认密码');
-
-            if($data['password'] !== $repassword){
-                $this->error('您输入的新密码与确认密码不一致');
-            }
-
-            $Api = new UserApi();
-            $res = $Api->updateInfo($uid, $password, $data);
-            if($res['status']){
-                $this->success('修改密码成功！');
-            }else{
-                $this->error($res['info']);
-            }
-        }else{
             $this->display();
-        }
     }
+
+    /* 主页面 */
+    public function index(){
+        $dbStaff  = D('staff');
+        $userid   = $_SESSION['userid'];
+        $resStaff = $dbStaff->where('id='.$userid)->find();
+
+        $this->assign('resStaff',$resStaff);
+        $this->display();
+    }
+
+	/* 我的页面 */
+	public function my(){
+        $dbStaff  = D('staff');
+        $userid   = $_SESSION['userid'];
+        $resStaff = $dbStaff->where('id='.$userid)->find();
+
+        $this->assign('resStaff',$resStaff);
+	    $this->display();
+	}
+
+    /* 钱包 */
+	public function walletDetails(){
+        $dbStaff  = D('staff');
+        $userid   = $_SESSION['userid'];
+        $resStaff = $dbStaff->where('id='.$userid)->find();
+
+        $this->assign('resStaff',$resStaff);
+	    $this->display();
+    }
+
+    /* 我的银行卡 */
+    public function myCard(){
+	    $this->display();
+    }
+
+    /* 我的任务 */
+    public function task(){
+        $this->display();
+    }
+
+    /* 分享二维码 */
+    public function share(){
+        $this->display();
+    }
+
+    /* 个人设置 */
+    public function set(){
+        $this->display();
+    }
+
+    /* 我的报表 */
+    public function financialStatements(){
+        $this->display();
+    }
+
+    /* 消息管理 */
+    public function infoManagement(){
+        $this->display();
+    }
+
+    /* 奖励中心 */
+    public function encourage(){
+        //任务奖励
+        $dbReward  = M('reward');
+        $userid    = $_SESSION['userid'];
+        $taskReward = $dbReward->where(array('uid' => $userid , 'type' => 2))->select();
+        $this->assign('taskReward',$taskReward);
+        /* 推荐奖励 */
+        $spreadReward = $dbReward->where(array('uid' => $userid , 'type' => 3))->select();
+        $this->assign('spreadReward',$spreadReward);
+        /* 游戏分红 */
+        $bonusReward = $dbReward->where(array('uid' => $userid , 'type' => 1))->select();
+        $this->assign('bonusReward',$bonusReward);
+
+        $this->display();
+    }
+
+    /* 账单管理 */
+    public function rechargeWithdrawCash(){
+        $this->display();
+    }
+
+    /* 推广管理 */
+    public function spreadManage(){
+        $this->display();
+    }
+
+    /* 客服中心 */
+    public function customService(){
+        $this->display();
+    }
+
+    /* 任务大厅 */
+    public function taskOffice1(){
+        $this->display();
+    }
+
+    /* 宣传中心 */
+    public function propagate(){
+        $this->display();
+    }
+
+
 
 }

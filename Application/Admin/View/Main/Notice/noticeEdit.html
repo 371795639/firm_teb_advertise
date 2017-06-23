@@ -5,6 +5,7 @@
     </div>
     <form action="{:U('Main/noticeEdit')}" method="post" enctype="multipart/form-data" class="form-horizontal" >
         <div class="form-item">
+
             <input type="hidden" class="text input-large" name="noticeID" value="{$noticeID.id}">
             <label class="item-label">消息类型
                 <span class="check-tips">
@@ -25,7 +26,7 @@
             </div>
             <label class="item-label">消息内容 <span class="check-tips">（请输入新的消息内容）</span></label>
             <div class="controls">
-                <input type="text" class="textarea input-large" name="noticeContent" value="{$noticeContent.notice_content}">
+                <input type="text" class="text input-large" name="noticeContent" value="{$noticeContent.notice_content}">
             </div>
         </div>
         <input id="files" type="file" name="photo" onchange="previewImage(this, 'prvid')" multiple="multiple"  value="上传图片" />

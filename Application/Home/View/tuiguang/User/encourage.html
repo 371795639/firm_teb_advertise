@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>兔尔宝</title>
+    <link href="/Public/Home/css/mui.css" rel="stylesheet"/>
+    <!--自定义样式-->
+    <link rel="stylesheet" href="/Public/Home/css/common/common.css" />
+    <link rel="stylesheet" href="/Public/Home/css/encourage/encourage.css" />
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav gradient">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left "></a>
+			<h1 class="mui-title">奖励中心</h1>
+		</header>
+		<div class="mui-content" style="padding-bottom: 50px;">
+			<div style="padding: 10px 10px;">
+				<div id="segmentedControl" class="mui-segmented-control">
+					<a class="mui-control-item mui-active" href="#item1">
+						任务奖励
+					</a>
+					<a class="mui-control-item" href="#item2">
+						推广奖励
+					</a>
+					<a class="mui-control-item" href="#item3">
+						游戏分红
+					</a>
+				</div>
+			</div>
+			<div style="width: 100%;height: 10px;"></div>
+			<div  id="list">
+				<!--
+                	作者：anhuizxd2015@163.com
+                	时间：2017-06-09
+                	描述：任务奖励
+                -->
+				<div id="item1" class="mui-control-content mui-active">					
+					<ul class="mui-table-view">
+						<volist name="taskReward" id="vo">
+						<li class="mui-table-view-cell">任务奖励<span class="right">{$vo.base_money}</span> </li>
+						</volist>
+					</ul>
+				</div>
+				<!--
+                	作者：anhuizxd2015@163.com
+                	时间：2017-06-09
+                	描述：推广奖励
+                -->
+				<div id="item2" class="mui-control-content">
+					<ul class="mui-table-view">
+						<volist name="spreadReward" id="vo">
+						<li class="mui-table-view-cell">推广奖励<span class="right">{$vo.base_money}</span> </li>
+						</volist>
+					</ul>
+				</div>
+				<!--
+                	作者：anhuizxd2015@163.com
+                	时间：2017-06-09
+                	描述：游戏分红
+                -->
+				<div id="item3" class="mui-control-content">
+					<ul class="mui-table-view">
+						<volist name="bonusReward" id="vo">
+				        <li class="mui-table-view-cell">游戏分红<span class="right">{$vo.base_money}</span> </li>
+						</volist>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<script src="/Public/Home/js/mui.min.js"></script>
+	</body>
+</html>

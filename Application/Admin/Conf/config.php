@@ -15,7 +15,7 @@ return array(
     /* 数据缓存设置 */
     'DATA_CACHE_PREFIX'    => 'onethink_', // 缓存前缀
     'DATA_CACHE_TYPE'      => 'File', // 数据缓存类型
-
+    'DB_FIELDS_CACHE'      =>  false,        // 关闭字段缓存
     /* 文件上传相关配置 */
     'DOWNLOAD_UPLOAD' => array(
         'mimes'    => '', //允许上传的文件MiMe类型

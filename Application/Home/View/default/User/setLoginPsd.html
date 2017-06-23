@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>兔尔宝</title>
+    <link href="__STATIC__/css/mui.css" rel="stylesheet"/>
+    
+    <link rel="stylesheet" type="text/css" href="__STATIC__/css/common/common.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/css/set/set.css"/>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/css/register/register.css"/>
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav gradient">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left "></a>
+			<h1 class="mui-title">修改登录密码</h1>
+		</header>
+		<div class="mui-content">
+			<form action="" method="post" style=" padding-bottom: 2rem; margin-top:1.5rem; background: transparent;">
+				<div class="mui-input-row border-top">
+					<label>原密码</label>
+					<input id='oldPassword' type="password" class=" mui-input" placeholder="">
+					<span ><img src="__STATIC__/img/eye.png" id="img1" onclick="showOldPsd()"/></span>
+				</div>
+				<div class="mui-input-row">
+					<label>新密码</label>
+					<input id='newPassword' type="password" class=" mui-input" placeholder="">
+					<span><img src="__STATIC__/img/eye.png" id="img2" onclick="showNewPsd()"/></span>
+				</div>
+				<div class="mui-input-row">
+					<label>确认密码</label>
+					<input id='password' type="password" class=" mui-input" placeholder="">
+					<span><img src="__STATIC__/img/eye.png" id="img3" onclick="showPsd()"/></span>
+				</div>
+				<div class="mui-input-row" >
+					<label>验证码:</label>
+					<input id = "testNum" type="text" class=" mui-input" >				
+					<input type="button" id = "getTestNum" class="button" value="获取验证码"  name="phone" onclick="showtime(60)"> 
+				</div>
+				<button id="btn" class="gradient-btn">完&nbsp;&nbsp;成</button>
+			</form>
+		</div>
+		<script src="__STATIC__/js/mui.min.js"></script>
+		<script src="__STATIC__/js/jQuery/jquery-1.11.3.min.js"></script>
+		<script src="__STATIC__/js/setTest/setTest.js"></script>
+	</body>
+</html>
+

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>兔尔宝</title>
+    <link href="/Public/Home/css/mui.css" rel="stylesheet"/>
+    <!--自定义样式-->
+    <link rel="stylesheet" href="/Public/Home/css/register/register.css" />
+    <link rel="stylesheet" href="/Public/Home/css/common/common.css" />
+	<link rel="stylesheet" href="/Public/Home/loading/loading.css" />
+</head>
+<body>
+	<header id="header" class="mui-bar mui-bar-nav gradient" >
+		<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+		<h1 class="mui-title">注册</h1>
+	</header>
+	<div class="mui-content">
+		<div style="height: 20px;width: 100%;"></div>
+		<form  action="{:U('Login/register')}" id='register-form' class="mui-input-group" method="post" name="myform">
+			<div class="mui-input-row" style="border-top: 1px solid #DDDDDD;">
+				<label>手机号码:</label>
+				<input id='phoneNum' name="phoneNum" type="text" class="mui-input-clear mui-input" placeholder="">
+			</div>
+			<div class="mui-input-row" >
+				<label>验证码:</label>
+				<input id = "testNum" name="verifyNum" type="text" class=" mui-input" >
+				<input type="button" id = "getTestNum" class="button" value="获取验证码"  name="phone" onclick="showtime(60)">
+			</div>
+			<div class="mui-input-row">
+				<label>密&nbsp;&nbsp;码:</label>
+				<input id='password1' name="password1" type="password" class="mui-input-clear mui-input" placeholder="">
+			</div>
+			<div class="mui-input-row">
+				<label>确认密码:</label>
+				<input id='password2' name="password2" type="password" class="mui-input-clear mui-input" placeholder="">
+			</div>
+			<div class="mui-input-row">
+				<label>个人姓名:</label>
+				<input id='referee' name="staffName" type="text" class="mui-input-clear mui-input" placeholder="">
+			</div>
+			<div  class="mui-input-row mui-checkbox mui-left" >
+				<label style="font-size: 15px;">我已阅读并同意</label>
+				<input name="checkbox" value="Item 1" type="checkbox" onclick="isChecked()" />
+			</div>
+			<div class="mui-content-padded">
+				<button id='regBtn'  class="mui-btn mui-btn-block  gradient-btn " >缴纳注册资金</button>
+			</div>	
+		</form>
+	</div>
+	<script src="/Public/Home/js/mui.min.js"></script>
+	<script src="/Public/Home/js/jQuery/jquery-1.11.3.min.js"></script>
+	<script src="/Public/Home/loading/loading.js"></script>
+	<script type="text/javascript" charset="utf-8">
+    	mui.init();
+
+    	$("#regBtn").attr("disabled","disabled");
+		var test = function(){
+			var val1 = $("#phoneNum").val();
+			var val2 = $("#testNum").val();
+			var val3 = $("#password1").val();
+			var val4 = $("#password2").val();
+			var val5 = $("#referee").val();						
+			var bb = val1&&val2&&val3&&val4&&val5;
+			return bb;
+		}
+		var isChecked = function(){
+			var val6 = $("input[name = checkbox]").is(':checked');
+			var cc = test();
+			var isOk = val6&&cc;
+			btn(isOk);
+		}
+		//按钮逻辑处理方法   			
+		var btn = function(a){
+			if( a ){
+	         	$("#regBtn").removeAttr("disabled");
+	        }else{
+	         	$("#regBtn").attr("disabled","disabled");
+	        }
+	    }
+		//input框绑定事件
+		$('input').bind('keyup',function(){
+			//验证空值；
+			test();	
+			isChecked();
+		});		
+    	//验证手机号码；
+    	$("#phoneNum").blur(function(){
+    		var val1 = $("#phoneNum").val();
+		  	checkMobile(val1);
+		  	btn(0);
+		});
+	 	var checkMobile = function(str){
+	    		var reg = /^1\d{10}$/;
+	    		if (reg.test(str)) {
+			       return null;
+			    } else {
+			       mui.toast("请填写正确的手机号码！");
+			       $("#phoneNum").val("");
+			    }
+	    	}
+	 	//双密码一致验证；
+	 	$("#password2").blur(function(){
+    		//验证两次输入密码；
+			testPsd();
+		});	 	
+		var testPsd = function(){
+			var val3 = $("#password1").val();
+			var val4 = $("#password2").val();
+			if( val3==val4 ){
+				return null;
+			}else{
+				mui.toast("两次密码不一致！");
+				$("#password1").val("");
+				$("#password2").val("");				
+			}
+		}
+		
+	//获取验证码事件（时间在绑定调用处传入，）
+	function showtime(t){ 
+		//TODO请求验证码
+        $.ajax({
+            type: "POST",
+            url:"{:U('Login/msgVerify')}",
+            dataType: 'json',
+            async:true,  //默认是true异步传输，false是同步传输
+            data: {"phoneNum":$("#phoneNum").val()},
+
+        });
+
+	    $("#getTestNum").attr("disabled","disabled");
+	    for(i=1;i<=t;i++){ 
+	        window.setTimeout("update_p(" + i + ","+t+")", i * 1000); 
+	    } 
+	 
+	}
+
+	function update_p(num,t) {
+	    if(num == t) { 
+	       $("#getTestNum").val("重新获取");
+	       $("#getTestNum").removeAttr("disabled");
+	    } 
+	    else { 
+	        printnr = t-num; 
+			$("#getTestNum").val("重新获取"+" ("+ printnr +")");
+	    } 
+	}
+
+        $("#regBtn").on("click",function(){
+            //加载过程出现的loading加载中；（分别在页面引入loading css跟js js依赖jquery，所以应在jquery之后引入）
+            //调用方法如下，修改提示字段如下，直接修改text的值即可；请求一开始就 调用，请求成功后用 $("body").mLoading("hide");取消loading动画；
+            $("body").mLoading({
+                text:"提交中。。。",//加载文字，默认值：加载中...
+            });
+//            var timer1 = setTimeout(function(){
+//                $("body").mLoading("hide");
+//                //回调函数为成功时，可用系统弹框提示，显示的字符串可自定义；
+//                mui.toast("留言成功！");
+//            },1500);
+//            var timer2 = setTimeout(function(){
+//                //作用是关闭loading加载的动画效果
+//                $("body").mLoading("hide");
+//                //当留言成功后,可用  mui.back() 关闭留言也面,返回到上一个页面，即 mui.back（）的功能为关闭单前页面，返回到上一个页面；
+//                mui.back();
+//            },3000);
+        })
+
+	</script>
+</body>
+</html>

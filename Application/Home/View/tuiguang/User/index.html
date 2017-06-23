@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html>
-
 	<head>
 		<meta charset="utf-8">
 		<title>兔尔宝</title>
@@ -28,20 +27,19 @@
 			}
 		</style>
 	</head>
-
-	<body>
+	<body>	
 		<header class="mui-bar mui-bar-nav gradient">
 			<h1 class="mui-title">兔尔宝推广系统</h1>
 		</header>
-		<div class="mui-content" style="padding-bottom: 5rem;">
+		<div class="mui-content" name="resStaff" style="padding-bottom: 5rem;">
 			<div class="">
 				<div class="gradient head">
 					<p>
-						小明
+						<!--<img src="img/logo-color.jpg"/><br />-->
+						{$resStaff.staff_name}
 					</p>
 					<p>
-						<span class="p-left"><span>信用余额：1502</span></span>
-						<span class="p-right">推广余额：1502</span>
+						<span>推广余额：{$resStaff.money}</span>
 					</p>
 				</div>
 				<div class="topTabs">
@@ -63,19 +61,17 @@
 					</p>
 				</div>
 				<div style="padding: 0 1rem;">
-                    <a href="{:U('Home/Task/taskOffice')}">
-                        <div class="middle">
-                            <div class="border-box">
-                                <img src="/Public/Home/img/morning.jpg"/>
-                                <p>
-                                    任务大厅
-                                    <span class="right">
-                                        剩余3个任务
-                                    </span>
-                                </p>
-                            </div>
-                        </div>
-                    </a>
+					<div class="middle" onclick="goTaskOffice()">
+						<div class="border-box">
+							<img src="/Public/Home/img/morning.jpg"/>
+							<p>
+								任务大厅    
+								<span class="right">
+									剩余3个任务
+								</span>
+							</p>
+						</div>	
+					</div>
 					<div class="middle">
 						<img src="/Public/Home/img/taskCenter.jpg" style="height:13.3rem;" onclick="goXczx()"/>
 					</div>
@@ -85,7 +81,7 @@
 				<a id="sy" class="actives" onclick="goHome()">
 					<img src="/Public/Home/img/sy1.png" />
 					首页
-				</a>
+				</a>		
 				<a id="bb" onclick="goTabs()">
 					<img src="/Public/Home/img/bb2.png" />
 					报表
@@ -98,51 +94,48 @@
 					<img src="/Public/Home/img/wd2.png" />
 					我的
 				</a>
-			</nav>
-		</div>
+			</nav>	
+		</div>	
 	</body>
 	<script src="/Public/Home/js/mui.min.js"></script>
 	<script src="/Public/Home/js/app.js"></script>
 	<script src="/Public/Home/js/jQuery/jquery-1.11.3.min.js"></script>
 	<script>
-		mui.init({
+		mui.init({ 
 			swipeBack:true //启用右滑关闭功能
-
+			
 		});
 		mui.toast('可以用吗？');
-        /*
 		//nav
 		function goHome(){
-			app.openwindow("Home/index/index");
+			app.openwindow("{:U('User/index')}");
 		}
 		function goTabs(){
-			app.openwindow("Home/finance/financialStatements");
+			app.openwindow("{:U('User/financialStatements')}");
 		}
 		function goInfo(){
-			app.openwindow("Home/info/infoManagement");
+			app.openwindow("{:U('User/infoManagement')}");
 		}
 		function goMy(){
-			app.openwindow("Home/home/my");
+			app.openwindow("{:U('User/my')}");
 		}
-		function goJlzx(){
-			app.openwindow("Home/encourage/encourage");
+    	function goJlzx(){
+			app.openwindow("{:U('User/encourage')}");
 		}
 		function goCwgl(){
-			app.openwindow("Home/finance/rechargeWithdrawCash");
+			app.openwindow("{:U('User/rechargeWithdrawCash')}");
 		}
 		function goTgxx(){
-			app.openwindow("Home/spreadManage/spreadManage");
+			app.openwindow("{:U('User/spreadManage')}");
 		}
 		function goKfzx(){
-			app.openwindow("Home/customService/customService");
+			app.openwindow("{:U('User/customService')}");
 		}
-		
 		function goTaskOffice(){
-			app.openwindow("index.php?s=/Home/task/taskOffice");
+			app.openwindow("{:U('Task/taskOffice')}");
 		}
 		function goXczx(){
-			app.openwindow("Home/propagate/propagate");
+			app.openwindow("{:U('User/propagate')}");
 		}
-		*/
 	</script>
 </html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>兔尔宝</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="__STATIC__/css/mui.min.css">
+		<!--App自定义的css-->
+		<link rel="stylesheet" type="text/css" href="__STATIC__/css/common/common.css"/>
+		<link rel="stylesheet" type="text/css" href="__STATIC__/css/index/index.css"/>
+		<style type="text/css">
+			.mui-bar.mui-bar-tab a{
+				text-align: center;
+			}
+			.mui-bar.mui-bar-tab a img{
+				display: block;
+				height: 20px;
+				width: 20px;
+				margin: 0 auto;
+				margin-top: 8px;
+			}
+			.actives{
+				color: #23aae4 !important;
+			}
+		</style>
+	</head>
+
+	<body>	
+		<header class="mui-bar mui-bar-nav gradient">
+			<h1 class="mui-title">兔尔宝推广系统</h1>
+		</header>
+		<div class="mui-content" name="resStaff" style="padding-bottom: 5rem;">
+			<div class="">
+				<div class="gradient head">
+					<p>
+						<!--<img src="img/logo-color.jpg"/><br />-->
+						{$resStaff.staff_name}
+					</p>
+					<p>
+						<span>推广余额：{$resStaff.money}</span>
+					</p>
+				</div>
+				<div class="topTabs">
+					<p onclick="goJlzx()">
+						<img src="__STATIC__/img/jlzx.png" alt="" />
+						奖励中心
+					</p>
+					<p onclick="goCwgl()">
+						<img src="__STATIC__/img/cwgl.png" alt="" />
+						财务管理
+					</p>
+					<p onclick="goTgxx()">
+						<img src="__STATIC__/img/tgxx.png" alt="" />
+						推广信息
+					</p>
+					<p onclick="goKfzx()">
+						<img src="__STATIC__/img/kfzx.png" alt="" />
+						客服中心
+					</p>
+				</div>
+				<div style="padding: 0 1rem;">
+					<div class="middle" onclick="goTaskOffice()">
+						<div class="border-box">
+							<img src="__STATIC__/img/morning.jpg"/>
+							<p>
+								任务大厅    
+								<span class="right">
+									剩余3个任务
+								</span>
+							</p>
+						</div>	
+					</div>
+					<div class="middle">
+						<img src="__STATIC__/img/taskCenter.jpg" style="height:13.3rem;" onclick="goXczx()"/>
+					</div>
+				</div>
+			</div>
+			<nav class="mui-bar mui-bar-tab">
+				<a id="sy" class="actives" onclick="goHome()">
+					<img src="__STATIC__/img/sy1.png" />
+					首页
+				</a>		
+				<a id="bb" onclick="goTabs()">
+					<img src="__STATIC__/img/bb2.png" />
+					报表
+				</a>
+				<a id="xx" onclick="goInfo()">
+					<img src="__STATIC__/img/xx2.png" />
+					消息
+				</a>
+				<a id="wd"  onclick="goMy()">
+					<img src="__STATIC__/img/wd2.png" />
+					我的
+				</a>
+			</nav>	
+		</div>	
+	</body>
+	<script src="__STATIC__/js/mui.min.js"></script>
+	<script src="__STATIC__/js/app.js"></script>
+	<script src="__STATIC__/js/jQuery/jquery-1.11.3.min.js"></script>
+	<script>
+		mui.init({ 
+			swipeBack:true //启用右滑关闭功能
+			
+		});
+		mui.toast('可以用吗？');
+		//nav
+		function goHome(){
+			app.openwindow("{:U('User/index')}");
+		}
+		function goTabs(){
+			app.openwindow("{:U('User/financialStatements')}");
+		}
+		function goInfo(){
+			app.openwindow("{:U('User/infoManagement')}");
+		}
+		function goMy(){
+			app.openwindow("{:U('User/my')}");
+		}
+
+
+
+		function goJlzx(){
+			app.openwindow("{:U('User/encourage')}");
+		}
+		function goCwgl(){
+			app.openwindow("{:U('User/rechargeWithdrawCash')}");
+		}
+		function goTgxx(){
+			app.openwindow("{:U('User/spreadManage')}");
+		}
+		function goKfzx(){
+			app.openwindow("{:U('User/customService')}");
+		}
+		
+		function goTaskOffice(){
+			app.openwindow("{:U('User/taskOffice1')}");
+		}
+		function goXczx(){
+			app.openwindow("{:U('User/propagate')}");
+		}
+	</script>
+</html>

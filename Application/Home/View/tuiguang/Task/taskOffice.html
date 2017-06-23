@@ -72,11 +72,11 @@
                 <notempty name="weeklyTypeOne">
                     <p class="small">
                         本周内全部完成并交付，预计收益5000元
-                        <button id="btn1" href="javascript:;" url="{:U('Home/Task/taskOfficeDetail',array('method'=>'daily'))}">
-                            <if condition="$weeklyTypeOne.status eq 1"><span class="right geted">进行中-{$weeklyTypeOne.status}</span>
-                                <else /><span class="right get">未领取-{$weeklyTypeOne.status}</span>
+                        <a id="btn1"  href="{:U('Home/Task/taskOfficeDetail')}">
+                            <if condition="$weeklyTypeOne.status eq 1"><span class="right geted">进行中</span>
+                                <else /><span class="right get">未领取</span>
                             </if>
-                        </button>
+                        </a>
                     </p>
                     <ul class="mui-table-view">
                         <volist name="weeklyTypeOne" id="vo">
@@ -119,32 +119,8 @@
 				swipeBack:true //启用右滑关闭功能	
 			});
 			function gotaskOfficeDetail(){
-                    mui.openWindow("/Home/task/taskOfficeDetail");
+                    mui.openWindow("/Home/Task/taskOfficeDetail");
 			}
-            $("#btn1").click(function(){
-                var url = $(this).attr('url');
-                var query  = $('.model').find('input').serialize();
-                query = query.replace(/(&|^)(\w*?\d*?\-*?_*?)*?=?((?=&)|(?=$))/g,'');
-                query = query.replace(/^&/g,'');
-                if( url.indexOf('?')>0 ){
-                    url += '&' + query;
-                }else{
-                    url += '?' + query;
-                }
-                window.location.href = url;
-            });
-            $("#btn2").click(function(){
-                var url = $(this).attr('url');
-                var query  = $('.model').find('input').serialize();
-                query = query.replace(/(&|^)(\w*?\d*?\-*?_*?)*?=?((?=&)|(?=$))/g,'');
-                query = query.replace(/^&/g,'');
-                if( url.indexOf('?')>0 ){
-                    url += '&' + query;
-                }else{
-                    url += '?' + query;
-                }
-                window.location.href = url;
-            });
 		</script>	
 	</body>
 </html>
