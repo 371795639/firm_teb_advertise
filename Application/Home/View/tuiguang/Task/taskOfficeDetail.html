@@ -73,17 +73,28 @@
 		<div class="mui-content gradient">
 			<!--日常-->
 			<p></p>
-			<div class="model">
-				<p><img src="/Public/Home/img/imgRed.png"/></p>
-				<p>日常任务【需交付任务后才能领取奖励】</p>			
-				<ul class="mui-table-view">
-					<li class="mui-table-view-cell">任务一 <button class="right submit">提交</button></li>
-			        <li class="mui-table-view-cell">任务二<button class="right ing">进行中</button></li>
-				</ul>
-			</div>
-			<div class="model" style="background: transparent;">
-				<button class="mui-btn mui-btn-block ">提交任务后可领取500</button>
-			</div>
+            <form action="{:U('Task/taskSubmit')}" method="post">
+                <div class="model">
+                    <p><img src="/Public/Home/img/imgRed.png"/></p>
+                    <p>日常任务【需交付任务后才能领取奖励】</p>
+                    <ul class="mui-table-view">
+                        <volist name="taskDoneDaily" id="vo">
+                            <li class="mui-table-view-cell">{$vo.name}
+                                <span class="right submit">
+                                    <if condition="$vo.status eq 1">进行中
+                                        <elseif condition="$vo.status eq 2"/>已完成
+                                        <else/>已过期
+                                    </if>
+                                </span>
+                                <span class="right col-ye">{$vo.money} <img src="/Public/Home/img/money.png"/></span>
+                            </li>
+                        </volist>
+                    </ul>
+                </div>
+                <div class="model" style="background: transparent;">
+                    <button class="mui-btn mui-btn-block" type="submit">提交任务后可领取500</button>
+                </div>
+            </form>
 			<!--额外-->
 			<div class="model">
 				<p><img src="/Public/Home/img/imgYello.png"/></p>
@@ -92,8 +103,12 @@
 					本周内全部完成并交付，预计收益5000元
 				</p>
 				<ul class="mui-table-view">
-					<li class="mui-table-view-cell">任务一<button class="right ex-submit">提交</button> <span class="right col-ye">200 <img src="/Public/Home/img/money.png"/></span></li>
-			        <li class="mui-table-view-cell">任务二 <button class="right ing">进行中</button> <span class="right col-ye">200 <img src="/Public/Home/img/money.png"/></span></li>
+                    <volist name="taskDoneExtra" id="vo">
+					    <li class="mui-table-view-cell">{$vo.name}
+                            <button class="right ex-submit">提交</button>
+                            <span class="right col-ye">{$vo.money} <img src="/Public/Home/img/money.png"/></span>
+                        </li>
+                    </volist>
 				</ul>
 			</div>
 		</div>

@@ -73,14 +73,14 @@ class TaskDoneModel extends Model{
 
     /**
      * 获取$data时间所在周末
-     * @param $date
+     * @param $date time    当前时间
      * @return bool|string
      */
     public function get_end_time($date){
         if(empty($date)) {
             $end_time = "";
         }else{
-            $start_time = $this->get_start_time($date);
+            $start_time = $this -> get_start_time($date);
             $ss = strtotime($start_time);
             $end_time = date('Y-m-d 23:59:59', strtotime('Sunday', $ss));
         }
@@ -89,24 +89,46 @@ class TaskDoneModel extends Model{
 
 
     /**
-     * 获取这周时间内的任务
+     * 在task_done表中根据get_time和uid获取任务类型
+     * @param   $type integer 任务类型 1：日常任务 2：额外任务
+     * @return  bool
      */
-    public function get_this_week_task(){
+    public function get_this_week_task($type){
         $date = date('Y-m-d H:i:s');
         $start_time = $this -> get_start_time($date);
         $end_time = $this -> get_end_time($date);
         $map['get_time'] = array(array('gt', $start_time), array('lt', $end_time));
         $map['uid'] = $_SESSION['userid'];
         $res = $this -> where($map) -> select();//有值就说明已经领取过了
-        if($res){
-           return $res;
+        foreach($res as $k => $v){
+            $task_id = $res[$k]['task_id'];
+            $task_ids = D('Task') -> get_task_by_id($task_id);
+            $res[$k]['type']    = $task_ids['type'];
+            $res[$k]['money']   = $task_ids['money'];
+            $res[$k]['inneed']  = $task_ids['inneed'];
+            $res[$k]['name']    = $task_ids['name'];
+        }
+        foreach ($res as $key => $val) {
+            if ($val['type'] == $type) {
+                $result[$key] = $val;
+            }
+        }
+        if($result){
+           return $result;
         }else{
             return false;
         }
     }
 
 
-    function i_array_column($input, $columnKey, $indexKey=null){
+    /**
+     * 二维数组转一维数组
+     * @param $input
+     * @param $columnKey
+     * @param null $indexKey
+     * @return array
+     */
+    public function i_array_column($input, $columnKey, $indexKey=null){
         if(!function_exists('array_column')){
             $columnKeyIsNumber  = (is_numeric($columnKey))?true:false;
             $indexKeyIsNull            = (is_null($indexKey))?true :false;
@@ -135,4 +157,5 @@ class TaskDoneModel extends Model{
             return array_column($input, $columnKey, $indexKey);
         }
     }
+
 }

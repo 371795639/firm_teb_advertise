@@ -18,20 +18,19 @@ class TaskController extends HomeController {
         $weeklyTypeTwo  = $dbTaskWeekly -> get_weekly_type('2');
         $moneyOne       = $dbTaskWeekly -> get_weekly_money('1');
         $moneyTwo       = $dbTaskWeekly -> get_weekly_money('2');
-        $taskDaily      = $dbTaskDone   -> get_this_week_task();
+        $taskDaily      = $dbTaskDone   -> get_this_week_task('1');
         if($taskDaily){
-            $daily = "<span class='right geted'>查 看</span>";
+            $daily = 1 ; //已领取
         }else{
-            $daily = "<span class='right get'>未领取</span>";
+            $daily = 2 ; //未领取
         }
-        //done 表中
         foreach($taskDaily as $k => $v){
             $status[] = $taskDaily[$k]['status'];
         }
         if(in_array('1',$status)){
-            $extra = 1;//不可领取;
+            $extra = 1; //不可领取;
         }else{
-            $extra = 2;//可领取
+            $extra = 2; //可领取
         }
         $this -> assign('daily',$daily) ;
         $this -> assign('extra',$extra) ;
@@ -39,7 +38,6 @@ class TaskController extends HomeController {
         $this -> assign('moneyTwo',$moneyTwo);
         $this -> assign('weeklyTypeOne',$weeklyTypeOne);
         $this -> assign('weeklyTypeTwo',$weeklyTypeTwo);
-        //因为必须先完成日常任务才能领取额外任务，所以在领取日常任务之前判断本周内是否有任务是可以实现的
         $this -> display();
     }
 
@@ -48,11 +46,11 @@ class TaskController extends HomeController {
     public function taskOfficeDetail($method=null){
         $dbTaskDone = D('TaskDone');
         $dbTaskWeekly = D('TaskWeekly');
+        $taskSet = $dbTaskDone -> get_this_week_task('1');
         switch($method){
             case 'daily':
-                $taskSet = $dbTaskDone -> get_this_week_task();
                 if($taskSet){
-                    //noting need to do here.
+                    //日常任务在表中已经写入，这次点击只是查看
                 }else{
                     $data = array(
                         'uid'       => $_SESSION['userid'],
@@ -69,29 +67,50 @@ class TaskController extends HomeController {
                 }
                 break;
             case 'extra':
-                $weeklyDone = $dbTaskDone -> get_done_by_task_id();
-                $resDone = $dbTaskDone -> i_array_column($weeklyDone,'task_id');
-                $task_id = I('task_id');
-                if(in_array($task_id,$resDone)){
-                    //nothing need to do here.
+                foreach($taskSet as $k => $v){
+                    $status[] = $taskSet[$k]['status'];
+                }
+                if(in_array('1',$status)){
+                    //日常任务的状态值有1，说明日常任务没有都完成，不能领取额外任务
                 }else {
-                    $resStaff =  D('Task') -> get_task_by_id($task_id);
-                    $data = array(
-                        'task_id'   => $task_id,
-                        'uid'       => $_SESSION['userid'],
-                        'inneed'    => $resStaff['inneed'],
-                        'get_time'  => date('Y-m-d H:i:s'),
-                        'done_time' => '',  //不可用null，否则无法插入数据
-                        'status'    => 1,
-                    );
-                    $dbTaskDone->add_done($data);//放止重复提交
+                    $weeklyDone = $dbTaskDone -> get_done_by_task_id();
+                    $resDone    = $dbTaskDone -> i_array_column($weeklyDone, 'task_id');
+                    $task_id    = I('task_id');
+                    if (in_array($task_id, $resDone)) {
+                        //此额外任务在表中已经写入，这次点击只是查看
+                    }else{
+                        $resStaff = D('Task')->get_task_by_id($task_id);
+                        $data = array(
+                            'task_id'   => $task_id,
+                            'uid'       => $_SESSION['userid'],
+                            'inneed'    => $resStaff['inneed'],
+                            'get_time'  => date('Y-m-d H:i:s'),
+                            'done_time' => '',  //不可用null，否则无法插入数据
+                            'status'    => 1,
+                        );
+                        $dbTaskDone->add_done($data);
+                    }
                 }
                 break;
         }
+        //上面是对是否插入数据进行判断，下面是展示taskOfficeDetail页面
+        $taskDoneDaily      = $dbTaskDone   -> get_this_week_task('1');
+        $taskDoneExtra      = $dbTaskDone   -> get_this_week_task('2');
+        $this -> assign('taskDoneDaily',$taskDoneDaily);
+        $this -> assign('taskDoneExtra',$taskDoneExtra);
         $this -> display();
     }
 
 
+    /**日常提交任务**/
+    public function taskSubmit(){
+        //思路
+        //任务完成的情况下：
+            // 1.将表中日常任务的状态值从1改成2
+            // 2.将给用户增加金额
+        //任务过期未完成的情况下：
+            // 1.将表中日常任务的状态值从1改成3
+    }
 
 
 

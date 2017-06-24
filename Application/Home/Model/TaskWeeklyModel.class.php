@@ -114,7 +114,11 @@ class TaskWeeklyModel extends Model{
         }
     }
 
-
+    /**
+     * 根据任务类型，获取周任务总金额
+     * @param $type
+     * @return string
+     */
     public function get_weekly_money($type){
         $taskWeekly = $this -> get_weekly_type($type);
         $money = '';
