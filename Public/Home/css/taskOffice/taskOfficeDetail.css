@@ -1,0 +1,52 @@
+.mui-content.gradient{
+	padding-right: 1rem;
+	padding-left: 1rem;
+}
+.model{
+	background:#fff ;
+	margin-bottom:1.5rem ;
+	padding: 0 1rem 0.5rem 1rem;
+}
+.model p{
+	color: #8A7DFF;
+	padding-top: 0 !important;
+}
+.model>p>img{
+	color: #8A7DFF;
+	width: 1.2rem;
+	height: 1.6rem;
+}
+.mui-table-view-cell{
+	padding: 11px 5px;
+}
+.small{
+	font-size: 1.2rem;
+	color: #333333 !important;
+}
+.submit{
+	color: #62C269;
+	border: 1px solid #62C269;
+}
+.ex-submit{
+	color: #ff558a;
+	border: 1px solid #ff558a;
+}
+.ing{	
+	color: #febe20;
+	border: 1px solid #febe20;
+}
+.mui-table-view button{			
+	padding: 0;	
+	margin-left: 5px;		
+}
+.mui-table-view span img{
+	width: 1.2rem;
+	height: 1.2rem;
+}
+.mui-btn.mui-btn-block{
+	padding: 6px 0;
+	color: #FF558A !important;
+}
+.mui-table-view-cell{
+	color: #9B9B9B;
+}

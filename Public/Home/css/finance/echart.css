@@ -1,0 +1,44 @@
+.chart {
+	height: 200px;
+	margin: 0px;
+	padding: 0px;
+}
+.mui-segmented-control .mui-control-item.mui-active{
+	background:transparent; 			
+	border-bottom:2px solid #FFF;
+}
+.mui-segmented-control .mui-control-item{
+	border-color: none;
+	border-left: none;
+	color: #FFF
+}
+.mui-segmented-control{
+	border: transparent;
+	padding: 1rem;
+	margin-bottom: 1rem;
+}
+/****/
+.mui-bar.mui-bar-tab a{
+	text-align: center;
+}
+.mui-bar.mui-bar-tab a img{
+	display: block;
+	height: 20px;
+	width: 20px;
+	margin: 0 auto;
+	margin-top: 8px;
+}
+.actives{
+	color: #23aae4 !important;
+}
+/****/
+.inline{
+	display: inline-block;
+	width: 50%;
+	text-align: center;
+}
+.inline .mui-control-item{
+	display: inline-block;
+	width:5rem;
+	border: 2px solid transparent;
+}

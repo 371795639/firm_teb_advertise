@@ -19,7 +19,6 @@
 .mui-media-body{
 	text-align: left;
 }
-.mui-table-view-cell.mui-media{
-	border-top:1px solid #DDDDDD ;
-	margin: 10px 0;
+.mui-table-view{
+	margin-bottom: 1rem;
 }

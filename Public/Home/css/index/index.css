@@ -7,7 +7,7 @@
 }
 .gradient.pad{
 	text-align: center;
-	padding: 10px ;
+	padding: 1rem ;
 }
 .gradient.pad p{
 	color: #fff;
@@ -52,7 +52,7 @@
 .topTabs{
 	height: 10rem;
 	width: 100%;
-	margin-top: 1.5rem;
+	margin-top: 1.4rem;
 	padding:  1rem;
 	background: #fff;
 	margin-bottom:1.4rem ;
@@ -60,7 +60,7 @@
 .topTabs p{
 	background: #fff;
 	text-align: center;
-	font-size: 1.5rem;
+	font-size: 1.4rem;
 	float: left;
 	height: 8rem;
 	width: 25%;
@@ -93,8 +93,7 @@
 }
 
 .middle img{
-	height: 11rem;				
-	width: 100%;
+	width:100%;
 }
 .middle>img{
 	border: 1px solid #CCCCCC;

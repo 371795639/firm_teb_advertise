@@ -16,7 +16,6 @@
 }
 #login>div>p{
 	padding: 0 !important;
-	/*margin-bottom: 2rem;*/
 	text-align: center;
 	color: #fff;
 	font-size: 4rem;
@@ -36,7 +35,15 @@
 	border-bottom: 1px solid #F3F3F3;
 	padding-bottom: 0.5rem;
 	margin-bottom: 1rem;
+	position: relative;
 }
+#login-form .hr label{
+	position: absolute;
+	top: 4px;
+	left: 0;	
+}
+
+
 #login-form .hr label img{
 	margin: 0 0 0 1rem;
 	width: 1.5rem;
@@ -44,10 +51,11 @@
 }
 #login-form .hr input{
 	width: calc(100% - 3rem);
-	height: 3rem;
-	line-height: 3rem;
+	margin-left: 3rem;
+	height: 2.6rem;
+	line-height: 2.6rem;
 	text-align: center;
-	font-size:2rem ;
+	font-size:1.6rem ;
 	border: none;
 	outline: none;
 	background-color:transparent;
@@ -79,10 +87,10 @@ input::-webkit-input-placeholder{
 	width: 100%;
 }
 #login-form #btn{
-	width: 60%;
+	width: 70%;
 	margin: 0 auto;
 	display:block;
-	height: 4rem;
+	height: 3.6rem;
 	border-radius:2rem ;
 	border: 1px solid #FFF;
 	background-color:#FFF ;
@@ -93,7 +101,7 @@ input::-webkit-input-placeholder{
 }
 #login-form a{
 	font-size: 1.3rem;
-	color: #999; 
+	color: #898ccd; 
 }
 .right{
 	float: right;

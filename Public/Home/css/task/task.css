@@ -41,6 +41,14 @@
 	border-radius:3px ;
 	color:#FF6092 ;
 }
-/*.mui-table-view-cell > a:not(.mui-btn){
-	margin: -11px -28px;
-}*/
+/**/
+.inline{
+	display: inline-block;
+	width: 33.3%;
+	text-align: center;
+}
+.inline .mui-control-item{
+	display: inline-block;
+	width:7rem;
+	border: 2px solid transparent;
+}

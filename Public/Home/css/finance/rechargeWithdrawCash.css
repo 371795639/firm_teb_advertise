@@ -1,31 +1,24 @@
 .mui-segmented-control .mui-control-item.mui-active{
-	color: #FFF !important;
-	background-color:#52c6f9 ;
-	border-radius:2rem;
-	box-shadow:3px 3px 3px rgba(35,153,228, 0.4); 
-	-moz-box-shadow:3px 3px 3px rgba(35,153,228,0.4); 
-	-webkit-box-shadow:3px 3px 3px rgba(35,153,228, 0.4);	
+	background:transparent; 			
+	border-bottom:2px solid #FFF;
 }
 .mui-segmented-control .mui-control-item{
-	display: inline-block;
-	color: #52c6f9 !important;
-	line-height: 2.5rem;
 	border-color: none;
 	border-left: none;
-	color: #000;
-	width:7.5rem ;
-	border-radius: 2rem;	
-	box-shadow:3px 3px 3px rgba(204,204,204, 0.4); 
-	-moz-box-shadow:3px 3px 3px rgba(204,204,204,0.4); 
-	-webkit-box-shadow:3px 3px 3px rgba(204,204,204, 0.4);	
+	color: #FFF
 }
 .mui-segmented-control{
 	border: transparent;
 }
-/**********************列表样式**************************/
 .mui-control-content{
 	background: #fff;
-	
+}
+.mui-control-content.mui-active	.date{
+	display: block;
+	font-size: 1.3rem;
+	padding: 0 1.5rem;
+	background: transparent;
+	color: #9B9B9B;
 }
 .mui-control-content ul{
 	list-style: none;
@@ -62,19 +55,24 @@
 	color: #ccc;
 	padding: 0;
 	height: 1.3rem;
-	margin-top: 4px;
+	margin-top: 3px;
 }
-#list{
-	margin-top: 14px;
+.text-overflow {
+    display:inline-block;
+    width:16rem;
+    word-break:keep-all;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
 }
-/*************************选像卡********************************/
+/*****/
 .inline{
 	display: inline-block;
-	width: 33.3%;
+	width: 50%;
 	text-align: center;
-	padding: 0;
-	margin: 0;
 }
 .inline .mui-control-item{
-	margin: 3px auto !important;
+	display: inline-block;
+	width:10rem;
+	border: 2px solid transparent;
 }

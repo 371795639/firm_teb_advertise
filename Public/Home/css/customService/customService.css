@@ -1,5 +1,25 @@
 #QA{
-	padding: 1.5rem;
+	padding: 1rem 1.5rem 1.5rem 1.5rem;
+	background: #FFF;
+	margin-top:1.4rem ;
+}
+.as{
+	padding: 1rem;
+	border-radius:3px ;
+	background: #f4f4f4;
+	/*background: #008000;*/
+	position: relative;
+}
+.triangle{
+	position:absolute;
+	border-bottom: 20px solid #F4F4F4;
+	/*border-bottom: 20px solid #008000;*/
+	top:-13px;
+	border-left: 15px solid transparent;
+	border-right: 15px solid transparent;
+	left: 15px;
+	width: 0;
+	height: 0;
 }
 #QA p{
 	margin-bottom:1rem ;
@@ -25,7 +45,27 @@
 	width: 90%;
 	margin: 0 auto;
 	color: #fff;
+	height: 40px;
+	line-height: 20px;
 }
 .mui-btn-block{
 	padding: 1rem 0;
+}
+.display-none{
+	display: none;
+}
+ .mui-content>div{
+	padding: 1.5rem;
+}
+.mui-btn-block{
+	padding: 10px 0;
+	color: #fff;
+}
+textarea{
+	height: 107px;
+	width: 100%;
+	overflow: auto;
+	border: 1px solid #EAEAEA;
+	border-radius: 5px;
+	background: #fff;
 }

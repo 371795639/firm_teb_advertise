@@ -29,6 +29,7 @@ class FeedController extends HomeController {
     public function index(){
         //nothing need to do here.
         //display不用传参，自动加载Feed文件夹下模板文件
+        $this->display();
     }
 
     /**意见反馈**/

@@ -1,0 +1,41 @@
+.mui-content{
+	padding-left: 1rem;
+	padding-right: 1rem;
+}
+.content{
+	margin-top: 1rem;
+	text-align: center;
+    position: relative;
+}
+.content video{
+  	display: block;
+  	width: 100%;
+  	height: 100%;
+}
+.content img {
+  	position: absolute;
+  	top: calc( (100% - 4rem)/2);
+  	left: calc( (100% - 4rem)/2);
+  	height: 4rem;
+  	width: 4rem;
+    cursor: pointer;		
+    border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+}
+#media>p{
+	margin-top: 1rem;
+	border: 1px solid #e8e8e8;
+}
+#media>p>.title{
+	
+	color: #333;
+	font-size: 1.8rem;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+.txt{
+	display: block;
+	padding-left: 5px;
+	padding-right: 5px;
+	background: #FFF;		
+}

@@ -7,7 +7,7 @@
 	font-size: 20px;
 }
 /********屏幕适配*********/
-@media only screen and (min-width: 320px){
+/*@media only screen and (min-width: 320px){
 html {
     font-size: 62.5% !important;
   }
@@ -21,8 +21,30 @@ html {
 html {
     font-size: 150% !important;
   }
-}
+}*/
+@media screen and (min-width: 320px) {html{font-size:10px !important;}}
+@media screen and (min-width: 360px) {html{font-size:11.25px !important;}}
+
+/*@media screen and (min-width: 375px) {html{font-size:11.71875px;}}*/
+
+@media screen and (min-width: 375px) {html{font-size:12.5px !important;}}
+@media screen and (min-width: 400px) {html{font-size:12.5px !important;}}
+@media screen and (min-width: 414px) {html{font-size:12.9375px !important;}}
+@media screen and (min-width: 440px) {html{font-size:13.75px !important;}}
+@media screen and (min-width: 480px) {html{font-size:15px !important;}}
+@media screen and (min-width: 520px) {html{font-size:16.25px !important;}}
+@media screen and (min-width: 560px) {html{font-size:17.5px !important;}}
+@media screen and (min-width: 600px) {html{font-size:18.75px !important;}}
+@media screen and (min-width: 640px) {html{font-size:20px !important;}}
+@media screen and (min-width: 680px) {html{font-size:21.25px !important;}}
+@media screen and (min-width: 720px) {html{font-size:22.5px !important;}}
+@media screen and (min-width: 760px) {html{font-size:23.75px !important;}}
+@media screen and (min-width: 800px) {html{font-size:25px !important;}}
+@media screen and (min-width: 960px) {html{font-size:30px !important;}}
 /*************************渐变*****************************/
+
+
+
 .gradient{
 	background: linear-gradient(to right, #4EB8EA, #7E6FFF); 
 	background: -webkit-linear-gradient(left, #4EB8EA, #7E6FFF); /* Safari 5.1 - 6.0 */
@@ -49,12 +71,21 @@ a{
 	float: right;
 }
 /************************底部导航***************************/
+.mui-bar.mui-bar-tab{
+	height: 50px !important;
+	padding: 0 !important;
+}
 .mui-bar.mui-bar-tab a{
+	margin-top: 0 !important;
 	float: left;
 	width: 25%;
 	color:#999;
 	text-align: center;
-	font-size: 1rem;
+	font-size:1rem !important;
+}
+.mui-bar.mui-bar-tab img{
+	height:20px !important;
+	width: 20px !important;
 }
 .clearfloat{
 	display: block;

@@ -1,0 +1,46 @@
+.mui-content.gradient{
+	padding-right: 1rem;
+	padding-left: 1rem;
+}
+.model{
+	background:#fff ;
+	margin-bottom:1.5rem ;
+	padding: 0 1rem 0.5rem 1rem;
+}
+.model p{
+	color: #8A7DFF;
+	padding-top: 0 !important;
+}
+.model>p>img{
+	color: #8A7DFF;
+	width: 1.2rem;
+	height: 1.6rem;
+}
+.mui-table-view-cell{
+	padding: 11px 5px;
+}
+.small{
+	font-size: 1.2rem;
+	color: #333333 !important;
+}
+.get{
+	border: 1px solid #ccc;
+	border-radius: 3px;
+	color: #ccc;
+}
+.geted{
+	border: 1px solid #62c269;
+	border-radius: 3px;
+	color: #62c269;
+}
+.mui-table-view span img{
+	width: 1.2rem;
+	height: 1.2rem;
+}
+.mui-table-view button,.small button{
+	padding: 0;
+	margin-left:5px;
+}
+.mui-table-view-cell{
+	color: #9B9B9B;
+}

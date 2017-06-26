@@ -29,13 +29,13 @@
 	height: 40px;
 	margin: 20px auto;
 	color: #FFF;
-	font-size: 1.5rem;
+	font-size: 18px;
 }
 .mui-input-row img{
 	vertical-align: middle;
-	height: 1.3rem;
-	width: 1.6rem;
-	margin-top: 12px;
+	/*height: 1.3rem;
+	width: 1.6rem;*/
+	margin-top: 14px;
 }
 .mui-input-row{
 	border-bottom: 1px solid #ddd;

@@ -1,1 +1,66 @@
-123
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>兔尔宝</title>
+    <link href="/Public/Home/css/mui.css" rel="stylesheet"/>
+    <!--自定义样式-->
+    <link rel="stylesheet" type="text/css" href="/Public/Home/css/common/common.css"/>
+    <link rel="stylesheet" type="text/css" href="/Public/Home/css/customService/customService.css"/>
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav gradient">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left "></a>
+			<h1 class="mui-title">客服中心</h1>
+		</header>
+		<div class="mui-content ">
+			<div id="QA">
+				<p>
+					<span class="question">标签功能上线，更好的整理采集？</span>
+					<span class="times">5-02 15:08</span>
+				</p>
+				<div class="as">
+					<p>
+						平台回复
+						<span class="times">5-02 15:08</span>
+					</p>
+					<div class="text">
+						Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nam voluptatum distinctio numquam ut possimus dolorum odit reprehenderit tenetur voluptate enim rerum similique illo cupiditate commodi quia ad laborum perferendis modi?
+					</div>
+					<div class="triangle"><!--三角形--></div>
+				</div>
+			</div>
+			<div style="margin-top: 2rem;">
+				<form action="" method="post" class="display-none" id="text">
+					<textarea name="" id=""  placeholder="请给我们留言，我们会尽快处理" ></textarea>
+					<button id="submit" class="mui-btn mui-btn-block  gradient-btn">我要留言</button>
+				</form>
+				<a id="btn" class="mui-btn mui-btn-block  gradient-btn ">我要留言</a>
+			</div>
+			
+		</div>
+		<script src="/Public/Home/js/mui.min.js"></script>
+		<script src="/Public/Home/js/jQuery/jquery-1.11.3.min.js"></script>
+		<script type="text/javascript">
+//验证
+			$("#submit").attr("disabled","disabled");
+			$("textarea").keyup(function(){
+				var val = $("textarea").val();
+				if( val ){
+		         	$("#submit").removeAttr("disabled");
+		        }else{
+		         $("#submit").attr("disabled","disabled");
+		        }
+			});
+//切换显示留言框
+			$("#btn").click(function(){		
+				$("#text").removeClass('display-none');
+				$("#btn").addClass('display-none');
+			});
+		</script>
+	</body>
+
+</html>
+
+

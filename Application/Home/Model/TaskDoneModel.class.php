@@ -40,7 +40,7 @@ class TaskDoneModel extends Model{
      */
     public function add_done($data){
         if(!empty($data)) {
-            $re = $this->add($data);
+            $re = $this -> add($data);
         }
         if($re){
             return $re;
@@ -81,24 +81,22 @@ class TaskDoneModel extends Model{
             $end_time = "";
         }else{
             $start_time = $this -> get_start_time($date);
-            $ss = strtotime($start_time);
-            $end_time = date('Y-m-d 23:59:59', strtotime('Sunday', $ss));
+            $ss         = strtotime($start_time);
+            $end_time   = date('Y-m-d 23:59:59', strtotime('Sunday', $ss));
         }
         return $end_time;
     }
 
-
     /**
-     * 在task_done表中根据get_time和uid获取任务类型
-     * @param   $type integer 任务类型 1：日常任务 2：额外任务
-     * @return  bool
+     * 根据用户获取本周内所有已领取的任务
+     * @return mixed
      */
-    public function get_this_week_task($type){
+    public function get_this_week_all_task(){
         $date = date('Y-m-d H:i:s');
         $start_time = $this -> get_start_time($date);
         $end_time = $this -> get_end_time($date);
-        $map['get_time'] = array(array('gt', $start_time), array('lt', $end_time));
-        $map['uid'] = $_SESSION['userid'];
+        $map['get_time']    = array(array('gt', $start_time), array('lt', $end_time));
+        $map['uid']         = $_SESSION['userid'];
         $res = $this -> where($map) -> select();//有值就说明已经领取过了
         foreach($res as $k => $v){
             $task_id = $res[$k]['task_id'];
@@ -108,6 +106,17 @@ class TaskDoneModel extends Model{
             $res[$k]['inneed']  = $task_ids['inneed'];
             $res[$k]['name']    = $task_ids['name'];
         }
+        return $res;
+    }
+
+
+    /**
+     * 在task_done表中根据get_time和uid获取任务类型
+     * @param   $type integer 任务类型 1：日常任务 2：额外任务
+     * @return  bool
+     */
+    public function get_this_week_task($type){
+        $res = $this -> get_this_week_all_task();
         foreach ($res as $key => $val) {
             if ($val['type'] == $type) {
                 $result[$key] = $val;
@@ -130,10 +139,10 @@ class TaskDoneModel extends Model{
      */
     public function i_array_column($input, $columnKey, $indexKey=null){
         if(!function_exists('array_column')){
-            $columnKeyIsNumber  = (is_numeric($columnKey))?true:false;
-            $indexKeyIsNull            = (is_null($indexKey))?true :false;
-            $indexKeyIsNumber     = (is_numeric($indexKey))?true:false;
-            $result                         = array();
+            $columnKeyIsNumber  = (is_numeric($columnKey))  ?true :false;
+            $indexKeyIsNull     = (is_null($indexKey))      ?true :false;
+            $indexKeyIsNumber   = (is_numeric($indexKey))   ?true :false;
+            $result             = array();
             foreach((array)$input as $key=>$row){
                 if($columnKeyIsNumber){
                     $tmp= array_slice($row, $columnKey, 1);
@@ -156,6 +165,23 @@ class TaskDoneModel extends Model{
         }else{
             return array_column($input, $columnKey, $indexKey);
         }
+    }
+
+    /**
+     * 获取数组中键值名相同的个数
+     * @param $arr  array   数组
+     * @param $key  string  键名
+     * @param $value        键值
+     * @return int
+     */
+    public function get_count($arr,$key,$value){
+        foreach ($arr as $k => $v) {
+            if ($v[$key] == $value) {
+                $num[$k] = $v;
+                $re = count($num);
+            }
+        }
+        return $re = $re == 0 ? 0 : $re;
     }
 
 }

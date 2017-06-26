@@ -69,8 +69,8 @@
                             </if>
                         </td>
                         <td>
-                            <if condition="$vo.status eq 3">
-                                    <a href="{:U('Main/taskView',array('id'=>$vo['id']))}"> 查看</a>
+                            <if condition="$vo.status eq 1">
+                                编辑
                                 <else/>
                                 <a href="{:U('Main/taskEdit',array('id'=>$vo['id']))}">编辑</a>
                             </if>

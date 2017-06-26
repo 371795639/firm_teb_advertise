@@ -140,11 +140,6 @@ class UserController extends HomeController {
         $this->display();
     }
 
-    /* 任务大厅 */
-    public function taskOffice1(){
-        $this->display();
-    }
-
     /* 宣传中心 */
     public function propagate(){
         $this->display();

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>我的任务</title>
+    <link href="/Public/Home/css/mui.css" rel="stylesheet"/>
+    <!--自定义样式-->
+    <link rel="stylesheet" href="/Public/Home/css/common/common.css" />
+    <link rel="stylesheet" href="/Public/Home/css/task/task.css" />
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav gradient">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left "></a>
+			<h1 class="mui-title">我的任务</h1>
+		</header>
+		<div class="mui-content">
+			<div style="padding: 1.5rem 0;">
+				<div id="segmentedControl" class="mui-segmented-control">
+					<div class="inline">
+						<a class="mui-control-item mui-active" href="#item1">
+							{$doneNo}<br>
+							已完成
+						</a>
+					</div>
+					<div class="inline">
+						<a class="mui-control-item" href="#item2">
+							{$doingNo}<br>
+							进行中
+						</a>
+					</div>
+					<div class="inline">
+						<a class="mui-control-item" href="#item3">
+							{$noUseNo}<br>
+							未完成
+						</a>
+					</div>
+				</div>
+			</div>
+			<div  id="list">
+				<!--
+                	作者：anhuizxd2015@163.com
+                	时间：2017-06-09
+                	描述：已经完成的
+                -->
+				<div id="item1" class="mui-control-content mui-active" >					
+					<!--时间列表模板-->
+                    <p>
+                        任务期限： {$resDoneStart} ~ {$resDoneEnd}
+                    </p>
+					<div class="content" >
+                        <p>
+                            日常任务
+                        </p>
+                        <ul class="mui-table-view">
+                            <volist name="resDoneOne" id="vo">
+                                <if condition="$vo.status eq 2">
+                                    <li class="mui-table-view-cell mui-media">
+                                        <a >
+                                            <span>{$vo.name}</span><span class="right">{$vo.done_time|time_formats}</span>
+                                        </a>
+                                    </li>
+                                </if>
+                            </volist>
+                        </ul>
+					</div>
+					<div class="content" >
+                        <p>
+                             额外任务
+                        </p>
+                        <ul class="mui-table-view">
+                            <volist name="resDoneTwo" id="vo">
+                                <if condition="$vo.status eq 2">
+                                    <li class="mui-table-view-cell mui-media">
+                                        <a >
+                                            <span>{$vo.name}</span><span class="right">{$vo.done_time|time_formats}</span>
+                                        </a>
+                                    </li>
+                                 </if>
+                            </volist>
+                        </ul>
+					</div>
+				</div>
+				<!--
+                	作者：anhuizxd2015@163.com
+                	时间：2017-06-09
+                	描述：进行中的
+                -->
+				<div id="item2" class="mui-control-content">
+                    <p>
+                        任务期限： {$resDoneStart} ~ {$resDoneEnd}
+                    </p>
+					<div class="content">
+						<p>
+                            日常任务
+						</p>
+						<ul class="mui-table-view">
+                            <volist name="resDoneOne" id="vo">
+                                <if condition="$vo.status eq 1">
+                                    <li class="mui-table-view-cell mui-media">
+                                        <a >
+                                            <span>{$vo.name}</span><span class="right compelet">进行中</span>
+                                        </a>
+                                    </li>
+                                </if>
+                            </volist>
+						</ul>						
+					</div>
+                    <div class="content">
+                        <p>
+                            额外任务
+                        </p>
+                        <ul class="mui-table-view">
+                            <volist name="resDoneTwo" id="vo">
+                                <if condition="$vo.status eq 1">
+                                    <li class="mui-table-view-cell mui-media">
+                                        <a >
+                                            <span>{$vo.name}</span><span class="right compelet">进行中</span>
+                                        </a>
+                                    </li>
+                                </if>
+                            </volist>
+                        </ul>
+                    </div>
+                </div>
+				<!--
+                	作者：anhuizxd2015@163.com
+                	时间：2017-06-09
+                	描述：未完成的
+                -->
+				<div id="item3" class="mui-control-content">
+                    <p>
+                        任务期限： {$resDoneStart} ~ {$resDoneEnd}
+                    </p>
+					<div class="content">
+						<p>
+                            日常任务
+						</p>
+						<ul class="mui-table-view">
+                            <volist name="resDoneOne" id="vo">
+                                <if condition="$vo.status eq 3">
+                                    <li class="mui-table-view-cell mui-media">
+                                        <a >
+                                            <span>{$vo.name}</span><span class="right compelet">未完成</span>
+                                        </a>
+                                    </li>
+                                </if>
+                            </volist>
+						</ul>	
+					</div>
+                    <div class="content">
+                        <p>
+                            额外任务
+                        </p>
+                        <ul class="mui-table-view">
+                            <volist name="resDoneTwo" id="vo">
+                                <if condition="$vo.status eq 3">
+                                    <li class="mui-table-view-cell mui-media">
+                                        <a >
+                                            <span>{$vo.name}</span><span class="right compelet">未完成</span>
+                                        </a>
+                                    </li>
+                                </if>
+                            </volist>
+                        </ul>
+                    </div>
+                </div>
+			</div>
+		</div>
+		<script src="/Public/Home/js/mui.min.js"></script>
+	</body>
+</html>

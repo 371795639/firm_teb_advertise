@@ -5,20 +5,48 @@ use Think\Controller;
 
 class TaskController extends HomeController {
 
+    /**我的任务**/
     public function index(){
-
+        $dbTaskDone     = D('TaskDone');
+        $resDoneOne     = $dbTaskDone -> get_this_week_task('1');
+        $resDoneTwo     = $dbTaskDone -> get_this_week_task('2');
+        $date           = date('Y-m-d H:i:s');
+        $resDoneStart   = $dbTaskDone -> get_start_time($date);
+        $resDoneEnd     = $dbTaskDone -> get_end_time($date);
+        $resDoneCount   = $dbTaskDone -> get_this_week_all_task();
+        $doneNo         = $dbTaskDone -> get_count($resDoneCount,'status',2);
+        $doingNo        = $dbTaskDone -> get_count($resDoneCount,'status',1);
+        $noUseNo        = $dbTaskDone -> get_count($resDoneCount,'status',3);
+        $this -> assign('doneNo',$doneNo);
+        $this -> assign('doingNo',$doingNo);
+        $this -> assign('noUseNo',$noUseNo);
+        $this -> assign('resDoneStart',$resDoneStart);
+        $this -> assign('resDoneEnd',$resDoneEnd);
+        $this -> assign('resDoneOne',$resDoneOne);
+        $this -> assign('resDoneTwo',$resDoneTwo);
+        $this -> display();
     }
 
 
-    /**加载任务大厅页面**/
+    /**任务大厅**/
     public function taskOffice(){
         $dbTaskWeekly = D('TaskWeekly');
         $dbTaskDone = D('TaskDone');
-        $weeklyTypeOne  = $dbTaskWeekly -> get_weekly_type('1');
-        $weeklyTypeTwo  = $dbTaskWeekly -> get_weekly_type('2');
-        $moneyOne       = $dbTaskWeekly -> get_weekly_money('1');
-        $moneyTwo       = $dbTaskWeekly -> get_weekly_money('2');
-        $taskDaily      = $dbTaskDone   -> get_this_week_task('1');
+        $weeklyTypeOne  = $dbTaskWeekly -> get_weekly_type('1');//获取本周日常任务
+        $weeklyTypeTwo  = $dbTaskWeekly -> get_weekly_type('2');//获取本周额外任务
+        $moneyOne       = $dbTaskWeekly -> get_weekly_money('1');//获取本周日常任务总金额
+        $moneyTwo       = $dbTaskWeekly -> get_weekly_money('2');//获取本周额外任务总金额
+        $taskDaily      = $dbTaskDone   -> get_this_week_task('1');//获取用户已领取的日常任务列表
+        foreach($weeklyTypeOne as $k => $v){
+            $task_id = $weeklyTypeOne[$k]['task_id'];
+            $resDone = $dbTaskDone -> get_done_by_uid('task_id',$task_id,'find');
+            $weeklyTypeOne[$k]['nstatus'] = $resDone['status'];
+        }
+        foreach($weeklyTypeTwo as $k => $v){
+            $task_id = $weeklyTypeTwo[$k]['task_id'];
+            $resDone = $dbTaskDone -> get_done_by_uid('task_id',$task_id,'find');
+            $weeklyTypeTwo[$k]['nstatus'] = $resDone['status'];
+        }
         if($taskDaily){
             $daily = 1 ; //已领取
         }else{
@@ -62,7 +90,7 @@ class TaskController extends HomeController {
                     foreach($weeklyTypeOne as $k => $v){
                         $data['task_id']    = $weeklyTypeOne[$k]['task_id'];
                         $data['inneed']     = $weeklyTypeOne[$k]['inneed'];
-                        $dbTaskDone -> add_done($data);
+                        $resDone = $dbTaskDone -> add_done($data);
                     }
                 }
                 break;
@@ -88,28 +116,23 @@ class TaskController extends HomeController {
                             'done_time' => '',  //不可用null，否则无法插入数据
                             'status'    => 1,
                         );
-                        $dbTaskDone->add_done($data);
+                        $resDone = $dbTaskDone->add_done($data);
                     }
                 }
                 break;
         }
-        //上面是对是否插入数据进行判断，下面是展示taskOfficeDetail页面
-        $taskDoneDaily      = $dbTaskDone   -> get_this_week_task('1');
-        $taskDoneExtra      = $dbTaskDone   -> get_this_week_task('2');
-        $this -> assign('taskDoneDaily',$taskDoneDaily);
-        $this -> assign('taskDoneExtra',$taskDoneExtra);
-        $this -> display();
+        if($resDone){
+            $this -> success('领取成功',U('Home/User/index'));  //TODO:跳转需要重新封装
+        }else{
+            $this -> error('领取失败');
+        }
     }
 
 
-    /**日常提交任务**/
+    /**判断任务是否完成**/
     public function taskSubmit(){
-        //思路
-        //任务完成的情况下：
-            // 1.将表中日常任务的状态值从1改成2
-            // 2.将给用户增加金额
-        //任务过期未完成的情况下：
-            // 1.将表中日常任务的状态值从1改成3
+        
+
     }
 
 

@@ -14,16 +14,16 @@ input[type=button]{
 	margin-top:2rem ;
 }
 #getTestNum{
-	width:10rem;
-	height:3rem;
+	width:8rem;
+	height:30px;
 	color:#FFF;
-	font-size:1.6rem;
+	font-size:15px;
 	font-weight: bold;
 	float:left;
-	margin-top: 0.5rem;
+	margin-top: 4px;
 }
 #testNum{
-	width:calc(65% - 12rem);
+	width:calc(65% - 9rem);
 	float:left;
 }
 
@@ -47,4 +47,14 @@ input[type=button]{
 .mui-input-row{
 	background: #FFF;
 	padding:0 1rem ;
+}
+/************按钮****************/
+#regBtn,#compelet{
+	display: block;
+	width: 80%;
+	height: 40px;
+	line-height: 15px;
+	margin: 20px auto;
+	color: #FFF;
+	font-size: 18px;
 }
