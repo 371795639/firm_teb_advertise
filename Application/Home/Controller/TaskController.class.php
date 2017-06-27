@@ -131,8 +131,36 @@ class TaskController extends HomeController {
 
     /**判断任务是否完成**/
     public function taskSubmit(){
-        
-
+        $staff      = D('Staff');
+        $staffInfo  = D('StaffInfo');
+        $taskDone   = D('TaskDone');
+        $id         = $_SESSION['userid'];
+        $res  = $staff      -> count_staff_by_referee($id);
+        $done = $taskDone   -> get_this_week_task('1');
+        $left = $staffInfo  -> get_staff_by_uid($id);
+        foreach($done as $k => $v){
+            if($done[$k]['name'] == '分享推广专员'){ //任务名称必须设置成 分享推广专员
+                $inneed = $done[$k]['inneed'];
+            }
+        }
+        $data['recommend_num'] =  $res;
+        if($left['recommend_num'] == 0){ //第一次做任务
+            $data['recommend_left_num'] =  $res - $inneed;
+            if($data['recommend_left_num'] >= 0){
+                //任务完成成功
+            }else{
+                //任务未做完，设置recommend_left_num 字段值为0
+                $data['recommend_left_num'] = $recommend_left_num = 0;
+            }
+        }else{
+            $data['recommend_left_num'] = $res - $left['recommend_num'] - $inneed + $left['recommend_left_num'];
+        }
+        $resInfo = $staffInfo -> save_staff_by_uid($id,$data);
+        if($resInfo){
+            //数据写入成功 接下来 发奖励、写流水
+        }else{
+            $this -> error('系统错误');
+        }
     }
 
 

@@ -8,6 +8,16 @@
     <!--自定义样式-->
     <link rel="stylesheet" href="/Public/Home/css/common/common.css" />
     <link rel="stylesheet" href="/Public/Home/css/encourage/encourage.css" />
+    <style type="text/css">
+    	.text-overflow {
+		    display:inline-block;
+		    width:16rem;
+		    word-break:keep-all;
+		    white-space:nowrap;
+		    overflow:hidden;
+		    text-overflow:ellipsis;
+		}
+    </style>
 	</head>
 	<body>
 		<header class="mui-bar mui-bar-nav gradient">
@@ -15,54 +25,71 @@
 			<h1 class="mui-title">奖励中心</h1>
 		</header>
 		<div class="mui-content" style="padding-bottom: 50px;">
-			<div style="padding: 10px 10px;">
+			<div style="padding: 1.4rem 1.5rem; background: #FFF;">
 				<div id="segmentedControl" class="mui-segmented-control">
-					<a class="mui-control-item mui-active" href="#item1">
-						任务奖励
-					</a>
-					<a class="mui-control-item" href="#item2">
-						推广奖励
-					</a>
-					<a class="mui-control-item" href="#item3">
-						游戏分红
-					</a>
+					<div class="inline">
+						<a class="mui-control-item mui-active" href="#item1">
+							任务奖励
+						</a>
+					</div>
+					<div class="inline">
+						<a class="mui-control-item" href="#item2">
+							推广奖励
+						</a>
+					</div>
+					<div class="inline">
+						<a class="mui-control-item" href="#item3">
+							游戏分红
+						</a>
+					</div>					
 				</div>
 			</div>
-			<div style="width: 100%;height: 10px;"></div>
 			<div  id="list">
-				<!--
-                	作者：anhuizxd2015@163.com
-                	时间：2017-06-09
-                	描述：任务奖励
-                -->
-				<div id="item1" class="mui-control-content mui-active">
-					<ul class="mui-table-view">
+				<!--描述：任务奖励-->
+				<div id="item1" class="mui-control-content mui-active" >
+					<ul>
 						<volist name="taskReward" id="vo">
-						<li class="mui-table-view-cell">{$vo.base_money}<span class="right">{$vo.create_time}</span> </li>
+						<li>
+							<div class="left ">
+								<span class="text-overflow">任务奖励</span>
+								<span class="time">{$vo.create_time}</span>
+							</div>
+						 	<div class="right col-ye">
+								+ {$vo['base_money']+$vo['extra_money']}
+							</div>
+						</li>
 						</volist>
 					</ul>
 				</div>
-				<!--
-                	作者：anhuizxd2015@163.com
-                	时间：2017-06-09
-                	描述：推广奖励
-                -->
+				<!--描述：推广奖励-->
 				<div id="item2" class="mui-control-content">
-					<ul class="mui-table-view">
+					<ul>
 						<volist name="spreadReward" id="vo">
-						<li class="mui-table-view-cell">{$vo.base_money}<span class="right">{$vo.create_time}</span> </li>
+							<li>
+								<div class="left ">
+									<span class="text-overflow">推广奖励</span>
+									<span class="time">{$vo.create_time}</span>
+								</div>
+								<div class="right col-ye">
+									+{$vo['base_money']+$vo['extra_money']}
+								</div>
+							</li>
 						</volist>
 					</ul>
 				</div>
-				<!--
-                	作者：anhuizxd2015@163.com
-                	时间：2017-06-09
-                	描述：游戏分红
-                -->
+				<!--描述：游戏分红 -->
 				<div id="item3" class="mui-control-content">
-					<ul class="mui-table-view">
-						<volist name="bonusReward" id="vo">
-				        <li class="mui-table-view-cell">{$vo.base_money}<span class="right">{$vo.create_time}</span> </li>
+					<ul>
+						<volist  name="bonusReward" id="vo">
+						<li>
+							<div class="left ">
+								<span class="text-overflow">游戏奖励</span>
+								<span class="time">{$vo.create_time}</span>
+							</div>
+						 	<div class="right col-ye">
+								+{$vo['base_money']+$vo['extra_money']}
+							</div>
+						</li>
 						</volist>
 					</ul>
 				</div>

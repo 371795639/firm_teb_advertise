@@ -50,8 +50,13 @@ class UserController extends HomeController {
         $dbStaff  = D('staff');
         $userid   = $_SESSION['userid'];
         $resStaff = $dbStaff->where('id='.$userid)->find();
-
         $this->assign('resStaff',$resStaff);
+        /*显示剩余任务个数--开始*/
+        $dbTaskDone     = D('TaskDone');
+        $resDoneCount   = $dbTaskDone -> get_this_week_all_task();
+        $doingNo        = $dbTaskDone -> get_count($resDoneCount,'status',1);
+        $this->assign('doingNo',$doingNo);
+        /*显示剩余任务个数--结束*/
         $this->display();
     }
 
@@ -75,49 +80,16 @@ class UserController extends HomeController {
 	    $this->display();
     }
 
-    /* 我的银行卡 */
-    public function myCard(){
-	    $this->display();
-    }
-
-    /* 我的任务 */
-    public function task(){
-        $this->display();
-    }
-
-    /* 分享二维码 */
-    public function share(){
-        $this->display();
-    }
-
-    /* 个人设置 */
-    public function set(){
-        $this->display();
-    }
-
-    /* 我的报表 */
-    public function financialStatements(){
-        $this->display();
-    }
-
-    /* 消息管理 */
-    public function infoManagement(){
-        $this->display();
-    }
-
     /* 奖励中心 */
     public function encourage(){
         $dbReward  = M('reward');
         $userid    = $_SESSION['userid'];
         //游戏分红
-        $bonusReward = $dbReward->where(array('uid' => $userid , 'type' => 1))->select();
+        $bonusReward = $dbReward->where(array('uid' => $userid , 'type' => 1))->order('create_time desc')->select();
         //任务奖励
-        $taskReward = $dbReward->where(array('uid' => $userid , 'type' => 2))->select();
+        $taskReward = $dbReward->where(array('uid' => $userid , 'type' => 2))->order('create_time desc')->select();
         //推荐奖励
-        $map['create_time'] = array('EGT',date('Y-m-d 00:00:00'));
-        $map['uid'] = array('EQ',$userid);
-        $map['type'] = array('EQ',3);
-        $spreadReward = $dbReward->where($map)->select();
+        $spreadReward = $dbReward->where(array('uid' => $userid , 'type' => 3))->order('create_time desc')->select();
         //输出模板
         $this->assign('bonusReward',$bonusReward);
         $this->assign('taskReward',$taskReward);
@@ -125,26 +97,35 @@ class UserController extends HomeController {
         $this->display();
     }
 
-    /* 账单管理 */
+    /* 财务管理 */
     public function rechargeWithdrawCash(){
+        $dbwithdraw = M('withdraw');
+        $dbcharge   = M('charge');
+        $uid = $_SESSION['userid'];
+        $currMinTime = date('Y-m-01 00:00:00',time());          //获取当前月份最小时间
+        //本月提现
+        $condition['uid'] = array('eq',$uid );                  //等于uid且大于等于当前月份最小时间
+        $condition['create_time'] = array('EGT',$currMinTime);
+        $preMonthWithdraw = $dbwithdraw->where($condition)->order('create_time desc')->select();
+        //历史提现
+        $condition['uid'] = array('eq',$uid );                  //等于uid且小于当前月份最小时间
+        $condition['create_time'] = array('LT',$currMinTime);
+        $hisMonthWithdraw = $dbwithdraw->where($condition)->order('create_time desc')->select();
+        //本月充值
+        $condition['pay_id'] = array('eq',$uid );               //等于pay_id且大于等于当前月份最小时间
+        $condition['create_time'] = array('EGT',$currMinTime);
+        $preMonthCharge = $dbcharge->where($condition)->order('create_time desc')->select();
+        //历史充值
+        $condition['uid'] = array('eq',$uid );                  //等于uid且小于当前月份最小时间
+        $condition['create_time'] = array('LT',$currMinTime);
+        $hisMonthCharge = $dbcharge->where($condition)->order('create_time desc')->select();
+        //渲染
+        $this->assign('refWidthdraw',$preMonthWithdraw);
+        $this->assign('hisMonthWithdraw',$hisMonthWithdraw);
+        $this->assign('preMonthCharge',$preMonthCharge );
+        $this->assign('hisMonthCharge',$hisMonthCharge );
         $this->display();
     }
-
-    /* 推广管理 */
-    public function spreadManage(){
-        $this->display();
-    }
-
-    /* 客服中心 */
-    public function customService(){
-        $this->display();
-    }
-
-    /* 宣传中心 */
-    public function propagate(){
-        $this->display();
-    }
-
 
 
 }

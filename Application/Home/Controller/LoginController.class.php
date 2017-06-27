@@ -95,8 +95,10 @@ class LoginController extends \Think\Controller {
                     );
                         //插入一条新用户记录
                         $ref = $dbStaff->add($refStaff);
-                        if ($ref) {//清除session指定字段的值
+                        if ($ref) {//清除session验证码的信息
                         unset($_SESSION['verifyNum']['content']);
+                        //添加session用户id信息
+                        $_SESSION['userid'] = $ref ;
                         //跳转微信支付
                         $customerid = 102090;                               //商户在网关系统上的商户号 TODO 获得商户号
                         $sdcustomno = $customerid . time() . rand(1000000, 9999999);//订单在商户系统中的流水号 商户信息+日期+随机数
@@ -104,11 +106,11 @@ class LoginController extends \Think\Controller {
                         $cardno = 51;                                       //微信wap  (固定值 51)
                         $key = 'b0308d76c651420ce1e4662f36dc11ee';          //       TODO 获得key
                         $noticeurl = 'http://' . $_SERVER['HTTP_HOST'] . '/home/login/wxcallback';    //在网关返回信息时通知商户的地址,该地址不能带任何参数，否则异步通知会不成功
-                        $backurl = 'http://' . $_SERVER['HTTP_HOST'] . '/home/login/registerSucc';    //在网关返回信息时回调商户的地址,跳转到完善信息页面
+                        $backurl   = 'http://' . $_SERVER['HTTP_HOST'] . '/home/login/registerSucc';    //在网关返回信息时回调商户的地址,跳转到完善信息页面
                         //sign进行加密
                         $Md5str = 'customerid=' . $customerid . '&sdcustomno=' . $sdcustomno . '&orderAmount=' . $orderAmount . '&cardno=' . $cardno . '&noticeurl=' . $noticeurl . '&backurl=' . $backurl . $key;
                         $sign = strtoupper(md5($Md5str));//发送给网关的签名字符串,为以上参数加商户在网关系秘钥（key）一起按照顺序MD5加密并转为大写的字符串
-                        $mark = $refStaff['mobile'];     //商户自定义信息，不能包含中文字符，因为可能编码不一致导致MD5加密结果不一致,返回改手机号码 然后查询该纪录
+                        $mark = $ref;     //商户自定义信息，不能包含中文字符，因为可能编码不一致导致MD5加密结果不一致,返回用户uid 然后查询该纪录
                         //拼接url
                         $url = 'http://www.51card.cn/gateway/weixinpay/wap-weixinpay.asp?customerid=' . $customerid . '&sdcustomno=' . $sdcustomno . '&orderAmount=' . $orderAmount . '&cardno=' . $cardno . '&noticeurl=' . $noticeurl . '&backurl=' . $backurl . '&sign=' . $sign . '&mark=' . $mark;
                         //跳转url
@@ -154,19 +156,24 @@ class LoginController extends \Think\Controller {
             if(($yzsign == $sign)&&($yzresign == $resign)){
                 //验证充值状态以及缴费金额
                 if($state==1 && $ordermoney>=1000){ //$state==1 && $ordermoney>=1000
-                    //回调参数获得该用户手机号码
-                    $mobile = $mark;
-                    //实例化staff
-                    $dbStaff = D('staff');
-                    //字段参数设置为1,代表可用状态
-                    $refStaff['status'] = 1;
-                    //根据条件更新记录
-                    $dbStaff->where('mobile='.$mobile)->save($refStaff);
-                    //保存session方便跳转后获得该用户手机号进行完善信息
-                    $_SESSION['mobile'] = $mobile;
-                    //返回1给网关
-                    echo '<result>1</result>';
-                    //网关返回信息回调本商户地址
+                    //回调参数获得该用户id
+                    $uid = $mark;
+                    //实例化flow流水表
+                    $dbFlow = D('flow');
+                    $refFlow = array(
+                        'uid'   => $uid,
+                        'type'  => 7,
+                        'money' => $ordermoney,
+                        'create_time' => date('y-m-d h:i:s', time()),
+                    );
+                    //插入流水表
+                    $refFlow = $dbFlow->add($refFlow);
+                    if($refFlow){
+                        //返回1给网关
+                        echo '<result>1</result>';
+                    }
+                    //保存session方便跳转后获得该用户id号进行完善信息
+                    $_SESSION['userid'] = $uid;
                 }
                 else{//充值失败或充值金额不足
 
@@ -180,7 +187,14 @@ class LoginController extends \Think\Controller {
 
     /* 注册成功 */
     public function registerSucc()
-    {
+    {   //查流水表
+        $dbFlow = M('flow');
+        $refFlow = $dbFlow->where(array('uid'=>$_SESSION['userid'] , 'type'=> 7))->find();
+        if($refFlow){//查询用户表改状态
+            $dbStaff  = M('staff');
+            $staffStatus['status'] = 1;
+            $dbStaff->where('id='.$_SESSION['userid'])->save($staffStatus);
+        }
         $this->display();
     }
 

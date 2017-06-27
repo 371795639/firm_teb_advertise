@@ -65,12 +65,15 @@
 						<div class="border-box">
 							<img src="/Public/Home/img/morning.jpg"/>
 							<p>
-								任务大厅    
+								任务大厅
 								<span class="right">
-									剩余3个任务
+                                    <if condition="$doingNo eq 0">
+                                        <else />
+									    剩余{$doingNo}个任务
+                                    </if>
 								</span>
 							</p>
-						</div>	
+						</div>
 					</div>
 					<div class="middle">
 						<img src="/Public/Home/img/taskCenter.jpg" style="height:13.3rem;" onclick="goXczx()"/>
