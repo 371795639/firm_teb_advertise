@@ -30,16 +30,22 @@
 	border: 1px solid #94D599;
 	border-radius:3px ;
 	color:#94D599 ;
+	font-size: 14px;
+	padding: 0 !important;
 }
 #list .compeleting{
 	border: 1px solid #FDD061;
 	border-radius:3px ;
 	color:#FDD061 ;
+	font-size: 14px;
+	padding: 0 !important;
 }
-#list .unCompelet{
-	border: 1px solid #FF6092;
+#list .un-compelet{
+	border: 1px solid #FF3334;
 	border-radius:3px ;
-	color:#FF6092 ;
+	color:#FF3334 ;
+	font-size: 14px;
+	padding: 0 !important;
 }
 /**/
 .inline{
@@ -52,3 +58,26 @@
 	width:7rem;
 	border: 2px solid transparent;
 }
+ /*头部显示截止时间*/
+.limit-time{
+	padding:0 1.5rem !important ;
+	/*background: #F4F4F4;*/
+	text-align: center !important;
+}
+.task-name{
+	color: #333333;
+	font-size: 16px;
+}
+.compelet-time{
+	color: #9b9b9b;
+	font-size: 16px;
+}
+.task-type{
+	margin-bottom: 5px;
+}			
+.task-type img{
+	width: 1.2rem;
+	height: 1.6rem;
+	vertical-align: middle;
+	margin-right: 1.3rem;
+}		

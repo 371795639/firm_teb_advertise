@@ -3,59 +3,110 @@
     <div class="main-title">
         <h2>奖励明细</h2>
     </div>
-    <form action="" method="post">
-        <div class="data-table table-striped">
-            <table class="">
-                <div class="text-right">
-                    ID： <input type="text" class="search-input">
-                    名称：<input type="text" class="search-input">
-                    类型：
-                    <select name="" id="">
-                        <option value="">11111</option>
-                        <option value="">22222</option>
-                    </select>
-                    <button class="btn ajax-post">搜索</button>
-                    <button class="btn ajax-post">导出</button>
-                </div>
-                <br>
-                <thead>
-                    <tr>
-                        <th>编号</th>
-                        <th>账户</th>
-                        <th>手机号</th>
-                        <th>奖励类型</th>
-                        <th>奖励时间</th>
-                        <th>金额</th>
-                        <th>累计次数</th>
-                        <th>累计金额</th>
-                        <th>奖励状态</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>13888888888</td>
-                        <td>13888888888</td>
-                        <td>xxxx</td>
-                        <td>xxxx</td>
-                        <td>￥1000</td>
-                        <td>￥10000</td>
-                        <td>xxxx</td>
-                        <td>未领取</td>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                </tbody>
-            </table>
+
+    <!--表头-->
+    <div class="search-form fr cf">
+        <div class="text-right">
+            <input type="text" class="search-input" onClick="WdatePicker()" name="start_time" style="cursor: pointer;" value="{:I('start_time')}" id="start" placeholder="选择开始日期" />
+            <input type="text" class="search-input" onClick="WdatePicker()" name="end_time" style="cursor: pointer;" value="{:I('end_time')}" id="end" placeholder="选择结束日期" />
+            <input type="number" name="mobile" class="search-input" value="{:I('mobile')}" id="mobile" placeholder="输入用户手机号">
+            <select name="type" id="type">
+                <option value="">任务类型</option>
+                <option value="2" <eq name="type.value" value="2">selected</eq> >任务奖励</option>
+                <option value="3" <eq name="type.value" value="3">selected</eq> >推荐奖励</option>
+                <option value="4" <eq name="type.value" value="4">selected</eq> >充值提成</option>
+                <option value="5" <eq name="type.value" value="5">selected</eq> >中心推荐奖励</option>
+                <option value="6" <eq name="type.value" value="6">selected</eq> >中心业绩奖励</option>
+            </select>
+            <a class="btn" href="javascript:;" url="{:U('Cash/cashDetail',array('method'=>'list'))}" id="search">搜索</a>
+            <a class="btn" href="javascript:;" url="{:U('Cash/cashDetail',array('method'=>'out'))}" id="out">导出</a>
         </div>
-    </form>
+    </div>
+    <br/>
+    <!-- 数据列表 -->
+    <div class="data-table table-striped">
+        <table>
+            <thead>
+            <tr>
+                <th class="text-center">编号</th>
+                <th class="text-center">用户姓名</th>
+                <th class="text-center">手机号</th>
+                <th class="text-center">奖励类型</th>
+                <th class="text-center">奖励金额</th>
+                <th class="text-center">奖励时间</th>
+                <th class="text-center">奖励单号</th>
+                <th class="text-center">备注</th>
+            </tr>
+            </thead>
+            <tbody class="text-center">
+            <notempty name="list">
+                <volist name="list" id="vo">
+                    <tr>
+                        <td>{$vo.number}</td>
+                        <td>{$vo.real_name}</td>
+                        <td>{$vo.mobile}</td>
+                        <td>{$vo.type}</td>
+                        <td>￥{$vo.money}</td>
+                        <td>{$vo.create_time}</td>
+                        <td>{$vo.order_id}</td>
+                        <td>{$vo.remarks}</td>
+                    </tr>
+                </volist>
+                <else/>
+                <td colspan="12" class="text-center"> @_@ 暂时还没有内容哦，快去添加吧。 </td>
+            </notempty>
+            </tbody>
+        </table>
+    </div>
+    <div class="page">
+        {$_page}
+    </div>
+</block>
+<block name="script">
+    <script src="__STATIC__/thinkbox/jquery.thinkbox.js"></script>
+    <script language="javascript" type="text/javascript" src="__STATIC__/My97DatePicker/WdatePicker.js"></script>
+    <script type="text/javascript">
+        //搜索功能
+        $("#search").click(function(){
+            var url = $(this).attr('url');
+            var query  = $('.search-form').find('input').serialize();
+            var query_select  = $('.search-form').find('select').serialize();
+            console.log(query);
+            query = query.replace(/(&|^)(\w*?\d*?\-*?_*?)*?=?((?=&)|(?=$))/g,'');
+            query = query.replace(/^&/g,'');
+            query_select = query_select.replace(/(&|^)(\w*?\d*?\-*?_*?)*?=?((?=&)|(?=$))/g,'');
+            query_select = query_select.replace(/^&/g,'');
+            if( url.indexOf('?')>0 ){
+                url += '&' + query + '&' + query_select;
+            }else{
+                url += '?' + query;
+            }
+            window.location.href = url;
+        });
+        //导出功能
+        $("#out").click(function(){
+            var url = $(this).attr('url');
+            var query  = $('.search-form').find('input').serialize();
+            var query_select  = $('.search-form').find('select').serialize();
+            query = query.replace(/(&|^)(\w*?\d*?\-*?_*?)*?=?((?=&)|(?=$))/g,'');
+            query = query.replace(/^&/g,'');
+            query_select = query_select.replace(/(&|^)(\w*?\d*?\-*?_*?)*?=?((?=&)|(?=$))/g,'');
+            query_select = query_select.replace(/^&/g,'');
+            if( url.indexOf('?')>0 ){
+                url += '&' + query + '&' + query_select;
+            }else{
+                url += '?' + query + '?' + query_select;
+            }
+            window.location.href = url;
+        });
+        //回车搜索
+        $(".search-input").keyup(function(e){
+            if(e.keyCode === 13){
+                $("#search").click();
+                return false;
+            }
+        });
+        //导航高亮
+        highlight_subnav("{:U('Cash/cashDetail')}");
+    </script>
 </block>

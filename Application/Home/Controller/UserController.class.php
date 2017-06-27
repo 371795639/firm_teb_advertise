@@ -127,5 +127,35 @@ class UserController extends HomeController {
         $this->display();
     }
 
+    /* 推广管理 */
+    public function spreadManage(){
+        $dbRecommend = M('recommend');
+        $dbStaff     = M('staff');
+        $uid         = $_SESSION['userid'];
+        $refRecommend= $dbRecommend->where('uid='.$uid)->find();
+        $high_class  = $refRecommend['high_class'];
+        $refHighStaff= $dbStaff->where('id='.$high_class)->find();//上级
+        $last_class  = $refRecommend['last_class'];
+        $refLastStaff= $dbStaff->where('id='.$last_class)->find();//上上级
+
+        $staffSub =$dbStaff->where('referee='.$uid)->select();    //查询下级
+        $spreadCooperate = array(
+            array(
+                'staff_name' => $refHighStaff['staff_name'],      //上级推广员昵称
+            ),
+            array(
+                'staff_name' => $refLastStaff['staff_name'],      //上上级推广员昵称
+            ),
+        );
+
+        if($staffSub){
+            foreach ($staffSub as $key => $value){
+                $spreadCooperate[$key+2]['staff_name'] = $value['staff_name'];
+            }
+        }
+        $this->assign('spreadCooperate',$spreadCooperate);
+        $this->display();
+    }
+
 
 }

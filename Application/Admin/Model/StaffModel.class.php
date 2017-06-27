@@ -78,4 +78,22 @@ class StaffModel extends Model {
         }
     }
 
+    /**
+     * 获取指定字段下的值
+     * @param $field
+     * @return bool|mixed
+     */
+    public function getCash($field){
+        $re = $this->field($field)->select();
+        $re['game_num'] = 0;
+        $re['over_plus'] = 0;
+        if(!empty($re)){
+            foreach ($re as $value){
+                $re['over_plus'] += $value['money'];
+                $re['game_num'] += $value['consume_coin'];
+            }
+        }
+        return $re;
+    }
+
 }

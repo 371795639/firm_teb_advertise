@@ -5,6 +5,109 @@
 .model{
 	background:#fff ;
 	margin-bottom:1.5rem ;
+	padding: 0.5rem 1rem 0.5rem 1rem;
+}
+.model p{
+	color: #8A7DFF;
+	padding-top: 0 !important;				
+}
+.model>p>img{
+	color: #8A7DFF;
+	width: 1.2rem;
+	height: 1.6rem;
+}
+.mui-table-view-cell{
+	padding: 11px 10px;
+}
+.small{
+	font-size: 1.4rem;
+	color: #333333 !important;
+}           
+.submit{
+	color: #62C269;
+	border: 1px solid #62C269;
+}
+.ex-submit{
+	color: #ff558a;
+	border: 1px solid #ff558a;
+}
+.ing{	
+	color: #febe20;
+	border: 1px solid #febe20;
+}
+.mui-table-view button{			
+	padding: 0;	
+	margin-left: 5px;		
+}
+.mui-table-view span img{
+	width: 1.2rem;
+	height: 1.2rem;
+}
+.mui-btn.mui-btn-block{
+	padding: 6px 0;
+	color: #FF558A !important;
+	margin-bottom:0 ;
+}
+.mui-table-view-cell{
+	color: #9B9B9B;
+	font-size:1.4rem ;
+}
+.mui-table-view-cell img{
+	margin-left: 0.5rem;
+}
+.model .top-title{
+	font-size:1.6rem ;
+}
+.model .small-mind{
+	font-size:1.3rem ;
+}
+.get{/*可领取*/
+    border: 1px solid #FF3334;
+    border-radius: 3px;
+    color: #FF3334;
+}
+.geting{/*领取过的进行中*/
+    border: 1px solid #febe20;
+    border-radius: 3px;
+    color: #febe20;
+}
+.geted{
+	border: 1px solid #62c269;
+    border-radius: 3px;
+    color: #62c269;
+}
+.over-date{/*过期的*/
+	border: 1px solid #ccc;
+	border-radius: 3px;
+	color: #ccc;
+}
+.state{
+	font-size:1.2rem ;
+	padding: 0 !important;
+	margin-left: 0.5rem;
+}
+.money{
+	font-size: 1.5rem;
+}
+/******************任务大厅button元素换A标签样式**************************/
+.mui-table-view-cell>a:not(.mui-btn){
+	padding: 0;
+	position: relative; 
+    display: inline-block; 
+    overflow: hidden; 
+    margin:0 0 0 5px; 
+    white-space: nowrap; 
+    text-overflow: ellipsis; 
+    color:#62c269; 
+    font-size: 14px ;
+}
+/*.mui-content.gradient{
+	padding-right: 1rem;
+	padding-left: 1rem;
+}
+.model{
+	background:#fff ;
+	margin-bottom:1.5rem ;
 	padding: 0 1rem 0.5rem 1rem;
 }
 .model p{
@@ -43,4 +146,4 @@
 }
 .mui-table-view-cell{
 	color: #9B9B9B;
-}
+}*/

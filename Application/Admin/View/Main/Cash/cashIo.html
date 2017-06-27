@@ -3,59 +3,199 @@
     <div class="main-title">
         <h2>出入帐管理</h2>
     </div>
-    <form action="" method="post">
+    <div class="tab-wrap">
+        <ul class="tab-nav nav">
+            <li <eq name="nav_model" value="1">class="current"</eq>><a href="{:U('?nav_model=1')}">提现管理</a></li>
+            <li <eq name="nav_model" value="2">class="current"</eq>><a href="{:U('?nav_model=2')}">充值记录</a></li>
+        </ul>
+    </div>
+    <if condition="$nav_model eq 1">
+        <!--表头-->
+        <div class="search-form fr cf">
+            <div class="text-right">
+                <input type="text" class="search-input" onClick="WdatePicker()" name="start_time" style="cursor: pointer;" value="{:I('start_time')}" placeholder="选择提交开始日期" />
+                <input type="text" class="search-input" onClick="WdatePicker()" name="end_time" style="cursor: pointer;" value="{:I('end_time')}" placeholder="选择提交结束日期" />
+                <input type="number" name="mobile" class="search-input" value="{:I('mobile')}"  placeholder="输入用户手机号">
+                <select name="status" id="status">
+                    <option value="">提现状态</option>
+                    <option value="2" <eq name="status.value" value="2">selected</eq> >已提现</option>
+                    <option value="1" <eq name="status.value" value="1">selected</eq> >待提现</option>
+                </select>
+                <a class="btn search" href="javascript:;" url="{:U('Cash/cashIo',array('method'=>'list'))}">搜索</a>
+                <a class="btn out" href="javascript:;" url="{:U('Cash/cashIo',array('method'=>'out'))}">导出</a>
+            </div>
+        </div>
+        <br/>
+        <!-- 数据列表 -->
         <div class="data-table table-striped">
-            <table class="">
-                <div class="text-right">
-                    ID： <input type="text" class="search-input">
-                    名称：<input type="text" class="search-input">
-                    类型：
-                    <select name="" id="">
-                        <option value="">11111</option>
-                        <option value="">22222</option>
-                    </select>
-                    <button class="btn ajax-post">搜索</button>
-                    <button class="btn ajax-post">导出</button>
-                </div>
-                <br>
+            <table>
                 <thead>
-                    <tr>
-                        <th>编号</th>
-                        <th>账户</th>
-                        <th>手机号</th>
-                        <th>奖励类型</th>
-                        <th>奖励时间</th>
-                        <th>金额</th>
-                        <th>累计次数</th>
-                        <th>累计金额</th>
-                        <th>奖励状态</th>
-                    </tr>
+                <tr>
+                    <th class="text-center">编号</th>
+                    <th class="text-center">用户姓名</th>
+                    <th class="text-center">手机号</th>
+                    <th class="text-center">银行类型</th>
+                    <th class="text-center">开户支行</th>
+                    <th class="text-center">银行卡号</th>
+                    <th class="text-center">开户人</th>
+                    <th class="text-center">提现金额</th>
+                    <th class="text-center">税率(%)</th>
+                    <th class="text-center">到账金额</th>
+                    <th class="text-center">申请时间</th>
+                    <th class="text-center">处理时间</th>
+                    <th class="text-center">提现状态</th>
+                </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>13888888888</td>
-                        <td>13888888888</td>
-                        <td>xxxx</td>
-                        <td>xxxx</td>
-                        <td>￥1000</td>
-                        <td>￥10000</td>
-                        <td>xxxx</td>
-                        <td>未领取</td>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
+                <tbody class="text-center">
+                <notempty name="list">
+                    <volist name="list" id="vo">
+                        <tr>
+                            <td>{$vo.number}</td>
+                            <td>{$vo.real_name}</td>
+                            <td>{$vo.mobile}</td>
+                            <td>{$vo.bank_name}</td>
+                            <td>{$vo.subbranch}</td>
+                            <td>{$vo.card}</td>
+                            <td>{$vo.bank_holder}</td>
+                            <td>￥{$vo.money}</td>
+                            <td>{$vo.fee}</td>
+                            <td>￥{$vo.fact_money}</td>
+                            <td>{$vo.create_time}</td>
+                            <td>{$vo.handle_time}</td>
+                            <td>
+                                <eq name="vo.status" value="1"><button class="button btn refer" data-id="{$vo.id}">未提现</button></eq>
+                                <eq name="vo.status" value="2">已提现</eq>
+                            </td>
+                        </tr>
+                    </volist>
+                    <else/>
+                    <td colspan="12" class="text-center"> @_@ 暂时还没有内容哦，快去添加吧。 </td>
+                </notempty>
                 </tbody>
             </table>
         </div>
-    </form>
+        <div class="page">
+            {$_page}
+        </div>
+    <else/>
+        <!--表头-->
+        <div class="search-form fr cf">
+            <div class="text-right">
+                <input type="text" class="search-input" onClick="WdatePicker()" name="start_time" style="cursor: pointer;" value="{:I('start_time')}" id="start" placeholder="选择开始日期" />
+                <input type="text" class="search-input" onClick="WdatePicker()" name="end_time" style="cursor: pointer;" value="{:I('end_time')}" id="end" placeholder="选择结束日期" />
+                <!--<input type="number" name="mobile" class="search-input" value="{:I('mobile')}" id="mobile" placeholder="输入用户手机号">-->
+                <select name="type" id="vo">
+                    <option value="">充值类型</option>
+                    <option value="1" <eq name="vo.type" value="1">selected</eq> >自我充值</option>
+                    <option value="2" <eq name="vo.type" value="2">selected</eq> >为他人充值</option>
+                </select>
+                <a class="btn search" href="javascript:;" url="{:U('Cash/cashIo',array('method'=>'list','nav_model'=>2))}">搜索</a>
+                <a class="btn out" href="javascript:;" url="{:U('Cash/cashIo',array('method'=>'out','nav_model'=>2))}">导出</a>
+            </div>
+        </div>
+        <br/>
+        <!-- 数据列表 -->
+        <div class="data-table table-striped">
+            <table>
+                <thead>
+                <tr>
+                    <th class="text-center">编号</th>
+                    <th class="text-center">支付人</th>
+                    <th class="text-center">充值游戏账号</th>
+                    <th class="text-center">收款人</th>
+                    <th class="text-center">充值金额</th>
+                    <th class="text-center">充值类型</th>
+                    <th class="text-center">充值时间</th>
+
+                </tr>
+                </thead>
+                <tbody class="text-center">
+                <notempty name="lists">
+                    <volist name="lists" id="vo">
+                        <tr>
+                            <td>{$vo.number}</td>
+                            <td>{$vo.real_name}</td>
+                            <td>{$vo.game_id}</td>
+                            <td>{$vo.rec_name}</td>
+                            <td>￥{$vo.money}</td>
+                            <td>{$vo.val}</td>
+                            <td>{$vo.create_time}</td>
+                        </tr>
+                    </volist>
+                    <else/>
+                    <td colspan="12" class="text-center"> @_@ 暂时还没有内容哦，快去添加吧。 </td>
+                </notempty>
+                </tbody>
+            </table>
+        </div>
+        <div class="page">
+            {$_page}
+        </div>
+    </if>
+</block>
+<block name="script">
+    <script src="__STATIC__/thinkbox/jquery.thinkbox.js"></script>
+    <script language="javascript" type="text/javascript" src="__STATIC__/My97DatePicker/WdatePicker.js"></script>
+    <script type="text/javascript">
+        //搜索功能
+        $(".search").click(function(){
+            var url = $(this).attr('url');
+            var query  = $('.search-form').find('input').serialize();
+            var query_select  = $('.search-form').find('select').serialize();
+            query = query.replace(/(&|^)(\w*?\d*?\-*?_*?)*?=?((?=&)|(?=$))/g,'');
+            query = query.replace(/^&/g,'');
+            query_select = query_select.replace(/(&|^)(\w*?\d*?\-*?_*?)*?=?((?=&)|(?=$))/g,'');
+            query_select = query_select.replace(/^&/g,'');
+            if( url.indexOf('?')>0 ){
+                url += '&' + query + '&' + query_select;
+            }else{
+                url += '?' + query;
+            }
+            window.location.href = url;
+        });
+        //导出功能
+        $(".out").click(function(){
+            var url = $(this).attr('url');
+            var query  = $('.search-form').find('input').serialize();
+            var query_select  = $('.search-form').find('select').serialize();
+            query = query.replace(/(&|^)(\w*?\d*?\-*?_*?)*?=?((?=&)|(?=$))/g,'');
+            query = query.replace(/^&/g,'');
+            query_select = query_select.replace(/(&|^)(\w*?\d*?\-*?_*?)*?=?((?=&)|(?=$))/g,'');
+            query_select = query_select.replace(/^&/g,'');
+            if( url.indexOf('?')>0 ){
+                url += '&' + query + '&' + query_select;
+            }else{
+                url += '?' + query + '?' + query_select;
+            }
+            window.location.href = url;
+        });
+        //回车搜索
+        $(".search-input").keyup(function(e){
+            if(e.keyCode === 13){
+                $(".search").click();
+                return false;
+            }
+        });
+        //导航高亮
+        highlight_subnav("{:U('Cash/cashIo')}");
+
+        /*提现确认*/
+        $('.refer').on('click',function () {
+            var id = $(this).attr('data-id');
+            $.ajax({
+                url:'{:U("cashIo")}',
+                type:'post',
+                dataType:'json',
+                data:{id:id,submit:'submit'},
+                success:function(data){
+                    if(data['code'] == 1){
+                        alert('确认成功！');
+                        location.reload();
+                    }else{
+                        alert("操作失败！");
+                    }
+                }
+            });
+        })
+    </script>
 </block>

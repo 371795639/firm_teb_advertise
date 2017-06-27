@@ -15,30 +15,46 @@
 			<h1 class="mui-title">客服中心</h1>
 		</header>
 		<div class="mui-content ">
-			<div id="QA">
-				<p>
-					<span class="question">标签功能上线，更好的整理采集？</span>
-					<span class="times">5-02 15:08</span>
-				</p>
-				<div class="as">
-					<p>
-						平台回复
-						<span class="times">5-02 15:08</span>
-					</p>
-					<div class="text">
-						Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nam voluptatum distinctio numquam ut possimus dolorum odit reprehenderit tenetur voluptate enim rerum similique illo cupiditate commodi quia ad laborum perferendis modi?
-					</div>
-					<div class="triangle"><!--三角形--></div>
-				</div>
-			</div>
-			<div style="margin-top: 2rem;">
-				<form action="" method="post" class="display-none" id="text">
-					<textarea name="" id=""  placeholder="请给我们留言，我们会尽快处理" ></textarea>
-					<button id="submit" class="mui-btn mui-btn-block  gradient-btn">我要留言</button>
-				</form>
-				<a id="btn" class="mui-btn mui-btn-block  gradient-btn ">我要留言</a>
-			</div>
-			
+            <if condition="$show eq 2">
+                <div style="margin-top: 2rem;">
+                    <form action="{:U('Feed/feed')}" method="post" class="" id="text">
+                        <textarea name="content" id=""  placeholder="请给我们留言，我们会尽快处理" ></textarea>
+                        <button id="submit" class="mui-btn mui-btn-block  gradient-btn">我要留言</button>
+                    </form>
+                </div>
+            <else/>
+                <div id="QA">
+                    <p>
+                        <span class="question">内容：{$resMsg.content}</span>
+                        <span class="times">回复时间：{$resMsg.create_time|time_format}</span>
+                    </p>
+                    <div class="as">
+                        <p>
+                            平台回复
+                            <span class="times">5-02 15:08</span>
+                        </p>
+                        <div class="text">
+                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nam voluptatum distinctio numquam ut possimus dolorum odit reprehenderit tenetur voluptate enim rerum similique illo cupiditate commodi quia ad laborum perferendis modi?
+                        </div>
+                        <div class="triangle"></div>
+                    </div>
+                </div>
+                <if condition="$resMsg.status eq 2">
+                    <div style="margin-top: 2rem;">
+                        <button id="btn" class="mui-btn mui-btn-block  gradient-btn">我要留言</button>
+                    </div>
+                    <else />
+                </if>
+            </if>
+
+
+            <!--<div style="margin-top: 2rem;">-->
+                <!--<form action="{:U('Feed/feed')}" method="post" class="display-none" id="text">-->
+                    <!--<textarea name="content" id=""  placeholder="请给我们留言，我们会尽快处理" ></textarea>-->
+                    <!--<button id="submit" class="mui-btn mui-btn-block  gradient-btn">我要留言</button>-->
+                <!--</form>-->
+                <!---->
+            <!--</div>-->
 		</div>
 		<script src="/Public/Home/js/mui.min.js"></script>
 		<script src="/Public/Home/js/jQuery/jquery-1.11.3.min.js"></script>

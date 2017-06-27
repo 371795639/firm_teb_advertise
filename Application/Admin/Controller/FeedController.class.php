@@ -8,14 +8,8 @@ class FeedController extends AdminController {
     /**反馈列表**/
     public function feed(){
         $db_msg = M('message');
-        $db_admin = M('member');
-        $where_msg['mid'] = 0;
-        $where_msg['status'] = array('lt',3);
-        $res_msg = $this -> lists($db_msg,$where_msg);
+        $res_msg = $this -> lists($db_msg);
         foreach($res_msg as $k => $v){
-            $where['admin_id'] = session('user_auth')['uid'];
-            $res_nmsg = $db_admin->where($where)->find();
-            $res_msg[$k]['admin_name'] = $res_nmsg['nickname'];
             if(strlen($res_msg[$k]['content']) < 80){
                 $res_msg[$k]['n_content'] = $res_msg[$k]['content'];
             }else{
@@ -26,6 +20,46 @@ class FeedController extends AdminController {
         $this->meta_title = '反馈列表';
         $this->display('main/feed/index');
     }
+
+
+    /**查看反馈**/
+    public function feedView(){
+        $msg = D('Message');
+        $id = I('id');
+        $resMsgDetail = $msg -> get_feed_by_id($id);
+        $this -> assign('resMsgDetail',$resMsgDetail);
+        $this->meta_title = '反馈详情';
+        $this -> display('main/feed/feedView');
+    }
+
+
+    /**回复反馈**/
+    public function feedReply(){
+        
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     /**删除反馈**/
     public function feedDel(){

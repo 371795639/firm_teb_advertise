@@ -186,4 +186,21 @@ class ConfigController extends AdminController {
             $this->error('非法请求！');
         }
     }
+/**参数设置**/
+    public function varSet(){
+        if (IS_POST){
+            $id = I('post.id');
+            $val = I('post.val');
+            $result = M('parameter')->where(array('id'=>$id))->save(array('value'=>$val));
+            if($result){
+                $data['code'] = 1;
+            }else{
+                $data['code'] = 2;
+            }
+            $this->ajaxReturn($data,'json');
+        }
+        $list = M('parameter')->select();
+        $this->assign('var',$list);
+        $this->display();
+    }
 }

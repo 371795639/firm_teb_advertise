@@ -27,22 +27,70 @@ class FeedController extends HomeController {
      *状态为2：处理完成
      */
     public function index(){
-        
+        $dbMsg = M('Message');
+        $where = array(
+            'uid' => $_SESSION['userid'],
+            'status' => 1,
+        );
+        $resMsg = $dbMsg -> where($where) -> find();
+        if($resMsg){
+            $show = 1;
+        }else{
+            $show = 2;
+        }
+        $this -> assign('show',$show);
+        $this -> assign('resMsg',$resMsg);
         $this -> display();
     }
 
     /**意见反馈**/
-    public function refeedbk(){
+    public function feed(){
         $dbMsg = M('Message');
-        $data['uid'] = $_SESSION['uid'];
-        $data['content'] = I('content');
-        $data['create_time'] = time();
-        if(!empty($data['content'])){
+        $content = I('content');
+        if(empty($content)){
+            $this -> error('意见反馈没内容，你逗我玩呢？');
+        }else{
+            $data = array(
+                'uid'           => $_SESSION['userid'],
+                'content'       => $content,
+                'create_time'   => time(),
+                'status'        => 1,
+            );
             $dbMsg -> data($data) -> add();
         }
-        $this -> assign('data',$data);
-        $this -> display();
+
+        $this -> display('Feed/index');
     }
+
+
+
+
+
+
+
+
+
+
+
+
+    //功能简化 整篇重做
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     /**加载继续反馈页面**/
@@ -60,7 +108,7 @@ class FeedController extends HomeController {
         $data['content'] = I('content');
         $data['create_time'] = time();
         $data['status'] = 4;
-        $data['uid'] = $_SESSION['uid'];
+        $data['uid'] = $_SESSION['userid'];
         $data['mid'] = I('mid');
         $data['aid'] = I('aid');
         if(!empty($data['content'])){
@@ -73,8 +121,8 @@ class FeedController extends HomeController {
     /**反馈历史**/
     public function refeedbkList(){
         $dbMsg = M('Message');
-        $where['uid'] = $_SESSION['uid'];
-        $whereMsg['uid'] = $_SESSION['uid'];
+        $where['uid'] = $_SESSION['userid'];
+        $whereMsg['uid'] = $_SESSION['userid'];
         $whereMsg['status'] = array('in','0,1,2') ;
         $where['mid'] = 0 ;
         $resMsg = $dbMsg  ->  where($whereMsg)  -> where($where)  ->  order('create_time DESC')  ->  select();
@@ -98,7 +146,7 @@ class FeedController extends HomeController {
     public function refeedbkin(){
         $dbMsg = M('Message');
         $dbRe = M('MessageReply');
-        $whereMsg['uid'] = $_SESSION['uid'];
+        $whereMsg['uid'] = $_SESSION['userid'];
         $where['id'] = I('id');
         $whereMsg['status'] = array('in','1,2,4') ;
         $where['mid'] = 0 ;

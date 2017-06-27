@@ -84,3 +84,18 @@ function time_formats($date,$format='y年m月d日 H:i'){
     }
     return $re;
 }
+
+/**
+ * 时间格式化
+ * @param  string $date
+ * @return string 完整的时间显示
+ */
+function time_formatss($date,$format='y年m月d日'){
+    if($date == 0){
+        $re = '-';
+    }else{
+        $time = strtotime($date);
+        $re = date($format, $time);
+    }
+    return $re;
+}
