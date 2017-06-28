@@ -1,6 +1,6 @@
-.QA{
+#QA{
 	padding: 1rem 1.5rem 1.5rem 1.5rem;
-	background: #FFF !important;
+	background: #FFF;
 	margin-top:1.4rem ;
 }
 .as{
@@ -21,14 +21,16 @@
 	width: 0;
 	height: 0;
 }
-.QA>p>.question{
+#QA p{
+	margin-bottom:1rem ;
+}
+#QA>p>.question{
 	display: block;
 	margin-bottom:1rem ;
 	color: #484848;
 	font-size: 1.5rem;
 }
-.QA p{
-    margin-bottom:1rem ;
+#QA p{
 	color: #f00;
 	font-size: 1.5rem;
 }

@@ -1,14 +1,15 @@
 <!DOCTYPE html>
 <html>
+
 	<head>
 		<meta charset="utf-8">
 		<title>兔尔宝</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
-		<meta name="apple-mobile-web-app-capable" content="yes">
-		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="muile-mobile-web-mui-capable" content="yes">
+		<meta name="muile-mobile-web-mui-status-bar-style" content="black">
 		<!--标准mui.css-->
 		<link rel="stylesheet" href="/Public/Home/css/mui.min.css">
-		<!--App自定义的css-->
+		<!--mui自定义的css-->
 		<link rel="stylesheet" type="text/css" href="/Public/Home/css/common/common.css"/>
 		<link rel="stylesheet" type="text/css" href="/Public/Home/css/index/index.css"/>
 		<style type="text/css">
@@ -31,16 +32,17 @@
 		<header class="mui-bar mui-bar-nav gradient">
 			<h1 class="mui-title">兔尔宝推广系统</h1>
 		</header>
-		<div class="mui-content" name="resStaff" style="padding-bottom: 5rem;">
+		<div class="mui-content" style="padding-bottom: 5rem;">
 			<div class="">
 				<div class="gradient head">
-					<p>
-						<!--<img src="img/logo-color.jpg"/><br />-->
-						{$resStaff.staff_name}
-					</p>
-					<p>
-						<span>推广余额：{$resStaff.money}</span>
-					</p>
+                    <p>
+                        <!--<img src="img/logo-color.jpg"/><br />-->
+                        {$resStaff.staff_name}
+                    </p>
+                    <p>
+                        <span class="p-left"><span>信用余额：1502</span></span>
+                        <span class="p-right">推广余额：{$resStaff.money}</span>
+                    </p>
 				</div>
 				<div class="topTabs">
 					<p onclick="goJlzx()">
@@ -62,24 +64,24 @@
 				</div>
 				<div style="padding: 0 1rem;">
 					<div class="middle" onclick="goTaskOffice()">
-						<div class="border-box">
+                        <div class="border-box">
                             <if condition="$pic eq 1">
-							    <img src="/Public/Home/img/morning.jpg"/>
+                                <img src="/Public/Home/img/morning.jpg"/>
                                 <else/> <img src="/Public/Home/img/afternoon.jpg"/>
                             </if>
-							<p>
-								任务大厅
+                            <p>
+                                任务大厅
 								<span class="right">
                                     <if condition="$doingNo eq 0">
                                         <else />
-									    剩余{$doingNo}个任务
+                                        剩余{$doingNo}个任务
                                     </if>
 								</span>
-							</p>
-						</div>
+                            </p>
+                        </div>
 					</div>
 					<div class="middle">
-						<img src="/Public/Home/img/taskCenter.jpg" style="height:13.3rem;" onclick="goXczx()"/>
+						<img src="/Public/Home/img/taskCenter.jpg"  onclick="goXczx()"/>
 					</div>
 				</div>
 			</div>
@@ -104,44 +106,43 @@
 		</div>	
 	</body>
 	<script src="/Public/Home/js/mui.min.js"></script>
-	<script src="/Public/Home/js/app.js"></script>
 	<script src="/Public/Home/js/jQuery/jquery-1.11.3.min.js"></script>
 	<script>
-		mui.init({ 
-			swipeBack:true //启用右滑关闭功能
-			
-		});
-		mui.toast('可以用吗？');
-		//nav
-		function goHome(){
-			app.openwindow("{:U('User/index')}");
-		}
-		function goTabs(){
-			app.openwindow("{:U('User/financialStatements')}");
-		}
-		function goInfo(){
-			app.openwindow("{:U('User/infoManagement')}");
-		}
-		function goMy(){
-			app.openwindow("{:U('User/my')}");
-		}
-    	function goJlzx(){
-			app.openwindow("{:U('User/encourage')}");
-		}
-		function goCwgl(){
-			app.openwindow("{:U('User/rechargeWithdrawCash')}");
-		}
-		function goTgxx(){
-			app.openwindow("{:U('User/spreadManage')}");
-		}
-		function goKfzx(){
-			app.openwindow("{:U('Feed/index')}");
-		}
-		function goTaskOffice(){
-			app.openwindow("{:U('Task/taskOffice')}");
-		}
-		function goXczx(){
-			app.openwindow("{:U('User/propagate')}");
-		}
+        mui.init({
+            swipeBack:true //启用右滑关闭功能
+
+        });
+        //nav
+        function goHome(){
+            mui.openWindow("{:U('User/index')}");
+        }
+        function goTabs(){
+            mui.openWindow("{:U('User/financialStatements')}");
+        }
+        function goInfo(){
+            mui.openWindow("{:U('User/infoManagement')}");
+        }
+        function goMy(){
+            mui.openWindow("{:U('User/my')}");
+        }
+        function goJlzx(){
+            mui.openWindow("{:U('User/encourage')}");
+        }
+        function goCwgl(){
+            mui.openWindow("{:U('User/rechargeWithdrawCash')}");
+        }
+        function goTgxx(){
+            mui.openWindow("{:U('User/spreadManage')}");
+        }
+        function goKfzx(){
+            mui.openWindow("{:U('Feed/index')}");
+        }
+        function goTaskOffice(){
+            mui.openWindow("{:U('Task/taskOffice')}");
+        }
+        function goXczx(){
+//            mui.openWindow("{:U('User/propagate')}");
+            mui.toast("开发中，敬请期待...")
+        }
 	</script>
 </html>

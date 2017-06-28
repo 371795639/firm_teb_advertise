@@ -129,7 +129,7 @@ class TaskController extends HomeController {
     }
 
 
-    /**判断任务是否完成**/
+    /**判断分享推广专员任务是否完成**/
     public function taskSubmit(){
         $staff      = D('Staff');
         $staffInfo  = D('StaffInfo');
