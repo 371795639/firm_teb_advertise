@@ -56,6 +56,13 @@ class UserController extends HomeController {
         $resDoneCount   = $dbTaskDone -> get_this_week_all_task();
         $doingNo        = $dbTaskDone -> get_count($resDoneCount,'status',1);
         $this->assign('doingNo',$doingNo);
+        $time = date('H:i:s');
+        if($time <= "12:00:00"){
+            $pic = 1;
+        }else{
+            $pic = 2;
+        }
+        $this->assign('pic',$pic);
         /*显示剩余任务个数--结束*/
         $this->display();
     }

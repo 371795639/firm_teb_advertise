@@ -63,7 +63,10 @@
 				<div style="padding: 0 1rem;">
 					<div class="middle" onclick="goTaskOffice()">
 						<div class="border-box">
-							<img src="/Public/Home/img/morning.jpg"/>
+                            <if condition="$pic eq 1">
+							    <img src="/Public/Home/img/morning.jpg"/>
+                                <else/> <img src="/Public/Home/img/afternoon.jpg"/>
+                            </if>
 							<p>
 								任务大厅
 								<span class="right">
