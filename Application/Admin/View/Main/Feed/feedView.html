@@ -9,27 +9,27 @@
                 <td style="text-align: center;width:10%">当前反馈ID</td><td style="text-align: left">{$resMsgDetail.id}</td>
             </tr>
             <tr>
-                <td style="text-align: center">代理商ID</td><td style="text-align: left">{$resMsgDetail.uid}</td>
+                <td style="text-align: center">用户ID</td><td style="text-align: left">{$resMsgDetail.uid}</td>
             </tr>
             <tr>
-                <td style="text-align: center">回复管理员ID</td>
+                <td style="text-align: center">回复管理员</td>
                 <td style="text-align: left">
-                    <if condition="$resMsgDetail.aid eq 0">-
-                        <else/>{$resMsgDetail.aid}
+                    <if condition="$resMsgDetail.admin eq null">-
+                        <else/>{$resMsgDetail.admin}
                     </if>
                 </td>
             </tr>
             <tr>
-                <td style="text-align: center">反馈内容</td><td style="text-align: left">{$resMsgDetail.content}</td>
+                <td style="text-align: center">反馈内容</td><td style="text-align: left;color:green">{$resMsgDetail.content}</td>
             </tr>
             <tr>
-                <td style="text-align: center">反馈时间</td><td style="text-align: left">{$resMsgDetail.create_time|date='Y-m-d H:i:s',###}</td>
+                <td style="text-align: center;">反馈时间</td><td style="text-align: left">{$resMsgDetail.create_time}</td>
             </tr>
             <tr>
                 <td style="text-align: center">上次回复时间</td>
                 <td style="text-align: left">
-                    <if condition="$resMsgDetail.reply_time eq null"> -
-                        <else/> {$resMsgDetail.reply_time|date='Y-m-d H:i:s',###} </if>
+                    <if condition="$resMsgDetail.reply_time eq 0"> -
+                        <else/> {$resMsgDetail.reply_time} </if>
                 </td>
             </tr>
             <tr>
@@ -43,20 +43,39 @@
                 </td>
             </tr>
         </table>
-        <hr style="border:none;border-top:5px ridge green;" />
-        <div class="main-title">
-            <h2>历史消息</h2>
-        </div>
-        <!--分页
-            <div class="page">
-                {$_page}
+        <if condition="$resMsgRe neq null">
+            <hr style="border:none;border-top:5px ridge green;" />
+
+            <div class="main-title">
+                <h2>历史消息</h2>
             </div>
-        -->
+            <div class="data-table table-striped">
+                <table>
+                    <volist name="resMsgRe" id="vo">
+                        <tr>
+                            <td  colspan="2"> - </td>
+                        </tr>
+                        <tr>
+                           <td style="width:15%">回复时间</td><td>{$vo.create_time}</td>
+                        </tr>
+                        <tr>
+                           <td style="width:15%">回复内容</td><td style="color:green">{$vo.re_content}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2"><hr></td>
+                        </tr>
+                    </volist>
+                </table>
+            </div>
+        </if>
         <br><br>
+        <div class="main-title">
+            <h2>回复留言</h2>
+        </div>
         <form action="{:U('admin/feed/feedReply',array('id'=>$resMsgDetail['id'],'status'=>$resMsgDetail['status']))}" method="post">
             <input type="hidden" name="id" value="{$resMsgDetail.id}">
             <input type="hidden" name="status" value="{$resMsgDetail.status}">
-            <textarea  name="content" rows="6" cols="120" placeholder='在这里回复吧'></textarea>
+            <textarea  name="reContent" rows="6" cols="120" placeholder='在这里回复吧。注意：只能回复一次哦，注意措辞和错别字！'></textarea>
             <br>
             <button class="btn submit-btn" id="submit" type="submit" target-form="form-horizontal">确 定</button>
             <button class="btn btn-return" onclick="javascript:history.back(-1);return false;">返 回</button>

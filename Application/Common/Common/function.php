@@ -981,4 +981,127 @@ function ps($model){
     p($re);
 }
 
+/**
+ * 推广专员充值奖励结算
+ * @param $recharge 充值总额
+ * @param $uid
+ * @param $last_income 下一代推广专员的收入
+ */
+function recharge_award($uid,$recharge,$last_income){
+    //首先查询出各个参数比例
+    $parameter = M('parameter')->field('value')->select();
+    //推荐玩家充值奖励 玩家充值总额*20%【可变】
+    $recommend_award = $recharge * $parameter[0]['value']/100;
+    //推荐推广专员充值收入奖励 下一代收入*50%，70%转化成余额，30%转化为游戏币；
+    $recommend_income = $last_income * $parameter[1]['value']/100;
+    //结算后打入账户
+    $money = $recommend_award + $recommend_income;
+    $fact_money = $money * $parameter[3]['value']/100;
+    $game_money = $money * $parameter[2]['value']/100;
+    //写入相应的流水和更新账户信息
+    M()->execute("call pro_cash($uid,$fact_money,$game_money,7,$money)");
+}
+
+/**
+ * 推荐推广专员奖励
+ * @param $recommend_num
+ * @return int
+ */
+function recommend_awards($recommend_num){
+    //首先判断该用户已经推荐了几人；第一个奖励100元，第二个150元，三个以后200元；
+    if ($recommend_num == 0){
+        $award = 100;
+    }elseif ($recommend_num == 1){
+        $award = 150;
+    }else{
+        $award = 200;
+    }
+    return $award;
+}
+
+/**
+ * 服务费奖励结算
+ * @param $type
+ * @param $service_id
+ * @param $uid
+ * @param $money
+ * @return bool
+ */
+function service_awards($uid,$type,$service_id,$money){
+    //首先查询出各个参数比例
+    $parameter = M('parameter')->field('value')->select();
+    //首先获取所有的兑换中心的服务费比例
+    $exchange = D('exchange');
+    $exchange->serviceCharge($service_id);
+    $result_message = $exchange->allMessages;
+
+    //新推广专员注册获得的服务费
+    if ($type == 'register'){
+        $a = 0;
+        foreach($result_message as $value){
+            $b = $value['service_ratio'];
+            $c = $b - $a;
+            if($c > 0){
+                $service_fee = $money * $c/100;//服务费
+                $fact_service_fee = $service_fee * $parameter[3]['value'];
+                $game_coin = $service_fee * $parameter[2]['value'];
+                M()->execute("call pro_cash($uid,$fact_service_fee,$game_coin,6,$service_fee)");
+                $a = $b;//将服务费比例赋值给变量$a;
+            }
+        }
+        return true;
+    }
+
+    //昨日伞下人员充值服务费奖励
+    if($type == 'recharge'){
+        $start = 0;
+        foreach($result_message as $value){
+            $b = $value['service_ratio'];
+            $c = $b - $start;
+            if($c > 0){
+                $service_fee = $money * $c/100;//服务费
+                $fact_service_fee = $service_fee * $parameter[3]['value'];
+                $game_coin = $service_fee * $parameter[2]['value'];
+                M()->execute("call pro_cash($uid,$fact_service_fee,$game_coin,6,$service_fee)");
+                $start = $b;//将服务费比例赋值给变量$a;
+            }
+        }
+        return true;
+    }
+}
+
+/**
+ * 分红奖励结算
+ * @param $type
+ * @param $money
+ * @return bool
+ */
+function subsidy_awards($type,$money){
+    //首先查询出各个参数比例
+    $parameter = M('parameter')->field('value')->select();
+    $user = D('userInfo');
+    if ($type == 1){//按照固定分红点发放游戏分红
+        //首先查询出每个人的固定分红点和信用分
+        $user_msg = $user->field('uid,fix_bonus,credit_value')->select();
+        //运算出每个人应得的金额以及总金额
+        foreach ($user_msg as $val){
+            $reward = $money * $val['fix_bonus'] * $val['credit_value']/100;//个人所得游戏分红金额
+            $fact_reward = $reward * $parameter[3]['value'];
+            $game_coin = $reward * $parameter[2]['value'];
+            M()->execute("call pro_cash(".$val['uid'].",$fact_reward,$game_coin,8,$reward)");
+        }
+    }
+    if ($type == 2){//按照所有的分红点发放游戏分红
+        //首先获取每个人的所有分红点和信用分
+        $user_msg = $user->field('uid,fix_bonus,extra_bonus,credit_value')->select();
+        //运算出每个人应得的金额以及总金额
+        foreach ($user_msg as $val){
+            $reward = $money * ($val['fix_bonus'] + $val['extra_bonus']) * $val['credit_value']/100;   //个人所得游戏分红金额
+            $fact_reward = $reward * $parameter[3]['value'];
+            $game_coin = $reward * $parameter[2]['value'];
+            M()->execute("call pro_cash(".$val['uid'].",$fact_reward,$game_coin,8,$reward)");
+        }
+    }
+}
+
 

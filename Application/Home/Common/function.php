@@ -75,7 +75,7 @@ function get_nav_url($url){
  * @param  string $date
  * @return string 完整的时间显示
  */
-function time_formats($date,$format='y年m月d日 H:i'){
+function time_formats($date,$format='m-d H:i'){
     if($date == 0){
         $re = '-';
     }else{

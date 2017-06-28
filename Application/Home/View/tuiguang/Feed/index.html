@@ -15,61 +15,95 @@
 			<h1 class="mui-title">客服中心</h1>
 		</header>
 		<div class="mui-content ">
-            <if condition="$show eq 2">
+            <if condition="$show eq 1">
+                <!--上一条历史--->
+                <if condition="($resMsg['status'] eq 1) AND ($resMsgReNew neq null)">
+                    <div class="QA">
+                        <p>
+                            <span class="question">{$resMsgNew.content}</span>
+                            <span class="times">{$resMsgNew.create_time|time_formats}</span>
+                        </p>
+                        <div class="as">
+                            <p>
+                                平台回复
+                                <span class="times">{$resMsgReNew.create_time|time_formats}</span>
+                            </p>
+                            <div class="text">
+                                {$resMsgReNew.re_content}
+                            </div>
+                            <div class="triangle"></div>
+                        </div>
+                    </div>
+                </if>
+                <!------当前---->
+                <div class="QA">
+                    <p>
+                        <span class="question">{$resMsg.content}</span>
+                        <span class="times">{$resMsg.create_time|time_formats}</span>
+                    </p>
+                    <if condition="$resMsgRe eq null">
+                        <div class="as">
+                            <div class="text">
+                                我们已经收到您的反馈，等待客服接手中...
+                            </div>
+                            <div class="triangle"></div>
+                        </div>
+                        <else />
+                        <div class="as">
+                            <p>
+                                平台回复
+                                <span class="times">{$resMsgRe.create_time|time_formats}</span>
+                            </p>
+                            <div class="text">
+                                {$resMsgRe.re_content}
+                            </div>
+                            <div class="triangle"></div>
+                        </div>
+                    </if>
+                </div>
                 <div style="margin-top: 2rem;">
-                    <form action="{:U('Feed/feed')}" method="post" class="" id="text">
-                        <textarea name="content" id=""  placeholder="请给我们留言，我们会尽快处理" ></textarea>
-                        <button id="submit" class="mui-btn mui-btn-block  gradient-btn">我要留言</button>
-                    </form>
+                    <div style="margin-top: 2rem;">
+                        <form action="{:U('Feed/feed')}" method="post" class="display-none" id="text">
+                            <textarea name="content" id="n_content"  placeholder="请给我们留言，我们会尽快处理" ></textarea>
+                            <button id="submit" class="mui-btn mui-btn-block  gradient-btn">我要留言</button>
+                        </form>
+                        <if condition="$resMsg['status'] eq 2">
+                            <button id="btn" class="mui-btn mui-btn-block  gradient-btn">发布新留言</button>
+                        </if>
+                    </div>
                 </div>
             <else/>
-                <div id="QA">
-                    <p>
-                        <span class="question">内容：{$resMsg.content}</span>
-                        <span class="times">回复时间：{$resMsg.create_time|time_format}</span>
-                    </p>
-                    <div class="as">
-                        <p>
-                            平台回复
-                            <span class="times">5-02 15:08</span>
-                        </p>
-                        <div class="text">
-                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nam voluptatum distinctio numquam ut possimus dolorum odit reprehenderit tenetur voluptate enim rerum similique illo cupiditate commodi quia ad laborum perferendis modi?
-                        </div>
-                        <div class="triangle"></div>
-                    </div>
+                <div style="margin-top: 2rem;">
+                    <form action="{:U('Feed/feed')}" method="post" class="" id="texts">
+                        <textarea name="content" id="content"  placeholder="请给我们留言，我们会尽快处理" ></textarea>
+                        <button id="submits" class="mui-btn mui-btn-block  gradient-btn">我要留言</button>
+                    </form>
                 </div>
-                <if condition="$resMsg.status eq 2">
-                    <div style="margin-top: 2rem;">
-                        <button id="btn" class="mui-btn mui-btn-block  gradient-btn">我要留言</button>
-                    </div>
-                    <else />
-                </if>
             </if>
-
-
-            <!--<div style="margin-top: 2rem;">-->
-                <!--<form action="{:U('Feed/feed')}" method="post" class="display-none" id="text">-->
-                    <!--<textarea name="content" id=""  placeholder="请给我们留言，我们会尽快处理" ></textarea>-->
-                    <!--<button id="submit" class="mui-btn mui-btn-block  gradient-btn">我要留言</button>-->
-                <!--</form>-->
-                <!---->
-            <!--</div>-->
 		</div>
 		<script src="/Public/Home/js/mui.min.js"></script>
 		<script src="/Public/Home/js/jQuery/jquery-1.11.3.min.js"></script>
 		<script type="text/javascript">
-//验证
+        //验证
 			$("#submit").attr("disabled","disabled");
-			$("textarea").keyup(function(){
-				var val = $("textarea").val();
+			$("#n_content").keyup(function(){
+				var val = $("#n_content").val();
 				if( val ){
 		         	$("#submit").removeAttr("disabled");
 		        }else{
 		         $("#submit").attr("disabled","disabled");
 		        }
 			});
-//切换显示留言框
+            $("#submits").attr("disabled","disabled");
+            $("#content").keyup(function(){
+                var val = $("#content").val();
+                if( val ){
+                    $("#submits").removeAttr("disabled");
+                }else{
+                    $("#submits").attr("disabled","disabled");
+                }
+            });
+        //切换显示留言框
 			$("#btn").click(function(){		
 				$("#text").removeClass('display-none');
 				$("#btn").addClass('display-none');

@@ -11,33 +11,33 @@ class FeedController extends HomeController {
 	}
 
 
-    /**
-     * Message（反馈表）中status字段说明
-     *状态为0：等待客服处理
-     *状态为1：客服正在处理中，客户回复信息将记录在第一条反馈信息之下
-     *状态为2：客服处理完成，客户反馈，将成为新的反馈信息
-     *状态为4：客户针对当前反馈的回复信息
-     * 不喜欢3，所以状态只有0,1,2,4
-     */
-
-    /**
-     * MessageReply（回复表）中status字段说明
-     *状态为0：未处理
-     *状态为1：正在处理中
-     *状态为2：处理完成
-     */
+    /**反馈页面**/
     public function index(){
-        $dbMsg = M('Message');
+        $dbMsg = D('Message');
+        $msgRe = D('MessageReply');
         $where = array(
-            'uid' => $_SESSION['userid'],
-            'status' => 1,
+            'uid'       => $_SESSION['userid'],
+            'status'    => array('in','1,2'),
         );
-        $resMsg = $dbMsg -> where($where) -> find();
+        $resMsg = $dbMsg -> where($where) -> order('id desc')-> find();
+        $id = $resMsg['id'];
+        $resMsgRe = $msgRe -> get_reply_by_msgid($id);
         if($resMsg){
-            $show = 1;
+            $show = 1;  //显示用户反馈与回复历史
         }else{
-            $show = 2;
+            $show = 2;  //展示
         }
+        //获取上一条已完成的回复
+        $condition = array(
+            'uid'       => $_SESSION['userid'],
+            'status'    => 2,
+        );
+        $resMsgNew = $dbMsg -> where($condition) -> order('id desc')-> find();
+        $idNew = $resMsgNew['id'];
+        $resMsgReNew = $msgRe -> get_reply_by_msgid($idNew);
+        $this -> assign('resMsgRe',$resMsgRe);
+        $this -> assign('resMsgNew',$resMsgNew);
+        $this -> assign('resMsgReNew',$resMsgReNew);
         $this -> assign('show',$show);
         $this -> assign('resMsg',$resMsg);
         $this -> display();
@@ -53,13 +53,18 @@ class FeedController extends HomeController {
             $data = array(
                 'uid'           => $_SESSION['userid'],
                 'content'       => $content,
-                'create_time'   => time(),
+                'create_time'   => date('Y-m-d H:i:s'),
+                'reply_time'    => '',
                 'status'        => 1,
             );
-            $dbMsg -> data($data) -> add();
+            $resMsg = $dbMsg -> data($data) -> add();
+        }
+        if($resMsg){
+            $this -> success('反馈成功',U('User/index'));
+        }else{
+            $this -> error('反馈失败....');
         }
 
-        $this -> display('Feed/index');
     }
 
 

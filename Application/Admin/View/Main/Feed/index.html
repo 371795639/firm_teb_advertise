@@ -26,20 +26,20 @@
                             <td>{$vo.id} </td>
                             <td>{$vo.uid} </td>
                             <td>
-                            <if condition="$vo.aid eq 0">-
+                            <if condition="$vo.admin eq null">-
                                 <else/>{$vo.admin}
                             </if>
                             </td>
                             <td><a title="点击“回复”查看具体反馈内容" style="color:black">{$vo.n_content}</a></td>
-                            <td>{$vo.create_time|date='Y-m-d H:i:s',###} </td>
+                            <td>{$vo.create_time} </td>
                             <td>
-                                <if condition="$vo.reply_time eq null">-
-                                    <else/>{$vo.reply_time|date='Y-m-d H:i:s',###}
+                                <if condition="$vo.reply_time eq 0">-
+                                    <else/>{$vo.reply_time}
                                 </if>
                             </td>
                             <td>
-                                <if condition="$vo.status eq 0"> 未回复
-                                    <elseif condition="$vo.status eq 1"/>回复中
+                                <if condition="$vo.status eq 0"> 未处理
+                                    <elseif condition="$vo.status eq 1"/>处理中
                                     <elseif condition="$vo.status eq 2"/>已完成
                                 </if>
                             </td>
@@ -47,12 +47,13 @@
                                 <if condition="$vo.status eq 2"> <a href="{:U('admin/feed/feedView',array('id'=>$vo['id']))}" style="color:green;" title="点击回复">查看</a>
                                     <else /><a href="{:U('admin/feed/feedView',array('id'=>$vo['id']))}" style="color:green;" title="点击回复">回复</a>
                                 </if>
-                                 |
-                                <if condition="$vo.status eq 1"> <a href="{:U('admin/feed/feedEnd',array('id'=>$vo['id']))}" style="color:green;" title="关闭此反馈,关闭后不可再回复">关闭它</a>
-                                    <elseif condition="$vo.status eq 0" /> <a title="回复后才可以关闭哦"><span style="color:red;">请回复</span></a>
-                                    <else /><a title="反馈已关闭，只能查看"><span style="color:gray;">已关闭</span></a>
+                                <!--
+                                |
+                                <if condition="$vo.status eq 2">
+                                    <a href="{:U('admin/feed/feedDel',array('id'=>$vo['id']))}" style="color:green;" title="点击删除">删除 </a>
+                                    <else /> 删除
                                 </if>
-                                <!--|<a href="{:U('admin/feed/feed_del',array('id'=>$vo['id']))}" style="color:green;" title="点击删除">删除 </a>-->
+                                -->
                             </td>
                         </tr>
                     </volist>
