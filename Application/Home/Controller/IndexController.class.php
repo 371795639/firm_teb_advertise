@@ -18,8 +18,8 @@ class IndexController extends HomeController {
 
 	//系统首页
     public function index(){
-
-        $this->display();
+        redirect('index.php?s=/Home/User/index');
+//        $this->display();
     }
 
     public function login(){

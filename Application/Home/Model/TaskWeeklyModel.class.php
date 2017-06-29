@@ -34,11 +34,11 @@ class TaskWeeklyModel extends Model{
      */
     public function get_end_time($date){
         if(empty($date)) {
-            $end_time = "";
+            $end_time   = "";
         }else{
             $start_time = $this->get_start_time($date);
-            $ss = strtotime($start_time);
-            $end_time = date('Y-m-d 23:59:59', strtotime('Sunday', $ss));
+            $ss         = strtotime($start_time);
+            $end_time   = date('Y-m-d 23:59:59', strtotime('Sunday', $ss));
         }
         return $end_time;
     }
@@ -52,9 +52,9 @@ class TaskWeeklyModel extends Model{
      * @return array    $re         查找的数据
      */
     public function get_weekly_by_type($type){
-        $date = date('Y-m-d H:i:s');
+        $date       = date('Y-m-d H:i:s');
         $start_time = $this -> get_start_time($date);
-        $end_time = $this -> get_end_time($date);
+        $end_time   = $this -> get_end_time($date);
         $re = $this -> where(array('type'=>(int)$type,'start_time'=>$start_time,'end_time'=>$end_time)) -> select();
         if($re){
             return $re;
@@ -71,10 +71,10 @@ class TaskWeeklyModel extends Model{
      * @return array    $re            查找的数据
      */
     public function get_weekly_by_time(){
-        $date = '2017-06-29 15:55:55';
-//        $date = date('Y-m-d H:i:s');
+        $date       = '2017-06-29 15:55:55';
+//        $date       = date('Y-m-d H:i:s');
         $start_time = $this -> get_start_time($date);
-        $end_time = $this -> get_end_time($date);
+        $end_time   = $this -> get_end_time($date);
         $re = $this -> where(array('start_time'=>$start_time,'end_time'=>$end_time)) -> select();
         if($re){
             return $re;

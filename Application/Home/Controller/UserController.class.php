@@ -24,8 +24,9 @@ class UserController extends HomeController {
             $dbStaff = D('staff');
             $userid = $_SESSION['userid'];
             $refData = array(
-                'game_id'     => $_POST['gameId'],
+                'game_id'     => $_POST['gameId'] ,
                 'card_id'     => $_POST['cardNum'],
+                'address'     => $_POST['address'],
             );
             //判断是否存在该推荐人以及该手机号是否匹配
             $refStaffExist = $dbStaff->where(array('staff_real' => $_POST['staffName'] ,'mobile' => $_POST['refPhoneNum']))->find();
@@ -76,16 +77,6 @@ class UserController extends HomeController {
         $this->assign('resStaff',$resStaff);
 	    $this->display();
 	}
-
-    /* 钱包 */
-	public function walletDetails(){
-        $dbStaff  = D('staff');
-        $userid   = $_SESSION['userid'];
-        $resStaff = $dbStaff->where('id='.$userid)->find();
-
-        $this->assign('resStaff',$resStaff);
-	    $this->display();
-    }
 
     /* 奖励中心 */
     public function encourage(){
@@ -161,6 +152,12 @@ class UserController extends HomeController {
             }
         }
         $this->assign('spreadCooperate',$spreadCooperate);
+        $this->display();
+    }
+
+    /* 报表 */
+    public function financialStatements(){
+        var_dump(1);
         $this->display();
     }
 

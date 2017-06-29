@@ -982,24 +982,59 @@ function ps($model){
 }
 
 /**
+ * @return string
+ */
+function make_orderId(){
+    $mic     = explode(".",(microtime()));
+    $mictime = $mic[1];
+    $midtime = explode ( " ", $mictime);
+    $reftime = $midtime[0];                                  //取微秒
+    $time    = date("YmdHis",time());                        //取年月日时分                                                     //取年月日时分秒
+
+    $sdcustomno  = $time.$reftime.rand(10,99);               //订单在商户系统中的流水号 商户信息+日期+随机数
+    return $sdcustomno;
+}
+
+/**
  * 推广专员充值奖励结算
  * @param $recharge 充值总额
  * @param $uid
+ * @param $type 充值奖励类型 1.充值业绩奖励 2.分销奖励
  * @param $last_income 下一代推广专员的收入
+ * @return bool
  */
-function recharge_award($uid,$recharge,$last_income){
+function recharge_award($uid,$type,$recharge,$last_income){
     //首先查询出各个参数比例
     $parameter = M('parameter')->field('value')->select();
-    //推荐玩家充值奖励 玩家充值总额*20%【可变】
-    $recommend_award = $recharge * $parameter[0]['value']/100;
-    //推荐推广专员充值收入奖励 下一代收入*50%，70%转化成余额，30%转化为游戏币；
-    $recommend_income = $last_income * $parameter[1]['value']/100;
-    //结算后打入账户
-    $money = $recommend_award + $recommend_income;
-    $fact_money = $money * $parameter[3]['value']/100;
-    $game_money = $money * $parameter[2]['value']/100;
-    //写入相应的流水和更新账户信息
-    M()->execute("call pro_cash($uid,$fact_money,$game_money,7,$money)");
+    if($type == 1){//充值业绩奖励
+        //推荐玩家充值奖励 玩家充值总额*20%【可变】
+        $recommend_award = $recharge * $parameter[0]['value']/100;
+        $fact_money = $recommend_award * $parameter[3]['value']/100;
+        $game_money = $recommend_award * $parameter[2]['value']/100;
+        //写入相应的流水和更新账户信息
+        $order_id = make_orderId();//生成订单号
+        $re = M()->execute("call pro_base_cash($uid,$fact_money,$game_money,7,$recommend_award,$order_id,4)");
+        if($re == 1){
+            return true;
+        }else{
+            return false;
+        }
+    }
+    if($type == 2){//分销奖励
+        //推荐推广专员充值收入奖励 下一代收入*50%，70%转化成余额，30%转化为游戏币；
+        $recommend_income = $last_income * $parameter[1]['value']/100;
+        //结算后打入账户
+        $fact_money = $recommend_income * $parameter[3]['value']/100;
+        $game_money = $recommend_income * $parameter[2]['value']/100;
+        //写入相应的流水和更新账户信息
+        $order_id = make_orderId();//生成订单号
+        $re = M()->execute("call pro_cash($uid,$fact_money,$game_money,7,$recommend_income,$order_id,7)");
+        if($re == 1){
+            return true;
+        }else{
+            return false;
+        }
+    }
 }
 
 /**
@@ -1045,7 +1080,8 @@ function service_awards($uid,$type,$service_id,$money){
                 $service_fee = $money * $c/100;//服务费
                 $fact_service_fee = $service_fee * $parameter[3]['value'];
                 $game_coin = $service_fee * $parameter[2]['value'];
-                M()->execute("call pro_cash($uid,$fact_service_fee,$game_coin,6,$service_fee)");
+                $order_id = make_orderId();//生成订单号
+                M()->execute("call pro_cash($uid,$fact_service_fee,$game_coin,6,$service_fee,$order_id,5)");
                 $a = $b;//将服务费比例赋值给变量$a;
             }
         }
@@ -1062,7 +1098,8 @@ function service_awards($uid,$type,$service_id,$money){
                 $service_fee = $money * $c/100;//服务费
                 $fact_service_fee = $service_fee * $parameter[3]['value'];
                 $game_coin = $service_fee * $parameter[2]['value'];
-                M()->execute("call pro_cash($uid,$fact_service_fee,$game_coin,6,$service_fee)");
+                $order_id = make_orderId();//生成订单号
+                M()->execute("call pro_cash($uid,$fact_service_fee,$game_coin,6,$service_fee,$order_id,6)");
                 $start = $b;//将服务费比例赋值给变量$a;
             }
         }
@@ -1088,7 +1125,8 @@ function subsidy_awards($type,$money){
             $reward = $money * $val['fix_bonus'] * $val['credit_value']/100;//个人所得游戏分红金额
             $fact_reward = $reward * $parameter[3]['value'];
             $game_coin = $reward * $parameter[2]['value'];
-            M()->execute("call pro_cash(".$val['uid'].",$fact_reward,$game_coin,8,$reward)");
+            $order_id = make_orderId();//生成订单号
+            M()->execute("call pro_cash(".$val['uid'].",$fact_reward,$game_coin,8,$reward,$order_id,1)");
         }
     }
     if ($type == 2){//按照所有的分红点发放游戏分红
@@ -1099,9 +1137,11 @@ function subsidy_awards($type,$money){
             $reward = $money * ($val['fix_bonus'] + $val['extra_bonus']) * $val['credit_value']/100;   //个人所得游戏分红金额
             $fact_reward = $reward * $parameter[3]['value'];
             $game_coin = $reward * $parameter[2]['value'];
-            M()->execute("call pro_cash(".$val['uid'].",$fact_reward,$game_coin,8,$reward)");
+            $order_id = make_orderId();//生成订单号
+            M()->execute("call pro_cash(".$val['uid'].",$fact_reward,$game_coin,8,$reward,$order_id,1)");
         }
     }
+    return true;
 }
 
 

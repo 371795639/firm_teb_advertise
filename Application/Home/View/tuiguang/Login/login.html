@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
-    <title>登录页面</title>
+    <title>兔尔宝</title>
     <link rel="stylesheet" type="text/css" href="/Public/Home/css/mui.min.css"/>
     <link rel="stylesheet" type="text/css" href="/Public/Home/css/login/login.css"/>
     <link rel="stylesheet" type="text/css" href="/Public/Home/css/common/common.css"/>
@@ -23,16 +23,19 @@
 		.link-area a{
 			text-decoration: none;
 		}
+		body{
+			background: transparent !important;
+		}
 	</style>
 </head>
 <body>
 	<div id="login">
-		<div class="img">
-			<p style="text-align: center;margin-top: 40%;height: 80px;">
+		<div >
+			<p class="img">
 				<img src="/Public/Home/img/4.png"/>
 			</p>
-			<p>tuerbao</p>
-			<span>江苏兔尔宝文化发展有限公司</span>
+			<p style="margin-top: 1.8rem;">tuerbao</p>
+			<span style="margin-top: 1.4rem;">江苏兔尔宝文化发展有限公司</span>
 		</div>
 		<form id='login-form' action="{:U('Login/login')}" method="post">
 			<div class="hr">
@@ -44,15 +47,15 @@
 				<input id='psd' name="password" type="password"  placeholder="请输入密码" onkeyup="login()">
 			</div>
 			<div class="link-area">
-				<a id='reg' href="{:U('Login/register')}">注册</a> <a id='forgetPassword' href="{:U('Login/getNewPsd')}" class="right">忘记密码？</a>
+				<a id='reg'  onclick="goResg()">注册</a> <a id='forgetPassword' class="right" onclick="gofgpsd()">忘记密码？</a>
 			</div>
 			<button id='btn' type="submit">立即登录</button>
-		</form>
+		</form>		  
 	</div>
 	<script type="text/javascript" src="/Public/Home/js/jQuery/jquery-1.11.3.min.js" ></script>
 	<script src="/Public/Home/js/mui.min.js"></script>
 	<script type="text/javascript">
-		$("#btn").attr("disabled","disabled").css("background-color","#999");
+		$("#btn").attr("disabled","disabled");
 		var login = function(){
 			var val1 = $("#user").val();
 			var val2 = $("#psd").val();
@@ -61,11 +64,18 @@
 		//按钮逻辑处理方法
 		var btn = function(a){
 			if( a ){
-	         	$("#btn").removeAttr("disabled").css("background-color","#FFF");
+	         	$("#btn").removeAttr("disabled");
 	        }else{
-	         	$("#btn").attr("disabled","disabled").css("background-color","#999");
+	         	$("#btn").attr("disabled","disabled");
 	        }
 	    }
+		
+		function goResg(){
+			mui.openWindow("{:U('Login/register')}");
+		}
+		function gofgpsd(){
+			mui.openWindow("{:U('Login/getNewPsd')}");
+		}
 	</script>
 </body>
 </html>

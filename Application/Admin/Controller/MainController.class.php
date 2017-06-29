@@ -248,12 +248,14 @@ class MainController extends AdminController {
         $dbTask = D('Task');
         if(IS_POST) {
             $data = array(
-                'name'   => I('name', '', 'htmlspecialchars'),
-                'type'   => I('post.type'),
-                'inneed' => I('post.inneed'),
-                'money'  => I('post.money'),
-                'tasker' => session('user_auth')['username'],
+                'name'      => I('name', '', 'htmlspecialchars'),
+                'type'      => 1,
+                'class'     => I('post.class'),
+                'inneed'    => I('post.inneed'),
+                'money'     => I('post.money'),
+                'tasker'    => session('user_auth')['username'],
             );
+            p($data);die;
             if($dbTask -> task_insert($data)){
                 $this -> success('增加成功', U('Main/taskList'));
             }else{

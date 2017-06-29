@@ -55,7 +55,7 @@ class TaskController extends HomeController {
         foreach($taskDaily as $k => $v){
             $status[] = $taskDaily[$k]['status'];
         }
-        if(in_array('1',$status)){
+        if(empty($taskDaily) || in_array('1',$status)){
             $extra = 1; //不可领取;
         }else{
             $extra = 2; //可领取
@@ -130,14 +130,13 @@ class TaskController extends HomeController {
 
 
     /**判断分享推广专员任务是否完成**/
-    public function taskSubmit(){
+    public function shareTg(){
         $staff      = D('Staff');
-        $staffInfo  = D('StaffInfo');
         $taskDone   = D('TaskDone');
         $id         = $_SESSION['userid'];
         $res  = $staff      -> count_staff_by_referee($id);
         $done = $taskDone   -> get_this_week_task('1');
-        $left = $staffInfo  -> get_staff_by_uid($id);
+        $left = $staff      -> get_staff_by_id($id);
         foreach($done as $k => $v){
             if($done[$k]['name'] == '分享推广专员'){ //任务名称必须设置成 分享推广专员
                 $inneed = $done[$k]['inneed'];
@@ -146,30 +145,67 @@ class TaskController extends HomeController {
         $data['recommend_num'] =  $res;
         if($left['recommend_num'] == 0){ //第一次做任务
             $data['recommend_left_num'] =  $res - $inneed;
-            if($data['recommend_left_num'] >= 0){
-                //任务完成成功
-            }else{
-                //任务未做完，设置recommend_left_num 字段值为0
-                $data['recommend_left_num'] = $recommend_left_num = 0;
-            }
         }else{
             $data['recommend_left_num'] = $res - $left['recommend_num'] - $inneed + $left['recommend_left_num'];
         }
-        $resInfo = $staffInfo -> save_staff_by_uid($id,$data);
-        if($resInfo){
+        $data['recommend_left_num'] = $data['recommend_left_num'] <= 0 ? 0 :$data['recommend_left_num'];
+        $resStaff = $staff -> save_staff_by_id($id,$data);
+        if($resStaff){
             //数据写入成功 接下来 发奖励、写流水
         }else{
-            $this -> error('系统错误');
+            $this -> error('数据写入失败');
         }
     }
 
 
+    /**判断分享了几个玩家**/     //日常任务和额外任务要分开判断
+    public function shareUser(){
+        $userShip   = D('UserShip');
+        $taskDone   = D('TaskDone');
+        $number     = $userShip -> get_user_by_superior();
+        $doneDaily  = $taskDone   -> get_this_week_task('1');  //日常任务
+        $doneExtra  = $taskDone   -> get_this_week_task('2');  //额外任务
+        foreach($doneDaily as $k => $v){
+            if($doneDaily[$k]['name'] == '分享玩家'){ //任务名称必须设置成 分享推广专员
+                $inneed = $doneDaily[$k]['inneed'];
+            }
+        }
+        foreach($doneExtra as $k => $v){
+            $where['name'] = '分享玩家，额外任务';
+
+            //根据任务名称获取任务的的状态
+
+        }
+        if($number < $inneed){
+            //任务未完成
+        }else{
+            //任务完成 发奖励、写流水
+//            code...
+            //判断额外任务
+            $extraNumber = $inneed - $number;
+//            code...
+        }
 
 
+    }
 
 
+    /**判断首次充值**/
+    public function firstCharge(){
+        //字段：firstCharge (decimal)
+    }
 
 
+    /**判断是否完成三次游戏任务**/
+    public function gameTask(){
+
+    }
+
+
+    /**判断充值业绩**/       //日常任务充值和额外充值分开判断
+    public function chargeInneed(){
+
+    }
 
 
 

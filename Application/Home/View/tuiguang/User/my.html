@@ -50,7 +50,7 @@
 			</div>
 			<ul class="mui-content mui-table-view">
 				<li class="mui-table-view-cell">
-					<a class="mui-navigate-right" href="/Public/Home/pages/walletDetails/walletDetails.html">
+					<a class="mui-navigate-right" href="{:U('Wallet/walletDetails')}">
 						<img class="mui-media-object mui-pull-left" src="/Public/Home/img/77.png">
 						<span>钱包</span>
 					</a>
@@ -78,7 +78,7 @@
 			</ul>
 			<ul class="mui-content mui-table-view" style="margin-top: 1.4rem;">
 				<li class="mui-table-view-cell">
-					<a class="mui-navigate-right" href="/Public/Home/pages/set/set.html">
+					<a class="mui-navigate-right" href="{:U('set/set')}">
 						<img class="mui-media-object mui-pull-left" src="/Public/Home/img/33.png">
 						<span>我的记录</span>
 					</a>
@@ -111,7 +111,7 @@
 			});
 			
 			function goHome(){
-				mui.openWindow("/Public/Home/index.html");
+				mui.openWindow("{:U('User/index')}");
 			}
 			function goTabs(){
 				mui.openWindow("/Public/Home/pages/finance/financialStatements.html");
@@ -120,7 +120,7 @@
 				mui.openWindow("/Public/Home/pages/info/infoManagement.html");
 			}
 			function goMy(){
-				mui.openWindow("/Public/Home/pages/home/my.html");
+				mui.openWindow("{:U('User/my')}");
 			}
 		</script>
 </html>		

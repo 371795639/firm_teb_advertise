@@ -11,6 +11,57 @@
 		<!--App自定义的css-->
 		<link rel="stylesheet" type="text/css" href="/Public/Home/css/common/common.css"/>
 		<link rel="stylesheet" type="text/css" href="/Public/Home/css/taskOffice/taskOffice.css"/>
+		<style type="text/css">
+			.small{
+				font-size: 1.4rem;
+				color: #333 !important;
+			}
+			.small-mind{
+				font-size: 1.3rem;
+			}
+			.top-title{
+				font-size: 1.5rem;
+			}
+			.mui-table-view-cell{
+				font-size:1.5rem ;
+			}
+			.mui-table-view-cell img{
+				margin-left:0.5rem ;
+			}
+			.state{
+				margin-left:0.5rem ;
+				font-size:1.3rem ;
+			}
+			.get{/*可领取*/
+				border: 1px solid #FF3334;
+				border-radius: 3px;
+				color: #FF3334;
+			}
+			.geting{/*进行中*/
+				border: 1px solid #FEBE20;
+				border-radius: 3px;
+				color: #FEBE20;
+			}
+			.geted{/*已领取*/
+				border: 1px solid #62c269;
+				border-radius: 3px;
+				color: #62c269;
+			}
+			.over-date{/*超时过期的*/
+				border: 1px solid #CCC;
+				border-radius: 3px;
+				color: #CCC;
+			}
+			.mui-btn-block{
+				padding: 10px;
+				font-size: 1.5rem;
+				color: #FF558A;
+			}
+			.mind-txt{
+				background: #fff;
+			    padding: 0 1rem 0.5rem 1rem;
+			}
+		</style>
 	</head>
 	<body class="gradient">	
 		<header class="mui-bar mui-bar-nav gradient">
@@ -30,7 +81,7 @@
                         <else/><a id="btn1"  href="{:U('Home/Task/taskOfficeDetail',array('method'=>'daily'))}"><span class="right get">待领取</span></a>
                     </if>
                 </p>
-                <!--<p><a href="{:U('Task/taskSubmit')}">日常任务</a></p>-->
+                <p><a style="color:green;" href="{:U('Task/shareUser')}">测试</a></p> <!--左边：刘乾隆测试数据，误删-->
                 <notempty name="weeklyTypeOne">
                     <p class="small">
                         	本周内全部完成并交付，预计收益{$moneyOne}元   
@@ -55,7 +106,7 @@
                 </notempty>
             </div>
             <if condition="$daily eq 1">
-                <div class="model" style="background: transparent;">
+                <div  class="mind-txt" style="background: transparent;">
                     <button class="mui-btn mui-btn-block">提交任务后可领取{$moneyOne}</button>
                 </div>
             </if>

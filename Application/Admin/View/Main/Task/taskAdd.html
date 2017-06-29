@@ -6,15 +6,27 @@
     </div>
     <form method="post" class="form-horizontal">
         <div class="form-item">
-            <label class="item-label">任务名称 <span class="check-tips">（请输入任务名称）</span></label>
+            <label class="item-label">日常任务 <span class="check-tips">（下拉选择要发布的日常任务）</span></label>
             <div class="controls">
-                <input type="text" class="text input-large" name="name" value="">
+                <select class="form-control" name="name">
+                    <option value=" ">日常任务</option>
+                    <option value="分享玩家">分享玩家</option>
+                    <option value="首充人数">首充人数</option>
+                    <option value="完成三次游戏任务">完成三次游戏任务</option>
+                    <option value="充值业绩">充值业绩</option>
+                    <option value="分享推广专员">分享推广专员</option>
+                </select>
             </div>
-            <label class="item-label">任务类型<span class="check-tips">（下拉选择任务类型）</span></label>
-            <select class="form-control" name="type">
-                <option value="1">基本任务</option>
-                <option value="2">额外任务</option>
-            </select>
+
+            <label class="item-label">任务等级<span class="check-tips">（下拉选择领取此日常任务的加盟商等级）</span></label>
+            <div class="controls">
+                <select class="form-control" name="class">
+                    <option value=" ">任务等级</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                </select>
+            </div>
             <label class="item-label">任务指标<span class="check-tips">（请输入任务指标）</span></label>
             <div class="controls">
                 <input type="text" class="text input-large" name="inneed" value="">

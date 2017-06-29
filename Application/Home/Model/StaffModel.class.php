@@ -20,14 +20,30 @@ class StaffModel extends Model{
         }
     }
 
+
+    /*
+     * 根据ID查找推广专员
+     * @param  integer  $id     推广专员ID
+     * @return array    $re     查找的数据
+     */
+    public function get_staff_by_id($id){
+        $re = $this -> where(array('id'=>(int)$id)) -> find();
+        if($re){
+            return $re;
+        }else{
+            return false;
+        }
+    }
+
+
     /*
      * 根据ID更新数据
-     * @param  integer  $uid    推广专员ID
+     * @param  integer  $id    推广专员ID
      * @param  array    $data   要更新的数据
      * @return array    $re     插入的数据
      */
-    public function save_staff_by_uid($uid,$data){
-        $re = $this -> where(array('id'=>(int)$uid)) -> save($data);
+    public function save_staff_by_id($id,$data){
+        $re = $this -> where(array('id'=>(int)$id)) -> save($data);
         if($re){
             return $re;
         }else{

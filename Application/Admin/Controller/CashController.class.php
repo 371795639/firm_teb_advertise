@@ -201,7 +201,6 @@ class CashController extends AdminController {
                 array('number', '编号'),
                 array('real_name', '支付人'),
                 array('game_id', '充值游戏账号'),
-                array('rec_name', '收款人'),
                 array('money', '充值金额'),
                 array('money', '充值金额'),
                 array('create_time', '充值时间')
@@ -236,9 +235,12 @@ class CashController extends AdminController {
     /**财务总表**/
     public function cashTotal(){
         //平台推广专员注册收入
-//        $re_income = D()->field()
+        $re_income = M('re_charge')->sum('money');
+        //游戏平台充值收入
+        $recharge = M('user_charge')->sum('money');
         //平台收入:推广专员注册资金+游戏充值总额；
-//        $income =
+        $income = $re_income + $recharge;
+        $this->assign('income',$income);
         /**平台支出**/
         //奖励支出
         $reward = D('reward');
@@ -256,6 +258,11 @@ class CashController extends AdminController {
         $system_spend = array_sum($reward_cash);
         //实际支出 = 提现总额
         $fact_spend = $withDraw_msg;
+        //实际拨比
+        $percent['fact_percent'] = $fact_spend/$income*100;
+        //系统拨比
+        $percent['system_percent'] = $system_spend/$income*100;
+        $this->assign('percent',$percent);
         $this->assign('system_spend',$system_spend);
         $this -> meta_title = '财务总表';
         $this -> display('Main/cash/cashTotal');
@@ -326,7 +333,6 @@ class CashController extends AdminController {
         $this -> display('Main/cash/cashDetail');
     }
 
-// 流水表  提现表  充值表
 
 
 

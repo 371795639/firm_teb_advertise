@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>兔尔宝</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="/Public/Home/css/mui.min.css">
+		<!--App自定义的css-->
+		<link rel="stylesheet" type="text/css" href="/Public/Home/css/common/common.css"/>
+		<style>
+			.mui-table-view>p{
+				line-height: 5rem;
+				padding: 0 1.5rem;
+				color: #333333;
+				font-size: 1.6rem;
+			}
+			.mui-table-view>p>img{
+				height: 5rem;
+				width: 5rem;
+				margin-right: 1rem;
+			}
+			body{
+				color: #333333 !important;
+			}
+		</style>
+	</head>
+	<body>	
+		<header class="mui-bar mui-bar-nav gradient">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left "></a>
+			<h1 class="mui-title">个人设置</h1>
+		</header>
+		<div class="mui-content">
+			<ul class="mui-table-view">
+				<p style="padding:0.8rem 1.5rem;">
+					头像
+					<img src="/Public/Home/img/logo-color.jpg" class="right" style="border: 1px solid #fff;  border-radius:50%;"/>
+					<span class="clearfloat"></span>
+				</p>
+			</ul>
+			<div id="listInfo">
+				<ul class="mui-table-view">
+					<li class="mui-table-view-cell mui-media">
+						<a  href="../login/login.html">
+							<span>姓名</span><span class="right">小明</span>
+						</a>
+					</li>
+					<li class="mui-table-view-cell mui-media">
+						<a  href="javascript:;">
+							<span>注册时间</span><span class="right">2015-07-01</span>
+						</a>
+					</li>
+					<li class="mui-table-view-cell mui-media">
+						<a href="javascript:;">
+							<span>身份证</span><span class="right">342901199222222222</span>
+						</a>
+					</li>
+					<li class="mui-table-view-cell mui-media">
+						<a href="javascript:;">
+							<span>手机号</span><span class="right">13888888888</span>
+						</a>
+					</li>
+				</ul>
+				<ul class="mui-table-view" style="margin-top: 1.4rem;">
+					<li class="mui-table-view-cell mui-media">
+						<a href="javascript:;">
+							<span>已绑定游戏账号</span><span class="right">13888888888</span>
+						</a>
+					</li>
+				</ul>
+				<ul class="mui-table-view" style="margin-top: 1.4rem;">
+					<li class="mui-table-view-cell mui-media">
+						<a href="{:U('set/setPayPsd')}">
+							修改支付密码
+						</a>
+					</li>
+					<li class="mui-table-view-cell mui-media">
+						<a href="{:U('set/setLoginPsd')}">
+							修改登录密码
+						</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</body>
+	<script src="/Public/Home/js/mui.min.js"></script>
+	<script>
+		mui.init({
+			swipeBack:true //启用右滑关闭功能
+		});
+	</script>
+</html>
