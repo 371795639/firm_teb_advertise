@@ -71,7 +71,7 @@ class TaskWeeklyModel extends Model{
      * @return array    $re            查找的数据
      */
     public function get_weekly_by_time(){
-        $date       = '2017-06-29 15:55:55';
+        $date       = '2017-07-03 15:55:55';
 //        $date       = date('Y-m-d H:i:s');
         $start_time = $this -> get_start_time($date);
         $end_time   = $this -> get_end_time($date);
@@ -85,11 +85,12 @@ class TaskWeeklyModel extends Model{
 
 
     /**
-     * 获取下周任务的基础上获取任务类型
+     * 获取下周任务的基础上获取任务类型和任务等级
      * @param   $type   integer  任务类型
+     * @param   $class  integer  任务等级
      * @return  mixed   任务类型对应的数组
      */
-    public function get_weekly_type($type){
+    public function get_weekly_type($type,$class){
         $dbTask = D('Task');
         $taskWeekly = $this -> get_weekly_by_time();
         if($taskWeekly) {
@@ -98,17 +99,32 @@ class TaskWeeklyModel extends Model{
                 $resTask = $dbTask -> get_task_by_id($task_id);
                 $taskWeekly[$k]['money']        = $resTask['money'];
                 $taskWeekly[$k]['type']         = $resTask['type'];
+                $taskWeekly[$k]['class']        = $resTask['class'];
+                $taskWeekly[$k]['detail']       = $resTask['detail'];
                 $taskWeekly[$k]['inneed']       = $resTask['inneed'];
                 $taskWeekly[$k]['is_game']      = $resTask['is_game'];
                 $taskWeekly[$k]['tasker']       = $resTask['tasker'];
                 $taskWeekly[$k]['create_time']  = $resTask['create_time'];
             }
-            foreach ($taskWeekly as $key => $val) {
-                if ($val['type'] == $type) {
-                    $taskWeeklyType[$key] = $val;
+            if(empty($type)){
+                return $taskWeekly;
+            }else{
+                foreach ($taskWeekly as $key => $val) {
+                    if ($val['type'] == $type) {
+                        $taskWeeklyType[$key] = $val;
+                    }
                 }
             }
-            return $taskWeeklyType;
+            if(empty($class)){
+                return $taskWeeklyType;
+            }else {
+                foreach ($taskWeeklyType as $k => $v) {
+                    if ($v['class'] == $class) {
+                        $taskWeeklyClass[$k] = $v;
+                    }
+                }
+            }
+            return $taskWeeklyClass;
         }else{
             return false;
         }

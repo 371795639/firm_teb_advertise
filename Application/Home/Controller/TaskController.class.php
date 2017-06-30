@@ -20,23 +20,29 @@ class TaskController extends HomeController {
         $this -> assign('doneNo',$doneNo);
         $this -> assign('doingNo',$doingNo);
         $this -> assign('noUseNo',$noUseNo);
-        $this -> assign('resDoneStart',$resDoneStart);
         $this -> assign('resDoneEnd',$resDoneEnd);
         $this -> assign('resDoneOne',$resDoneOne);
         $this -> assign('resDoneTwo',$resDoneTwo);
+        $this -> assign('resDoneStart',$resDoneStart);
         $this -> display();
     }
 
 
     /**任务大厅**/
     public function taskOffice(){
-        $dbTaskWeekly = D('TaskWeekly');
-        $dbTaskDone = D('TaskDone');
-        $weeklyTypeOne  = $dbTaskWeekly -> get_weekly_type('1');//获取本周日常任务
-        $weeklyTypeTwo  = $dbTaskWeekly -> get_weekly_type('2');//获取本周额外任务
-        $moneyOne       = $dbTaskWeekly -> get_weekly_money('1');//获取本周日常任务总金额
-        $moneyTwo       = $dbTaskWeekly -> get_weekly_money('2');//获取本周额外任务总金额
-        $taskDaily      = $dbTaskDone   -> get_this_week_task('1');//获取用户已领取的日常任务列表
+        $dbTaskWeekly   = D('TaskWeekly');
+        $dbTaskDone     = D('TaskDone');
+        $class          = D('Staff')    -> get_staff_league($_SESSION['userid']);//获取当前等陆用户的加盟商等级
+        if($class == 0){//不是加盟商
+            $weeklyTypeOne  = null;
+            $weeklyTypeTwo  = null;
+        }else {
+            $weeklyTypeOne  = $dbTaskWeekly -> get_weekly_type('1', $class);//获取本周日常任务
+            $weeklyTypeTwo  = $dbTaskWeekly -> get_weekly_type('2');//获取本周额外任务
+            $moneyOne       = $dbTaskWeekly -> get_weekly_money('1');//获取本周日常任务总金额
+            $moneyTwo       = $dbTaskWeekly -> get_weekly_money('2');//获取本周额外任务总金额
+        }
+        $taskDaily          = $dbTaskDone   -> get_this_week_task('1');//获取用户已领取的日常任务列表
         foreach($weeklyTypeOne as $k => $v){
             $task_id = $weeklyTypeOne[$k]['task_id'];
             $resDone = $dbTaskDone -> get_done_by_uid('task_id',$task_id,'find');
@@ -62,6 +68,7 @@ class TaskController extends HomeController {
         }
         $this -> assign('daily',$daily) ;
         $this -> assign('extra',$extra) ;
+        $this -> assign('class',$class) ;
         $this -> assign('moneyOne',$moneyOne);
         $this -> assign('moneyTwo',$moneyTwo);
         $this -> assign('weeklyTypeOne',$weeklyTypeOne);
@@ -72,9 +79,10 @@ class TaskController extends HomeController {
 
     /**领取任务**/
     public function taskOfficeDetail($method=null){
-        $dbTaskDone = D('TaskDone');
-        $dbTaskWeekly = D('TaskWeekly');
-        $taskSet = $dbTaskDone -> get_this_week_task('1');
+        $dbTaskDone     = D('TaskDone');
+        $dbTaskWeekly   = D('TaskWeekly');
+        $taskSet        = $dbTaskDone -> get_this_week_task('1');
+        $class          = D('Staff')  -> get_staff_league($_SESSION['userid']);//获取当前等陆用户的加盟商等级
         switch($method){
             case 'daily':
                 if($taskSet){
@@ -86,7 +94,7 @@ class TaskController extends HomeController {
                         'done_time' => '',  //不可用null，否则无法插入数据
                         'status'    => 1,
                     );
-                    $weeklyTypeOne = $dbTaskWeekly -> get_weekly_type('1');
+                    $weeklyTypeOne = $dbTaskWeekly -> get_weekly_type('1',$class);
                     foreach($weeklyTypeOne as $k => $v){
                         $data['task_id']    = $weeklyTypeOne[$k]['task_id'];
                         $data['inneed']     = $weeklyTypeOne[$k]['inneed'];

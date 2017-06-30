@@ -66,4 +66,21 @@ class StaffModel extends Model{
         }
     }
 
+    public function get_staff_league($id){
+        $league = $this -> get_staff_by_id($id);
+        $is_league = $league['is_league'];
+        if($is_league == 0){
+            $class = 0;
+        }else{
+            $staffInfo = D('StaffInfo');
+            $cla = $staffInfo -> get_staff_by_uid($id);
+            if($cla){
+                $class = $cla['class'];
+            }else{
+                return false;
+            }
+        }
+        return $class;
+    }
+
 }

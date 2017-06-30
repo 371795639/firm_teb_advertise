@@ -196,6 +196,7 @@ class MainController extends AdminController {
             array('id', 'ID'),
             array('name', '任务名称'),
             array('detail', '任务描述'),
+            array('class', '任务等级'),
             array('isgame', '是否游戏任务'),
             array('type', '任务类型'),
             array('inneed', '任务指标'),
@@ -277,6 +278,7 @@ class MainController extends AdminController {
                 'name'      => I('name', '', 'htmlspecialchars'),
                 'type'      => 2,
                 'detail'    => I('post.detail'),
+                'money'     => I('post.money'),
                 'tasker'    => session('user_auth')['username'],
             );
             if($dbTask -> add($data)){
@@ -374,9 +376,11 @@ class MainController extends AdminController {
             $where = $resWeekly[$k]['task_id'];
             if(!empty($where)) {
                 $resTask = $dbTask->get_task_by_id($where);
-                $resTaskWeekly[$k]['type'] = $resTask['type'];
-                $resTaskWeekly[$k]['inneed'] = $resTask['inneed'];
-                $resTaskWeekly[$k]['money'] = $resTask['money'];
+                $resTaskWeekly[$k]['type']      = $resTask['type'];
+                $resTaskWeekly[$k]['inneed']    = $resTask['inneed'];
+                $resTaskWeekly[$k]['money']     = $resTask['money'];
+                $resTaskWeekly[$k]['class']     = $resTask['class'];
+                $resTaskWeekly[$k]['detail']    = $resTask['detail'];
             }
         }
         int_to_string($resTaskWeekly);

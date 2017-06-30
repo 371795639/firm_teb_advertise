@@ -77,19 +77,21 @@
                 	<span class="top-title">
                 		日常任务
                 	</span>
-                	 <if condition="$daily eq 1"><span class="right geted">已领取</span>
-                        <else/><a id="btn1"  href="{:U('Home/Task/taskOfficeDetail',array('method'=>'daily'))}"><span class="right get">待领取</span></a>
+                    <if condition="$class neq 0">
+                         <if condition="$daily eq 1"><span class="right geted">已领取</span>
+                            <else/><a id="btn1"  href="{:U('Home/Task/taskOfficeDetail',array('method'=>'daily'))}"><span class="right get">待领取</span></a>
+                        </if>
                     </if>
                 </p>
                 <p><a style="color:green;" href="{:U('Task/shareUser')}">测试</a></p> <!--左边：刘乾隆测试数据，误删-->
                 <notempty name="weeklyTypeOne">
                     <p class="small">
-                        	本周内全部完成并交付，预计收益{$moneyOne}元   
+                        本周内全部完成并交付，预计收益{$moneyOne}元
                     </p>
                     <ul class="mui-table-view">
                         <volist name="weeklyTypeOne" id="vo">
                             <if condition="$vo.type eq 1">
-                                <li class="mui-table-view-cell">{$vo.name}
+                                <li class="mui-table-view-cell">{$vo.detail}
                                     <span class="right col-ye money">{$vo.money}<img src="/Public/Home/img/money.png"/>
                                         <span>
                                            <if condition="$vo.nstatus eq 1"><span class="geting state">进行中</span>
@@ -140,7 +142,8 @@
                                                 <if condition="$vo.nstatus eq 3"> <span class="state over-date">已过期</span></if>
                                         </if>
                                     </span>
-                                    <span class="right col-ye">{$vo.money}<img src="/Public/Home/img/money.png"/></span>
+                                    <span class="right col-ye">0~{$vo.money}<img src="/Public/Home/img/money.png"/></span>
+                                    <p style="color: green">{$vo.detail}</p>
                                 </li>
                             </if>
                         </volist>

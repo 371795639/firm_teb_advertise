@@ -39,7 +39,7 @@
                 <th class="text-center">任务指标</th>
                 <th class="text-center">任务金额</th>
                 <th class="text-center">创建时间</th>
-                <th class="text-center">发布人</th>
+                <th class="text-center">创建人</th>
                 <th class="text-center">状态</th>
                 <th class="text-center">操作</th>
             </tr>
@@ -58,7 +58,14 @@
                                 <else/> -
                             </if>
                         </td>
-                        <td>{$vo.class}</td>
+                        <td>
+                            <if condition="$vo.class eq 0"> -
+                                <elseif condition="$vo.class eq 1" /> 一级
+                                <elseif condition="$vo.class eq 2" /> 二级
+                                <elseif condition="$vo.class eq 3" /> 三级
+                                <else /> 见鬼了
+                            </if>
+                        </td>
                         <td>{$vo.inneed}</td>
                         <td>{$vo.money}</td>
                         <td>

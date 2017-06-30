@@ -116,14 +116,23 @@ class TaskDoneModel extends Model{
      * @return  bool
      */
     public function get_this_week_task($type){
-        $res = $this -> get_this_week_all_task();
-        foreach ($res as $key => $val) {
-            if ($val['type'] == $type) {
-                $result[$key] = $val;
+        $resDone = $this -> get_this_week_all_task();
+        if($resDone){
+            foreach($resDone as $k => $v){
+                $task_id = $resDone[$k]['task_id'];
+                $resTask = D('Task') -> get_task_by_id($task_id);
+                $resDone[$k]['detail'] = $resTask['detail'];
             }
-        }
-        if($result){
-           return $result;
+            if(empty($type)){
+                return $resDone;
+            }else {
+                foreach ($resDone as $key => $val) {
+                    if ($val['type'] == $type) {
+                        $result[$key] = $val;
+                    }
+                }
+                return $result;
+            }
         }else{
             return false;
         }
