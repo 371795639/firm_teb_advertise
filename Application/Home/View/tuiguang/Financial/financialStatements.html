@@ -9,6 +9,7 @@
 	<link href="/Public/Home/css/mui.css" rel="stylesheet"/>
 	<link rel="stylesheet" type="text/css" href="/Public/Home/css/common/common.css"/>
 	<link rel="stylesheet" type="text/css" href="/Public/Home/css/finance/echart.css"/>
+	<link rel="stylesheet" type="text/css" href="/Public/Home/loading/loading.css"/>
 </head>
 <body>
 <header class="mui-bar mui-bar-nav gradient">
@@ -19,12 +20,12 @@
 
 	<div id="segmentedControl" class="mui-segmented-control gradient">
 		<div class="inline">
-			<a class="mui-control-item" href="#item2"  id="up">
+			<a class="mui-control-item" href="#item2"  id="last">
 				上周
 			</a>
 		</div>
 		<div class="inline" >
-			<a class="mui-control-item mui-active" href="#item1">
+			<a class="mui-control-item mui-active" href="#item1" id="this">
 				本周
 			</a>
 		</div>
@@ -52,9 +53,10 @@
 </nav>
 <script src="/Public/Home/js/mui.min.js"></script>
 <script src="/Public/Home/js/echarts-all.js"></script>
-<script  src="/Public/Home/js/jQuery/jquery-1.11.3.min.js"></script>
+<script src="/Public/Home/js/jQuery/jquery-1.11.3.min.js"></script>
 <script src="/Public/Home/js/echarts-all.js"></script>
 <!--数据动态显示在   financialStatements.js  中实现-->
+<script src="/Public/Home/loading/loading.js"></script>
 <script src="/Public/Home/js/financialStatements/financialStatements.js"></script>
 <script>
     mui.init({

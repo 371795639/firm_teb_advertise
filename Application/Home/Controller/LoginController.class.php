@@ -18,6 +18,7 @@ class LoginController extends \Think\Controller {
 
 	/* 用户中心首页 */
 	public function index(){
+	    $this->display();
 
 	}
 

@@ -1,6 +1,6 @@
 .mui-control-content.mui-active	p{
-	font-size: 1.5rem;
-	padding: 1rem 1.5rem 0 1.5rem;
+	font-size: 16px;
+	padding: 10px 15px 0 15px;
 }
 .mui-segmented-control .mui-control-item.mui-active{
 	background:transparent; 			
@@ -17,8 +17,8 @@
 .time{
 	display: block;			
 	background: #FFF;
-	padding:0.4rem 1.5rem;
-	font-size: 1.3rem;
+	padding:4px 15px;
+	font-size: 13px;
 	color: #9b9b9b;
 }
 .mui-media-object.mui-pull-left{

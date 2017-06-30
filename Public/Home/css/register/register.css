@@ -11,10 +11,10 @@ input[type=button]{
 	border-radius:5px;
 }
 #login-form{
-	margin-top:2rem ;
+	margin-top:20px ;
 }
 #getTestNum{
-	width:8rem;
+	width:98px;
 	height:30px;
 	color:#FFF;
 	font-size:15px;
@@ -23,21 +23,21 @@ input[type=button]{
 	margin-top: 4px;
 }
 #testNum{
-	width:calc(65% - 9rem);
+	width:calc(65% - 100px);
 	float:left;
 }
 
 #register-form{
-	/*padding:0 1rem;*/
+	font-size: 16px;
 	border: none;
 	background: transparent;
 }
 /******************zhuce资金按钮*******************/
 .mui-content-padded{
-	margin-top: 2rem;
+	margin-top: 20px;
 }
 .mui-content-padded .mui-btn.mui-btn-block{
-	padding: 1rem 0;
+	padding: 10px 0;
 	color: #fff;
 }
 /****************去除表单form边框************************/
@@ -46,7 +46,7 @@ input[type=button]{
 }
 .mui-input-row{
 	background: #FFF;
-	padding:0 1rem ;
+	padding:0 10px ;
 }
 /************按钮****************/
 #regBtn,#compelet{

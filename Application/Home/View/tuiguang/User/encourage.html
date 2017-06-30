@@ -66,13 +66,53 @@
 					<ul>
 						<volist name="spreadReward" id="vo">
 							<li>
-								<div class="left ">
-									<span class="text-overflow">推广奖励</span>
-									<span class="time">{$vo.create_time}</span>
-								</div>
-								<div class="right col-ye">
-									+{$vo['base_money']+$vo['extra_money']}
-								</div>
+								<switch name="vo.type">
+									<case value="3">
+										<div class="left ">
+											<span class="text-overflow">推荐奖励</span>
+											<span class="time">{$vo.create_time}</span>
+										</div>
+										<div class="right col-ye">
+											+{$vo['base_money']+$vo['extra_money']}
+										</div>
+									</case>
+									<case value="4">
+										<div class="left ">
+											<span class="text-overflow">充值提成</span>
+											<span class="time">{$vo.create_time}</span>
+										</div>
+										<div class="right col-ye">
+											+{$vo['base_money']+$vo['extra_money']}
+										</div>
+									</case>
+									<case value="5">
+										<div class="left ">
+											<span class="text-overflow">中心推荐奖励</span>
+											<span class="time">{$vo.create_time}</span>
+										</div>
+										<div class="right col-ye">
+											+{$vo['base_money']+$vo['extra_money']}
+										</div>
+									</case>
+									<case value="6">
+										<div class="left ">
+											<span class="text-overflow">中心业绩奖励</span>
+											<span class="time">{$vo.create_time}</span>
+										</div>
+										<div class="right col-ye">
+											+{$vo['base_money']+$vo['extra_money']}
+										</div>
+									</case>
+									<case value="7">
+										<div class="left ">
+											<span class="text-overflow">分销奖励</span>
+											<span class="time">{$vo.create_time}</span>
+										</div>
+										<div class="right col-ye">
+											+{$vo['base_money']+$vo['extra_money']}
+										</div>
+									</case>
+								</switch>
 							</li>
 						</volist>
 					</ul>

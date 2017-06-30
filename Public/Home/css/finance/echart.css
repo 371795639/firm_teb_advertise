@@ -14,8 +14,8 @@
 }
 .mui-segmented-control{
 	border: transparent;
-	padding: 1rem;
-	margin-bottom: 1rem;
+	padding: 10px;
+	margin-bottom: 10px;
 }
 /****/
 .mui-bar.mui-bar-tab a{
@@ -39,6 +39,6 @@
 }
 .inline .mui-control-item{
 	display: inline-block;
-	width:5rem;
+	width:50px;
 	border: 2px solid transparent;
 }

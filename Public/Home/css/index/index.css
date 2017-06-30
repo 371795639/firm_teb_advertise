@@ -1,13 +1,13 @@
 .mui-control-content.my .pad{
-	padding: 2rem 0;
+	padding: 20px 0;
 }
 .mui-media-object.mui-pull-left{
-	width: 2rem;
-	height: 2rem;
+	width: 20px;
+	height: 20px;
 }
 .gradient.pad{
 	text-align: center;
-	padding: 1rem ;
+	padding: 10px ;
 }
 .gradient.pad p{
 	color: #fff;
@@ -20,23 +20,24 @@
 	line-height: 2.6rem;
 	border-radius:1.5rem;
 	background: #FFF;
-	font-size:1.3rem;
+	font-size:13px;
 	color: #007AFF;
 	margin: 0 auto;
 }
 /*****************************************/
 .gradient.head{
-	padding: 1.5rem 1.5rem 0.3rem 1.5rem;
+	padding: 15px 15px 3px 15px;
 }			
 .gradient.head p{
-	font-size: 1.8rem;
+	font-size: 20px;
 	text-align: center;
 	color: #fff;
+	margin-bottom: 10px;
 }
 .gradient.head p .p-left{
 	display: inline-block;
 	text-align: left;
-	font-size: 1.5rem;
+	font-size: 16px;
 	width: 49%;
 }
 .gradient.head p .p-left span{
@@ -46,36 +47,37 @@
 .gradient.head p .p-right{
 	display: inline-block;
 	text-align:right;
-	font-size: 1.5rem;
+	font-size: 16px;
 	width: 49%;
 }
 .topTabs{
 	height: 10rem;
 	width: 100%;
-	margin-top: 1.4rem;
-	padding:  1rem;
+	margin-top: 14px;
+	padding:  10px;
 	background: #fff;
-	margin-bottom:1.4rem ;
+	margin-bottom:14px ;
 }
 .topTabs p{
 	background: #fff;
 	text-align: center;
-	font-size: 1.4rem;
+	font-size: 16px;
 	float: left;
 	height: 8rem;
 	width: 25%;
 	color: #585858;
+	margin-bottom:0 ;
 }
 .topTabs p img{
 	display: block;
 	margin: 0 auto;
 	height: 5rem;
 	width: 5rem;
-	margin-bottom: 1.2rem;
+	margin-bottom: 12px;
 }
 .middle{
 	text-align: center;		
-	margin-bottom:1.5rem ;
+	margin-bottom:14px ;
 }
 .middle .border-box{
 	border: 1px solid #CCCCCC;
@@ -83,10 +85,12 @@
 	background: #fff;
 }
 .middle p{
-	padding: 0 1rem;
+	padding: 5px 10px;
 	text-align: left;
 	color: #333;
 	font-weight:500 ;
+	margin-bottom: 0;
+	font-size: 14px;
 }
 .middle span{
 	color: #999;

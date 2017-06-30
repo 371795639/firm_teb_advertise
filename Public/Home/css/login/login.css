@@ -52,10 +52,8 @@
 #login-form .hr input{
 	width: calc(100% - 3rem);
 	margin-left: 3rem;
-	height: 2.6rem;
-	line-height: 2.6rem;
 	text-align: center;
-	font-size:1.6rem ;
+	font-size:1.5rem ;
 	border: none;
 	outline: none;
 	background-color:transparent;
@@ -90,7 +88,7 @@ input::-webkit-input-placeholder{
 	width: 70%;
 	margin: 0 auto;
 	display:block;
-	height: 3.6rem;
+	height: 3.4rem;
 	border-radius:2rem ;
 	border: 1px solid #FFF;
 	background-color:#FFF ;
@@ -109,3 +107,7 @@ input::-webkit-input-placeholder{
 input[type=color], input[type=date], input[type=datetime-local], input[type=datetime], input[type=email], input[type=month], input[type=number], input[type=password], input[type=search], input[type=tel], input[type=text]{
 	margin-bottom:0;
 }
+input[type=password],input[type=text]{
+	height: 3rem !important;
+	padding: 0 !important;
+} 

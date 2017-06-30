@@ -81,13 +81,26 @@
 						<ul>
 							<volist name="preMonthCharge" id="vo">
 							<li>
-								<div class="left ">
-									<span class="text-overflow">充值</span>
-									<span class="time">{$vo.create_time}</span>
-								</div>
-							 	<div class="right col-red">
-									-{$vo.money}
-								</div>
+								<switch name="vo.type">
+									<case value="1">
+										<div class="left ">
+											<span class="text-overflow">自我充值</span>
+											<span class="time">{$vo.create_time}</span>
+										</div>
+										<div class="right col-red">
+											-{$vo.money}
+										</div>
+									</case>
+									<case value="2">
+										<div class="left ">
+											<span class="text-overflow">为他人充值</span>
+											<span class="time">{$vo.create_time}</span>
+										</div>
+										<div class="right col-red">
+											-{$vo.money}
+										</div>
+									</case>
+								</switch>
 							</li>
 							</volist>
 						</ul>
@@ -100,13 +113,26 @@
 						<ul>
 							<volist name="hisMonthCharge" id="vo">
 								<li>
-									<div class="left ">
-										<span class="text-overflow">提现</span>
-										<span class="time">{$vo.create_time}</span>
-									</div>
-									<div class="right col-red">
-										-{$vo.money}
-									</div>
+									<switch name="vo.type">
+										<case value="1">
+											<div class="left ">
+												<span class="text-overflow">自我充值</span>
+												<span class="time">{$vo.create_time}</span>
+											</div>
+											<div class="right col-red">
+												-{$vo.money}
+											</div>
+										</case>
+										<case value="2">
+											<div class="left ">
+												<span class="text-overflow">为他人充值</span>
+												<span class="time">{$vo.create_time}</span>
+											</div>
+											<div class="right col-red">
+												-{$vo.money}
+											</div>
+										</case>
+									</switch>
 								</li>
 							</volist>
 						</ul>

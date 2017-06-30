@@ -33,36 +33,36 @@
 
 .mui-control-content ul li{
 	border-bottom:1px solid #e8e8e8 ;
-	padding: 0 1.5rem;
+	padding: 0 15px;
 }
 .mui-control-content ul li:first-child{
 	border-top:1px solid #e8e8e8 ;
 }
 .mui-control-content .right{
-	height: 5rem;
-	line-height: 5rem;
+	height: 50px;
+	line-height: 50px;
 	width:7.5rem;
 	display: inline-block;
-	font-size: 1.6rem;
+	font-size: 16px;
 	text-align: right;
 }
 .mui-control-content .left{
-	height: 5rem;
-	font-size: 1.6rem;
+	height: 50px;
+	font-size: 16px;
 	width:calc(100% -7rem);
 	display: inline-block;
-	padding: 0.7rem 0;
+	padding: 7px 0;
 }
 .mui-control-content .left span{
 	display: block;
-	font-size: 1.6rem;
+	font-size: 16px;
 }
 .mui-control-content .time{
-	font-size: 1.3rem !important;
+	font-size: 13px !important;
 	color: #ccc;
 	padding: 0;
-	height: 1.3rem;
-	margin-top: 4px;
+	height: 13px;
+	/*margin-top: 4px;*/
 }
 #list{
 	margin-top: 14px;

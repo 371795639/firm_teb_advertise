@@ -91,7 +91,9 @@ class UserController extends HomeController {
         //任务奖励
         $taskReward = $dbReward->where(array('uid' => $userid , 'type' => 2))->order('create_time desc')->select();
         //推荐奖励
-        $spreadReward = $dbReward->where(array('uid' => $userid , 'type' => 3))->order('create_time desc')->select();
+        $map['uid']  = array('EQ',$userid);
+        $map['type'] = array('EGT',3);
+        $spreadReward = $dbReward->where($map)->order('create_time desc')->select();
         //输出模板
         $this->assign('bonusReward',$bonusReward);
         $this->assign('taskReward',$taskReward);
@@ -107,10 +109,12 @@ class UserController extends HomeController {
         $currMinTime = date('Y-m-01 00:00:00',time());          //获取当前月份最小时间
         //本月提现
         $condition['uid'] = array('eq',$uid );                  //等于uid且大于等于当前月份最小时间
+        $condition['status'] = array('eq',2 );                  //已提现
         $condition['create_time'] = array('EGT',$currMinTime);
         $preMonthWithdraw = $dbwithdraw->where($condition)->order('create_time desc')->select();
         //历史提现
         $condition['uid'] = array('eq',$uid );                  //等于uid且小于当前月份最小时间
+        $condition['status'] = array('eq',2 );                  //已提现
         $condition['create_time'] = array('LT',$currMinTime);
         $hisMonthWithdraw = $dbwithdraw->where($condition)->order('create_time desc')->select();
         //本月充值
@@ -131,34 +135,29 @@ class UserController extends HomeController {
 
     /* 推广管理 */
     public function spreadManage(){
-        $dbRecommend = M('recommend');
-        $dbStaff     = M('staff');
-        $uid         = $_SESSION['userid'];
-        $refRecommend= $dbRecommend->where('uid='.$uid)->find();
-        $high_class  = $refRecommend['high_class'];
-        $refHighStaff= $dbStaff->where('id='.$high_class)->find();//上级
-        $last_class  = $refRecommend['last_class'];
-        $refLastStaff= $dbStaff->where('id='.$last_class)->find();//上上级
-
-        $staffSub =$dbStaff->where('referee='.$uid)->select();    //查询下级
-        $spreadCooperate = array(
-            array(
-                'staff_name' => $refHighStaff['staff_name'],      //上级推广员昵称
-            ),
-            array(
-                'staff_name' => $refLastStaff['staff_name'],      //上上级推广员昵称
-            ),
-        );
-
-        if($staffSub){
-            foreach ($staffSub as $key => $value){
-                $spreadCooperate[$key+2]['staff_name'] = $value['staff_name'];
-            }
-        }
-        $this->assign('spreadCooperate',$spreadCooperate);
-        $this->display();
+//        $uid   = $_SESSION['userid'];
+//        //$staffAllCount = $dbStaff->where(1)->count();             //查询表的总记录数
+//
+//
+//        var_dump($this->fen($uid)) ; die();
+//        //$this->assign('spreadCooperate', $staffSub);
+//        $this->display();
     }
-
+//
+//    private function fen($uid){
+//        $dbStaff     = M('staff');
+//        $staffAll    = $dbStaff->where("id = $uid")->select();                  //查询表的记录详情
+//        global $str;
+//        foreach($staffAll as $key=>$val)
+//        {
+//            if($staffAll['referee']!=NULL){
+//                $str.=$staffAll['staff_name']."<br>";//拼接改用户的昵称
+//                $this->fen($val['id']);
+//            }
+//
+//        }
+//        return $str;
+//    }
 
 
 
