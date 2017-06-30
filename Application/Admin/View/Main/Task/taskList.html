@@ -5,7 +5,8 @@
     </div>
     <div class="cf">
         <div class="fl">
-            <a class="btn" href="{:U('Main/taskAdd')}">新 增</a>
+            <a class="btn" href="{:U('Main/daliyTaskAdd')}">日 常</a>
+            <a class="btn" href="{:U('Main/extraTaskAdd')}">额 外</a>
             <button class="btn ajax-post confirm" url="{:U('Main/changeStatus',array('method'=>'deleteUser','dbname'=>'Task'))}" target-form="ids">删 除</button>
             <button class="btn ajax-post" url="{:U('Main/taskPost',array('abc'=>'2'))}" target-form="ids">发 布</button>
         </div>
@@ -31,8 +32,10 @@
             <tr>
                 <th class="row-selected row-selected"><input class="check-all" type="checkbox"/></th>
                 <th class="text-center">任务ID</th>
-                <th class="text-center" style="width:20%">任务名称</th>
+                <th class="text-center" style="width:10%">任务名称</th>
+                <th class="text-center" style="width:15%">任务描述</th>
                 <th class="text-center">任务类型</th>
+                <th class="text-center">任务等级</th>
                 <th class="text-center">任务指标</th>
                 <th class="text-center">任务金额</th>
                 <th class="text-center">创建时间</th>
@@ -48,12 +51,14 @@
                         <td><input class="ids" type="checkbox" name="id[]" value="{$vo.id}" /></td>
                         <td>{$vo.id}</td>
                         <td>{$vo.name}</td>
+                        <td>{$vo.detail}</td>
                         <td>
                             <if condition="$vo.type eq 1"> 基本任务
                                 <elseif condition="$vo.type eq 2" /> 额外任务
                                 <else/> -
                             </if>
                         </td>
+                        <td>{$vo.class}</td>
                         <td>{$vo.inneed}</td>
                         <td>{$vo.money}</td>
                         <td>
@@ -72,7 +77,10 @@
                             <if condition="$vo.status eq 1">
                                 编辑
                                 <else/>
-                                <a href="{:U('Main/taskEdit',array('id'=>$vo['id']))}">编辑</a>
+                                <if condition="$vo.type eq 1">
+                                    <a href="{:U('Main/dailyTaskEdit',array('id'=>$vo['id']))}">编辑</a>
+                                    <else/><a href="{:U('Main/extraTaskEdit',array('id'=>$vo['id']))}">编辑</a>
+                                </if>
                             </if>
                             |
                             <if condition="$vo.status eq 0">

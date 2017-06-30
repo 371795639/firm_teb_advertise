@@ -1,0 +1,68 @@
+<extend name="Public/base"/>
+
+<block name="body">
+    <div class="main-title">
+        <h2>编辑任务</h2>
+    </div>
+    <form method="post" class="form-horizontal">
+        <div class="form-item">
+            <input type="hidden" class="text input-large" name="id" value="{$resTask.id}">
+            <label class="item-label">任务名称 <span class="check-tips">（此项只做展示，不可编辑哦。）</span></label>
+            <div class="controls">
+                <input type="text" class="text input-large" name="name" value="{$resTask.name}" readonly>
+            </div>
+            <label class="item-label">任务类型<span class="check-tips">（此项只做展示，不可编辑哦。）</span></label>
+            <div class="controls">
+                <input type="text" class="text input-large" value="日常任务" readonly>
+            </div>
+            <label class="item-label">任务描述<span class="check-tips">（请输入新的任务描述）</span></label>
+            <div class="controls">
+                <input type="text" class="text input-large" name="detail" value="{$resTask.detail}">
+            </div>
+            <label class="item-label">任务等级<span class="check-tips">（下拉选择新的加盟商等级）</span></label>
+            <div class="controls">
+                <select class="form-control" name="class">
+                    <option value=" ">任务等级</option>
+                    <option value="1" <eq name="resTask.class" value="1"> selected</eq> >1</option>
+                    <option value="2" <eq name="resTask.class" value="2"> selected</eq> >2</option>
+                    <option value="3" <eq name="resTask.class" value="3"> selected</eq> >3</option>
+                </select>
+            </div>
+            <label class="item-label">任务指标<span class="check-tips">（请输入新的任务指标）</span></label>
+            <div class="controls">
+                <input type="text" class="text input-large" name="inneed" value="{$resTask.inneed}">
+            </div>
+            <label class="item-label">任务金额<span class="check-tips">（请输入新的任务金额）</span></label>
+            <div class="controls">
+                <input type="text" class="text input-large" name="money" value="{$resTask.money}">
+            </div>
+            <label class="item-label">创建时间<span class="check-tips">（此项只做展示，不可编辑哦。）</span></label>
+            <div class="controls">
+                <input type="text" class="text input" style="cursor: not-allowed ;" value="{$resTask.create_time}"/>
+            </div>
+        </div>
+        <div class="form-item">
+            <label class="item-label"></label>
+            <div class="controls">
+                <button type="submit" class="btn submit-btn" id="refer" target-form="form-horizontal">确 定</button>
+                <button class="btn btn-return" onclick="javascript:history.back(-1);return false;">返 回</button>
+            </div>
+        </div>
+    </form>
+
+    <br><br>
+    <div class="item-label">
+        <h3>任务输入提示</h3>
+        <br>
+        <ul>
+            <li><span style="color: green;">分享玩家</span>：</li>
+            <li><span style="color: green;">首充人数</span>：</li>
+            <li><span style="color: green;">完成三次游戏任务</span>：</li>
+            <li><span style="color: green;">充值业绩</span>：</li>
+            <li><span style="color: green;">分享推广专员</span>：</li>
+        </ul>
+    </div>
+</block>
+<block name="script">
+    <script language="javascript" type="text/javascript" src="__STATIC__/My97DatePicker/WdatePicker.js"></script>
+</block>

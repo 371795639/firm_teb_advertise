@@ -33,6 +33,7 @@ class HomeController extends Controller {
         if(($_SESSION['userid'])==""){
             $this->error( '请先登录',U('Login/login') );
         }
+
     }
 
 }

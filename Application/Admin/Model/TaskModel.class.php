@@ -7,6 +7,7 @@ class TaskModel extends Model {
     protected $_validate = array(
         array('name', 'require', '任务名称不能为空', self::MUST_VALIDATE , 'regex', self::MODEL_INSERT),
         array('inneed', 'require', '任务指标不能为空', self::MUST_VALIDATE , 'regex', self::MODEL_INSERT),
+        array('class', 'require', '领取此日常任务的加盟商等级不能为空', self::MUST_VALIDATE , 'regex', self::MODEL_INSERT),
         array('money', 'require', '任务金额不能为空', self::MUST_VALIDATE , 'regex', self::MODEL_INSERT),
     );
 

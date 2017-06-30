@@ -195,6 +195,7 @@ class MainController extends AdminController {
         $xlsCell = array(
             array('id', 'ID'),
             array('name', '任务名称'),
+            array('detail', '任务描述'),
             array('isgame', '是否游戏任务'),
             array('type', '任务类型'),
             array('inneed', '任务指标'),
@@ -243,8 +244,8 @@ class MainController extends AdminController {
     }
 
 
-    /**添加任务**/
-    public function taskAdd(){
+    /**添加日常任务**/
+    public function daliyTaskAdd(){
         $dbTask = D('Task');
         if(IS_POST) {
             $data = array(
@@ -252,21 +253,42 @@ class MainController extends AdminController {
                 'type'      => 1,
                 'class'     => I('post.class'),
                 'inneed'    => I('post.inneed'),
+                'detail'    => I('post.detail'),
                 'money'     => I('post.money'),
                 'tasker'    => session('user_auth')['username'],
             );
-            p($data);die;
             if($dbTask -> task_insert($data)){
                 $this -> success('增加成功', U('Main/taskList'));
             }else{
                 $this -> error($dbTask -> getError());
             }
         }else {
-            $this -> meta_title = '添加任务';
-            $this -> display('Main/task/taskAdd');
+            $this -> meta_title = '添加日常任务';
+            $this -> display('Main/task/daliyTaskAdd');
         }
     }
 
+
+    /**添加额外任务**/
+    public function extraTaskAdd(){
+        $dbTask = D('Task');
+        if(IS_POST) {
+            $data = array(
+                'name'      => I('name', '', 'htmlspecialchars'),
+                'type'      => 2,
+                'detail'    => I('post.detail'),
+                'tasker'    => session('user_auth')['username'],
+            );
+            if($dbTask -> add($data)){
+                $this -> success('增加成功', U('Main/taskList'));
+            }else{
+                $this -> error($dbTask -> getError());
+            }
+        }else {
+            $this -> meta_title = '添加额外任务';
+            $this -> display('Main/task/extraTaskAdd');
+        }
+    }
 
     /**发布周任务**/
     public function taskPost($abc = null){
@@ -363,18 +385,21 @@ class MainController extends AdminController {
         $this -> display('Main/task/taskWeekly');
     }
 
-    /**编辑任务**/
-    public function taskEdit(){
+
+    /**编辑日常任务**/
+    public function dailyTaskEdit(){
         $dbTask = D('Task');
         $where = I('id');
         if(IS_POST){
             $id = $_POST['id'];
             $data = array(
-                'name'   => I('name', '', 'htmlspecialchars'),
-                'type'   => I('post.type'),
-                'inneed' => I('post.inneed'),
-                'money'  => I('post.money'),
-                'tasker' => session('user_auth')['username'],
+                'name'      => I('name', '', 'htmlspecialchars'),
+                'type'      => 1,
+                'class'     => I('post.class'),
+                'inneed'    => I('post.inneed'),
+                'detail'    => I('post.detail'),
+                'money'     => I('post.money'),
+                'tasker'    => session('user_auth')['username'],
             );
             $resStaff = $dbTask -> save_task_by_id($id,$data);
             if($resStaff == 0){
@@ -387,8 +412,37 @@ class MainController extends AdminController {
         }else {
             $resTask = $dbTask -> get_task_by_id($where);
             $this->assign('resTask', $resTask);
-            $this->meta_title = '编辑任务';
-            $this->display('Main/task/taskEdit');
+            $this->meta_title = '编辑日常任务';
+            $this->display('Main/task/dailyTaskEdit');
+        }
+    }
+
+
+    /**编辑日常任务**/
+    public function extraTaskEdit(){
+        $dbTask = D('Task');
+        $where = I('id');
+        if(IS_POST){
+            $id = $_POST['id'];
+            $data = array(
+                'name'      => I('name', '', 'htmlspecialchars'),
+                'type'      => 2,
+                'detail'    => I('post.detail'),
+                'tasker'    => session('user_auth')['username'],
+            );
+            $resStaff = $dbTask -> save_task_by_id($id,$data);
+            if($resStaff == 0){
+                $this -> success('什么都没更改，正跳转至列表页...',U('Main/taskList'));
+            }elseif($resStaff == 1){
+                $this -> success('修改成功',U('Main/taskList'));
+            }else{
+                $this -> error('修改失败');
+            }
+        }else {
+            $resTask = $dbTask -> get_task_by_id($where);
+            $this->assign('resTask', $resTask);
+            $this->meta_title = '编辑额外任务';
+            $this->display('Main/task/extraTaskEdit');
         }
     }
 

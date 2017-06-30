@@ -22,7 +22,7 @@ class UserController extends HomeController {
             //解决中文乱码
             header('Content-Type:text/html;charset=utf-8');
             $dbStaff = D('staff');
-            $userid = $_SESSION['userid'];
+            $userid  = $_SESSION['userid'];
             $refData = array(
                 'game_id'     => $_POST['gameId'] ,
                 'card_id'     => $_POST['cardNum'],
@@ -31,16 +31,20 @@ class UserController extends HomeController {
             //判断是否存在该推荐人以及该手机号是否匹配
             $refStaffExist = $dbStaff->where(array('staff_real' => $_POST['staffName'] ,'mobile' => $_POST['refPhoneNum']))->find();
             if($refStaffExist){
-                $refData['referee'] = $refStaffExist['id'];
-                $ref = $dbStaff->where('id='.$userid)->save($refData);
-                if($ref){
-                    $this->success('完善信息成功，正在跳转到个人页面', U('User/index'));exit();
+                if($refStaffExist['id']==$userid){
+                    $this->error('推荐人不能是自己',U('User/compeleInfo'));
                 }
-
+                else{
+                    $refData['referee'] = $refStaffExist['id'];
+                    $ref = $dbStaff->where('id='.$userid)->save($refData);
+                    if($ref){
+                        $this->assign('waitSecond','3');
+                        $this->success('完善信息成功，正在跳转到个人页面', U('User/index'));exit();
+                    }
+                }
             }
            else{
                 $this->error('推荐人和手机号不匹配！', U('User/compeleInfo'));
-                //TODO 输出该手机号不存在或者推荐人不存在信息
            }
         }
             $this->display();
@@ -155,11 +159,7 @@ class UserController extends HomeController {
         $this->display();
     }
 
-    /* 报表 */
-    public function financialStatements(){
-        var_dump(1);
-        $this->display();
-    }
+
 
 
 }

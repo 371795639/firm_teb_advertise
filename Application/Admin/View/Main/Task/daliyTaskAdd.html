@@ -2,7 +2,7 @@
 
 <block name="body">
     <div class="main-title">
-        <h2>添加任务</h2>
+        <h2>添加日常任务</h2>
     </div>
     <form method="post" class="form-horizontal">
         <div class="form-item">
@@ -17,7 +17,10 @@
                     <option value="分享推广专员">分享推广专员</option>
                 </select>
             </div>
-
+            <label class="item-label">任务描述<span class="check-tips">（请输入任务描述）</span></label>
+            <div class="controls">
+                <input type="text" class="text input-large" name="detail" placeholder="简述即可">
+            </div>
             <label class="item-label">任务等级<span class="check-tips">（下拉选择领取此日常任务的加盟商等级）</span></label>
             <div class="controls">
                 <select class="form-control" name="class">
@@ -44,6 +47,18 @@
             </div>
         </div>
     </form>
+    <br><br>
+    <div class="item-label">
+        <h3>任务输入提示</h3>
+        <br>
+        <ul>
+            <li><span style="color: green;">分享玩家</span>：</li>
+            <li><span style="color: green;">首充人数</span>：首次充值达到5个人</li>
+            <li><span style="color: green;">完成三次游戏任务</span>：</li>
+            <li><span style="color: green;">充值业绩</span>：充值业绩达到</li>
+            <li><span style="color: green;">分享推广专员</span>：</li>
+        </ul>
+    </div>
 </block>
 <block name="script">
     <script language="javascript" type="text/javascript" src="__STATIC__/My97DatePicker/WdatePicker.js"></script>
