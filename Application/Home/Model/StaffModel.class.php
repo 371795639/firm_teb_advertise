@@ -66,14 +66,19 @@ class StaffModel extends Model{
         }
     }
 
+    /**
+     * 根据ID获取加盟商的等级
+     * @param $id   integer
+     * @return bool|int     加盟商等级  ->等级为0，不是加盟商
+     */
     public function get_staff_league($id){
-        $league = $this -> get_staff_by_id($id);
-        $is_league = $league['is_league'];
+        $league     = $this -> get_staff_by_id($id);
+        $is_league  = $league['is_league'];
         if($is_league == 0){
             $class = 0;
         }else{
-            $staffInfo = D('StaffInfo');
-            $cla = $staffInfo -> get_staff_by_uid($id);
+            $staffInfo  = D('StaffInfo');
+            $cla        = $staffInfo -> get_staff_by_uid($id);
             if($cla){
                 $class = $cla['class'];
             }else{
