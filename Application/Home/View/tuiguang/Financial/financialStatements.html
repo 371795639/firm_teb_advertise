@@ -63,16 +63,16 @@
         swipeBack:true //启用右滑关闭功能
     });
     function goHome(){
-        mui.openWindow("/Public/Home/index.html");
+        mui.openWindow("{:U('User/index')}");
     }
     function goTabs(){
-        mui.openWindow("/Public/Home/pages/finance/financialStatements.html");
+        mui.openWindow("{:U('Financial/financialStatements')}");
     }
     function goInfo(){
-        mui.openWindow("/Public/Home/pages/info/infoManagement.html");
+        mui.openWindow("{:U('Notice/index')}");
     }
     function goMy(){
-        mui.openWindow("/Public/Home/pages/home/my.html");
+        mui.openWindow("{:U('User/my')}");
     }
 </script>
 </body>

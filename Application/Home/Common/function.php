@@ -99,3 +99,49 @@ function time_formatss($date,$format='y年m月d日'){
     }
     return $re;
 }
+
+/**
+ * 时间格式化
+ * @param  string $date
+ * @return string 完整的时间显示
+ */
+function time_formatiss($date,$format='Y-m-d'){
+    if($date == 0){
+        $re = '-';
+    }else{
+        $time = strtotime($date);
+        $re = date($format, $time);
+    }
+    return $re;
+}
+
+/**
+ * 时间格式化
+ * @param  string $date
+ * @return string 完整的时间显示
+ */
+function time_formatsss($date,$format='Y-m-d'){
+    if($date == 0){
+        $re = '-';
+    }else{
+        $time = strtotime($date);
+        $re = date($format, $time);
+    }
+    return $re;
+}
+
+
+/**
+ * 时间格式化
+ * @param  string $date
+ * @return string 完整的时间显示
+ */
+function time_formatssss($date,$format='H:i'){
+    if($date == 0){
+        $re = '-';
+    }else{
+        $time = strtotime($date);
+        $re = date($format, $time);
+    }
+    return $re;
+}
