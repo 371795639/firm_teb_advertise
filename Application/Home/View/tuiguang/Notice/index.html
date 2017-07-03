@@ -27,7 +27,7 @@
 							<span class="mui-badge">10</span>
 						</a>
 					</li>
-					<li class="mui-table-view-cell" onclick="goDetail()">
+					<li class="mui-table-view-cell" onclick="taskNotice()">
 						<a class="mui-navigate-right">
 							<img class="mui-media-object mui-pull-left" src="/Public/Home/img/666.png">
 							<div class="mui-media-body">
@@ -36,7 +36,7 @@
 							<span class="mui-badge">10</span>
 						</a>
 					</li>
-					<li class="mui-table-view-cell" onclick="goDetail()">
+					<li class="mui-table-view-cell" onclick="eventNotice()">
 						<a class="mui-navigate-right">
 							<img class="mui-media-object mui-pull-left" src="/Public/Home/img/555.png">
 							<div class="mui-media-body">
@@ -45,7 +45,7 @@
 							<span class="mui-badge">10</span>
 						</a>
 					</li>
-					<li class="mui-table-view-cell" onclick="goDetail()">
+					<li class="mui-table-view-cell" onclick="moneyNotice()">
 						<a class="mui-navigate-right">
 							<img class="mui-media-object mui-pull-left" src="/Public/Home/img/444.png">
 							<div class="mui-media-body">
@@ -98,6 +98,15 @@
 		}
         function sysNotice(){
             mui.openWindow("{:U('Notice/sysNotice')}");
+        }
+        function taskNotice(){
+            mui.openWindow("{:U('Notice/taskNotice')}");
+        }
+        function eventNotice(){
+            mui.openWindow("{:U('Notice/eventNotice')}");
+        }
+        function moneyNotice(){
+            mui.openWindow("{:U('Notice/moneyNotice')}");
         }
 	</script>
 </html>

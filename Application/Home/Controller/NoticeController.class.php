@@ -24,25 +24,53 @@ class NoticeController extends HomeController {
     public function sysNotice(){
         $dbNotice = D('Notice');
         $sysNotice = $dbNotice -> get_notice_by_type('1');
-        $date = date('Y-m-d');
-        foreach($sysNotice as $k => $v){
-            if(time_formatiss($sysNotice[$k]['create_time']) == $date){
-                $sysNotice[$k]['create_time'] = time_formatsss($sysNotice[$k]['create_time']);
-            }else{
-                $sysNotice[$k]['create_time'] = time_formatiss($sysNotice[$k]['create_time']);
-            }
-        }
         $this -> assign('sysNotice',$sysNotice);
         $this -> display();
     }
 
-// 消息页面 需不需要图片上传？ 公告主题和公告内容 需要哪一个？
-// 任务消息和任务的关系？
-// 活动提醒消息是什么？
-// 资金变动怎么？
 
-// 目的：判断是否完成三次游戏任务
-// 需求：接口的返回值直接给我游戏任务的状态值就行了 => 同时完成三个任务，返回1；三个任务中只要有一个未完成的，返回0
+    /**任务消息**/
+    public function taskNotice(){
+        $dbNotice   = D('Notice');
+        $taskNotice  = $dbNotice -> get_notice_by_type('4');
+        $this -> assign('taskNotice',$taskNotice);
+        $this -> display();
+    }
+
+
+    /**活动消息**/
+    public function eventNotice(){
+        $dbNotice   = D('Notice');
+        $eventNotice  = $dbNotice -> get_notice_by_type('2');
+        $this -> assign('eventNotice',$eventNotice);
+        $this -> display();
+    }
+
+
+    /**资金变动**/
+    public function moneyNotice(){
+        $this -> display();
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
