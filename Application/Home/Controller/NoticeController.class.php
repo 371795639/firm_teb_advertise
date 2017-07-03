@@ -49,10 +49,7 @@ class NoticeController extends HomeController {
 
     /**资金变动**/
     public function moneyNotice(){
-<<<<<<< HEAD
 
-=======
->>>>>>> e8f540f214c4ccf487734a58a013e21efae13564
         $this -> display();
     }
 

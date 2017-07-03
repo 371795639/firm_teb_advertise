@@ -53,7 +53,6 @@
 			<h1 class="mui-title">系统消息</h1>
 		</header>
 		<div class="mui-content show">
-<<<<<<< HEAD
             <notempty name="sysNotice">
                 <volist name="sysNotice" id="vo">
                     <div class="msg">
@@ -66,18 +65,6 @@
                             <p class="msg-title">{$vo.notice_title}</p>
                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{$vo.notice_content}
                         </div>
-=======
-            <volist name="sysNotice" id="vo">
-                <div class="msg">
-                    <p>
-                    	<span>
-	                        {$vo.create_time}
-	                    </span>
-                    </p>
-                    <div class="msg-detail">
-                        <p class="msg-title">{$vo.notice_title}</p>
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{$vo.notice_content}
->>>>>>> e8f540f214c4ccf487734a58a013e21efae13564
                     </div>
                 </volist>
                 <else/><div class="no-data">暂时没有系统消息。</div>
