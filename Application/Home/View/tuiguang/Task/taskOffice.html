@@ -36,22 +36,22 @@
 			.get{/*可领取*/
 				border: 1px solid #FF3334;
 				border-radius: 3px;
-				color: #FF3334;
+				color: #FF3334 !important;
 			}
 			.geting{/*进行中*/
 				border: 1px solid #FEBE20;
 				border-radius: 3px;
-				color: #FEBE20;
+				color: #FEBE20 !important;
 			}
 			.geted{/*已领取*/
 				border: 1px solid #62c269;
 				border-radius: 3px;
-				color: #62c269;
+				color: #62c269 !important;
 			}
 			.over-date{/*超时过期的*/
 				border: 1px solid #CCC;
 				border-radius: 3px;
-				color: #CCC;
+				color: #CCC !important;
 			}
 			.mui-btn-block{
 				padding: 10px;
@@ -63,12 +63,12 @@
 			    padding: 0 10px 5px 10px;
 			}
 			.drop-down-list{
-				display: inline !important;
+				/*display: inline !important;*/
 				margin: 0 0 -5px 5px !important;
 				font-size:15px !important;
 				color: #9B9B9B !important;
 				margin-left:0  !important;
-			}			
+			}						
 		</style>
 	</head>
 	<body class="gradient">	
@@ -87,7 +87,7 @@
                 	</span>
                     <if condition="$class neq 0">
                          <if condition="$daily eq 1"><span class="right geted">已领取</span>
-                            <else/><a id="btn1"  href="{:U('Home/Task/taskOfficeDetail',array('method'=>'daily'))}"><span class="right get">待领取</span></a>
+                            <else/><a id="btn1"  href="{:U('Home/Task/taskOfficeDetail',array('method'=>'daily'))}"><span class="right get" >待领取</span></a>
                         </if>
                     </if>
                 </p>
@@ -102,9 +102,9 @@
                                 <li class="mui-table-view-cell">{$vo.detail}
                                     <span class="right col-ye money">{$vo.money}<img src="/Public/Home/img/money.png"/>
                                         <span>
-                                           <if condition="$vo.nstatus eq 1"><span class="geting state">进行中</span>
-                                               <elseif condition="$vo.nstatus eq 2" /><span class=" geted state">已完成</span>
-                                               <elseif condition="$vo.nstatus eq 3" /><span class="over-date state">已过期</span>
+                                           <if condition="$vo.nstatus eq 1"><a class="geting state">进行中</a>
+                                               <elseif condition="$vo.nstatus eq 2" /><a class=" geted state">已完成</a>
+                                               <elseif condition="$vo.nstatus eq 3" /><a class="over-date state">已过期</a>
                                            </if>
                                         </span>
                                     </span>
@@ -138,28 +138,28 @@
                     <ul class="mui-table-view">
                         <volist name="weeklyTypeTwo" id="vo">
                             <if condition="$vo.type eq 2">
-                                <li class="mui-table-view-cell  mui-collapse"> 
-                                	<a class="  drop-down-list" href="#">
-	                                	{$vo.name}
-	                                    <span  class="right">
-	                                        <if condition="$vo.nstatus eq null">
-	                                            <if condition="$extra eq 1"><span class="state over-date"> 不可领 </span>
-	                                                <else />  <a href="{:U('Home/Task/taskOfficeDetail',array('task_id'=>$vo['task_id'],'method'=>'extra'))}"><span class="state get">可领取</span></a>
-	                                            </if>
-	                                            <else />
-	                                                <if condition="$vo.nstatus eq 1"> <span class="state geting">进行中</span></if>
-	                                                <if condition="$vo.nstatus eq 2"> <span class="state geted">已完成</span></if>
-	                                                <if condition="$vo.nstatus eq 3"> <span class="state over-date">已过期</span></if>
-	                                        </if>
-	                                    </span>
-	                                    <span class="right col-ye">0~{$vo.money}<img src="/Public/Home/img/money.png"/></span>
-	                                </a>
-                                    <div class="mui-collapse-content" style="color:#62C269">{$vo.detail}</div>
+                                <li class="mui-table-view-cell">  
+                                	{$vo.name}
+                                    <span  class="right">
+                                        <if condition="$vo.nstatus eq null">
+                                            <if condition="$extra eq 1"><span class="state over-date"> 不可领 </span>
+                                                <else /><a href="{:U('Home/Task/taskOfficeDetail',array('task_id'=>$vo['task_id'],'method'=>'extra'))}" class="state get">可领取</a>
+                                            </if>
+                                            <else />
+                                                <if condition="$vo.nstatus eq 1"> <a class="state geting">进行中</a></if>
+                                                <if condition="$vo.nstatus eq 2"> <a class="state geted">已完成</a></if>
+                                                <if condition="$vo.nstatus eq 3"> <a class="state over-date">已过期</a></if>
+                                        </if>
+                                    </span>
+                                    <span class="right col-ye">0~{$vo.money}<img src="/Public/Home/img/money.png"/></span>
+                                    <div  style="color:#62C269; font-size: 13px;margin-top:4px;">{$vo.detail}</div>
                                 </li>
                             </if>
                         </volist>
                     </ul>                  
-                    <else />暂时还没有额外任务哦。
+                    <else /><div class="no-data">
+                	暂时还没有额外任务哦。
+                </div>
                 </notempty>
             </div>
 		</div>

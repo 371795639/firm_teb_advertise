@@ -32,13 +32,13 @@
 }
 /******************任务大厅button元素换A标签样式**************************/
 .mui-table-view-cell>a:not(.mui-btn){
-	padding: 0;
+	padding: 1px;
 	position: relative; 
-    display: inline-block; 
+    display: inline; 
     overflow: hidden; 
     margin:0 0 0 5px; 
     white-space: nowrap; 
     text-overflow: ellipsis; 
-    color:#62c269; 
-    font-size: 14px ;
+    /*color:#62c269; 
+    font-size: 14px ;*/
 }

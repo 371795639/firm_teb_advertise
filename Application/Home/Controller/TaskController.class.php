@@ -30,16 +30,16 @@ class TaskController extends HomeController {
 
     /**任务大厅**/
     public function taskOffice(){
-        $dbTaskWeekly   = D('TaskWeekly');
-        $dbTaskDone     = D('TaskDone');
-        $class          = D('Staff')    -> get_staff_league($_SESSION['userid']);//获取当前等陆用户的加盟商等级
+        $dbTaskWeekly       = D('TaskWeekly');
+        $dbTaskDone         = D('TaskDone');
+        $class              = D('Staff')    -> get_staff_league($_SESSION['userid']);//获取当前等陆用户的加盟商等级
         if($class == 0){//不是加盟商
             $weeklyTypeOne  = null;
             $weeklyTypeTwo  = null;
         }else {
             $weeklyTypeOne  = $dbTaskWeekly -> get_weekly_type('1', $class);//获取本周日常任务
             $weeklyTypeTwo  = $dbTaskWeekly -> get_weekly_type('2');//获取本周额外任务
-            $moneyOne       = $dbTaskWeekly -> get_weekly_money('1');//获取本周日常任务总金额
+            $moneyOne       = $dbTaskWeekly -> get_weekly_money('1',$class);//获取本周日常任务总金额
             $moneyTwo       = $dbTaskWeekly -> get_weekly_money('2');//获取本周额外任务总金额
         }
         $taskDaily          = $dbTaskDone   -> get_this_week_task('1');//获取用户已领取的日常任务列表
@@ -230,7 +230,13 @@ class TaskController extends HomeController {
 
 
 //判断完成3次游戏任务（日常任务）  $dailyTaskThree
-        //等待游戏那边的接口 传值 inneed
+//目的：判断是否完成三次游戏任务
+//需求：接口的返回值直接给我游戏任务的状态值就行了 => 同时完成三个任务，返回1；三个任务中只要有一个未完成的，返回0。
+
+
+
+
+//
 
 
 

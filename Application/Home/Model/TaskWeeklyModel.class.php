@@ -132,11 +132,12 @@ class TaskWeeklyModel extends Model{
 
     /**
      * 根据任务类型，获取周任务总金额
-     * @param $type
+     * @param   $type   integer  任务类型
+     * @param   $class  integer  任务等级
      * @return string
      */
-    public function get_weekly_money($type){
-        $taskWeekly = $this -> get_weekly_type($type);
+    public function get_weekly_money($type,$class){
+        $taskWeekly = $this -> get_weekly_type($type,$class);
         $money = '';
         foreach($taskWeekly as $k => $v){
             $money += $taskWeekly[$k]['money'];

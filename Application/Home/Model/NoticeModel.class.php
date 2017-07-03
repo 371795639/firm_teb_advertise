@@ -13,6 +13,14 @@ class NoticeModel extends Model{
      */
     public function get_notice_by_type($type){
         $re = $this -> where(array('notice_type_id' => (int)$type)) -> order('id DESC') -> select();
+        $date = date('Y-m-d');
+        foreach($re as $k => $v){
+            if(time_formatiss($re[$k]['create_time']) == $date){
+                $re[$k]['create_time'] = time_formatsss($re[$k]['create_time']);
+            }else{
+                $re[$k]['create_time'] = time_formatiss($re[$k]['create_time']);
+            }
+        }
         if($re){
             return $re;
         }else{

@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
-    <title>系统消息</title>
+    <title>活动消息</title>
     <link href="/Public/Home/css/mui.css" rel="stylesheet"/>
     <!--自定义样式-->
     <link rel="stylesheet" type="text/css" href="/Public/Home/css/common/common.css"/>
@@ -50,11 +50,11 @@
 	<body>
 		<header class="mui-bar mui-bar-nav gradient">
 			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left "></a>
-			<h1 class="mui-title">系统消息</h1>
+			<h1 class="mui-title">活动消息</h1>
 		</header>
 		<div class="mui-content show">
-            <notempty name="sysNotice">
-                <volist name="sysNotice" id="vo">
+            <notempty name="eventNotice">
+                <volist name="eventNotice" id="vo">
                     <div class="msg">
                         <p>
                             <span>
@@ -67,10 +67,11 @@
                         </div>
                     </div>
                 </volist>
-                <else/><div class="no-data">暂时没有系统消息。</div>
+                <else/><div class="no-data">暂时没有活动消息。</div> 
             </notempty>
 		</div>
 		<script src="/Public/Home/js/mui.min.js"></script>
 	</body>
+
 </html>
 
