@@ -549,10 +549,10 @@ class MainController extends AdminController {
         }
         $resNotice = $this -> lists($dbNotice,$map);
         foreach ($resNotice as $k => $v) {
-            if(strlen($resNotice[$k]['notice_content']) < 100){
+            if(strlen($resNotice[$k]['notice_content']) < 40){
                 $resNotice[$k]['n_content'] = $resNotice[$k]['notice_content'];
             }else{
-                $resNotice[$k]['n_content'] = msubstr($resNotice[$k]['notice_content'],0,80);
+                $resNotice[$k]['n_content'] = msubstr($resNotice[$k]['notice_content'],0,40);
             }
             $id['id'] =$resNotice[$k]['notice_type_id'];
             $type = $noticeType -> where($id) -> find();
@@ -619,6 +619,8 @@ class MainController extends AdminController {
                 $data['notice_content'] = $_POST['content'];
                 $data['notice_type_id'] = $_POST['notice_type'];
                 $data['notice_title'] = $_POST['notice_title'];
+                $data['create_time'] = date('Y-m-d H:i:s');
+                /*
                 //上传图片信息
                 $upload = new \Think\Upload();
                 $upload->maxSize   =     2*1024*1024 ;// 设置附件上传大小
@@ -629,10 +631,9 @@ class MainController extends AdminController {
                 $savename = $info['savename'];//图片名
                 $img_url = 'http://'.$_SERVER['HTTP_HOST'].'/Uploads/Picture/'.$savepath.$savename;//拼接图片地址
                 $data['img_url'] = $img_url;//存放图片路径
-                if($info&&$notice->add($data)){
+                */
+                if($notice->add($data)){
                     $this -> success('提交成功',U('Main/notice'));
-                }elseif(empty($info)){
-                    $this -> error('请选择图片再提交');
                 }else{
                     $this -> error('提交失败');
                 }
@@ -667,11 +668,12 @@ class MainController extends AdminController {
             $data = array(
                 'id'            => I('post.noticeID'), //消息id
                 'notice_title'  => I('post.noticeTitle'),//消息标题
-                'notice_content'=> I('post.noticeContent'),//消息内容
-                'create_time'   => time(),
+                'notice_content'=> I('noticeContent'),//消息内容
+                'create_time'   => date('Y-m-d H:i:s'),
                 'create_ip'     => $_SERVER['REMOTE_ADDR'],
                 'notice_type_id'=> $resNoticeTypeID,
             );
+            /*
             //图片信息
             $upload = new \Think\Upload();
             $upload->maxSize   =     2*1024*1024 ;// 设置附件上传大小
@@ -683,10 +685,12 @@ class MainController extends AdminController {
             $savename = $info['savename'];//图片名
             $img_url = 'http://'.$_SERVER['HTTP_HOST'].'/Uploads/Picture/'.$savepath.$savename;//拼接图片地址
             $data['img_url'] = $img_url;//存放图片路径
-            if($dbNotice->where(array('id='.$data['id']))->save($data)){
+            */
+            $res = $dbNotice->where(array('id='.$data['id']))->save($data);
+            if($res){
                 $this -> success('修改成功',U('Main/notice'));
             }else{
-                $this -> error('修改失败',U('Main/notice'));
+                $this -> error('修改失败');
             }
         }else {
             $this->assign('noticeID', $resNotice);

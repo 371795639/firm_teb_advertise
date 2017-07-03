@@ -6,18 +6,14 @@
     <form action="{:U('Main/noticeEdit')}" method="post" enctype="multipart/form-data" class="form-horizontal" >
         <div class="form-item">
             <input type="hidden" class="text input-large" name="noticeID" value="{$noticeID.id}">
-            <label class="item-label">消息类型
-                <span class="check-tips">
+            <label class="item-label">消息类型<span class="check-tips">（下拉选择新的消息类型）</span></label>
+            <div class="controls">
                 <select name="noticeType" class="form-control">
                     <option name="noticeType" value="{$noticeType.notice_type_name}">{$noticeType.notice_type_name}</option>
                     <volist name="noticeAllType" id="vo">
                         <option value="{$vo.notice_type_name}">{$vo.notice_type_name}</option>
                     </volist>
                 </select>
-                </span>
-            </label>
-            <div class="controls">
-
             </div>
             <label class="item-label">消息主题 <span class="check-tips">（请输入新的消息主题）</span></label>
             <div class="controls">
@@ -25,10 +21,15 @@
             </div>
             <label class="item-label">消息内容 <span class="check-tips">（请输入新的消息内容）</span></label>
             <div class="controls">
-                <input type="text" class="textarea input-large" name="noticeContent" value="{$noticeContent.notice_content}">
+                <!--<textarea name="content" value="{$noticeContent.notice_content}">{$noticeContent.notice_content}</textarea>-->
             </div>
+            <label class="textarea input-large">
+                <textarea name="noticeContent"> {$noticeContent.notice_content} </textarea>
+            </label>
         </div>
+        <!--
         <input id="files" type="file" name="photo" onchange="previewImage(this, 'prvid')" multiple="multiple"  value="上传图片" />
+        -->
             <div class="form-item">
                 <label class="item-label"></label>
                 <div class="controls">

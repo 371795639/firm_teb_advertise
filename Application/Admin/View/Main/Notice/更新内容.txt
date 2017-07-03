@@ -1,4 +1,0 @@
-\Library\Think\Upload.class.php
-修改
-'rootPath'      =>     './Uploads/Picture/', //保存根路径
-不然noticePost.html上传后保存路径是错误的
