@@ -38,17 +38,17 @@
 	display: inline-block;
 	text-align: left;
 	font-size: 16px;
-	width: 50%;
+	width: 49%;
 }
 .gradient.head p .p-left span{
 	border-bottom: 1px solid #FFF;
 	padding-bottom: 2px;
 }
 .gradient.head p .p-right{
-	float: right;
+	display: inline-block;
 	text-align:right;
 	font-size: 16px;
-	width: 50%;
+	width: 49%;
 }
 .topTabs{
 	height: 10rem;

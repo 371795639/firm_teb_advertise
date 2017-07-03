@@ -19,7 +19,7 @@ class IndexController extends Controller {
 
 	//系统首页
     public function index(){
-        redirect('index.php?s=/Home/Login/index');
+        redirect('index.php?s=/Home/Login/login.html');
 //        $this->display();
     }
 

@@ -13,15 +13,14 @@
 }
 .model>p>img{
 	color: #8A7DFF;
-	width: 1.2rem;
-	height: 1.6rem;
+	width: 12px;
+	height: 16px;
 }
 .mui-table-view-cell{
 	padding: 11px 5px;
 }
 .mui-table-view span img{
-	width: 1.2rem;
-	height: 1.2rem;
+	width: 13px;
 }
 .mui-table-view button,.small button{
 	padding: 0;

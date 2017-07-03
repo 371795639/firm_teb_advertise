@@ -16,64 +16,60 @@ use User\Api\UserApi;
  */
 class LoginController extends \Think\Controller {
 
-	/* 用户中心首页 */
-	public function index(){
-	    $this->display();
 
-	}
+    public function index(){
+        //nothing need to do here.s
 
-	/* 登录页面 */
-	public function login(){
-		if(IS_POST){ //登录验证
+    }
+
+    /* 登录页面 */
+    public function login(){
+        if(IS_POST){ //登录验证
             $dbStaff  = M('staff');
             $username = $_POST['username'];
             $password = $_POST['password'];
             $regStaff = $dbStaff ->where(array('mobile' => $username))->find();
-                if($regStaff){ //验证手机号
-                    if( $regStaff['staff_pwd']== md5($password)){ //验证密码
-                        if($regStaff['status']==1){//验证该用户处于可用状态
-                            $_SESSION['userid'] = $regStaff['id'];    //用户id
-                            //TODO 判断该用户是否完善信息
-                              $dbUser = $dbStaff->where('id='.$_SESSION['userid'])->find();
-                                if(($dbUser['card_id']==null)||($dbUser['referee']==null) || ($dbUser['game_id']==null) || ($dbUser['address']==null))
-                                {
-                                    $this->assign('waitSecond','3');
-                                    $this->success( '登陆成功，正在跳转到完善信息页面!',U('User/compeleInfo'));
-                            }else{
-                                    $this->assign('waitSecond','3');
-                                    $this->success( '登陆成功，正在跳转到主页面!',U('User/index'));
-                            }
+            if($regStaff){ //验证手机号
+                if( $regStaff['staff_pwd']== md5($password)){ //验证密码
+                    if($regStaff['status']==1){//验证该用户处于可用状态
+                        $_SESSION['userid'] = $regStaff['id'];    //用户id
+                        if($regStaff['pay_status']==1){//该用户处于未缴费状态
+                            $this->error( '登录失败，该账号未缴费，请重新注册缴费!',U('Login/register') );
                         }
-                        else{//验证该用户处于禁用状态
-                            if($regStaff['pay_status']==1){//该用户处于未缴费状态
-                                $this->error( '登录失败，该账号未缴费，请重新注册缴费!',U('Login/register') );
-                            }
-                            if($regStaff['pay_status']==2){//该用户处于删除状态
-                                $this->error( '登录失败，该账号缴费失败，请重新注册缴费!',U('Login/register') );
-                            }
-                            //if($regStaff['status']==2){//该用户处于禁用状态
-                                $this->error( '登录失败，该账号被禁用！',U('Login/login') );
-                            //}
+                        if($regStaff['pay_status']==2){//缴费失败
+                            $this->error( '登录失败，该账号缴费失败，请重新注册缴费!',U('Login/register') );
                         }
-
-                    }else{ //手机号或密码错误
-                        $this->error( '密码错误,请重新输入!',U('Login/login') );
+                        //TODO 判断该用户是否完善信息
+                        $dbUser = $dbStaff->where('id='.$_SESSION['userid'])->find();
+                        if(($dbUser['card_id']==null)||($dbUser['referee']==null) || ($dbUser['game_id']==null) || ($dbUser['address']==null))
+                        {
+                            $this->assign('waitSecond','3');
+                            $this->success( '登陆成功，正在跳转到完善信息页面!',U('User/compeleInfo'));
+                        }else{
+                            $this->assign('waitSecond','3');
+                            $this->success( '登陆成功，正在跳转到主页面!',U('User/index'));
+                        }
+                    }else{//验证该用户处于禁用状态
+                        $this->error( '登录失败，该账号被禁用！',U('Login/login') );
                     }
-                }else{
-                    $this->error( '该手机号不存在!',U('Login/login') );
+
+                }else{ //手机号或密码错误
+                    $this->error( '密码错误,请重新输入!',U('Login/login') );
                 }
-		} else { //显示登录表单
-			$this->display();
-		}
-	}
+            }else{
+                $this->error( '该手机号不存在!',U('Login/login') );
+            }
+        } else { //显示登录表单
+            $this->display();
+        }
+    }
 
-	/* 退出登录 */
-	public function logout(){
-	    //销毁session
+    /* 退出登录 */
+    public function logout(){
+        //销毁session
         session('[destroy]');
-	}
+    }
 
-    /* 注册页面 */
     public function register(){
         //判断提交方式
         if( IS_POST ) {
@@ -84,7 +80,8 @@ class LoginController extends \Think\Controller {
                 unset($_SESSION['verifyNum']['content']);
             }
             //判断手机验证码
-            if ($_SESSION['verifyNum']['content'] == $_POST['verifyNum']) { //$_SESSION['verifyNum']['content'] == $_POST['verifyNum']
+//            if ($_SESSION['verifyNum']['content'] == $_POST['verifyNum']) { //$_SESSION['verifyNum']['content'] == $_POST['verifyNum']
+            if ($_POST['verifyNum'] == 1) { //$_SESSION['verifyNum']['content'] == $_POST['verifyNum']
                 //实例化staff对象
                 $dbStaff = M('staff');
                 //获取记录
@@ -121,36 +118,32 @@ class LoginController extends \Think\Controller {
                         $this->error('新增用户记录失败，请重新注册！', U('Login/register'));
                     }
                 }
-
-                        //查表获得该用户id
-                        $ref =  $dbStaff->where('mobile=' . $refStaff['mobile'])->find();
-                        //添加session用户id信息
-                        $_SESSION['userid'] = $ref['id'] ;
-                        //跳转微信支付
-                        $customerid = 102090;                               //商户在网关系统上的商户号 TODO 获得商户号
-                        $sdcustomno = $customerid . time() . rand(1000000, 9999999);//订单在商户系统中的流水号 商户信息+日期+随机数
-                        $orderAmount = 1;                                   //订单支付金额；单位:分(人民币)
-                        $cardno = 51;                                       //微信wap  (固定值 51)
-                        $key = 'b0308d76c651420ce1e4662f36dc11ee';          //       TODO 获得key
-                        $noticeurl = 'http://' . $_SERVER['HTTP_HOST'] . '/home/login/wxcallback';    //在网关返回信息时通知商户的地址,该地址不能带任何参数，否则异步通知会不成功
-                        $backurl   = 'http://' . $_SERVER['HTTP_HOST'] . '/home/login/registerSucc';    //在网关返回信息时回调商户的地址,跳转到完善信息页面
-                        //sign进行加密
-                        $Md5str = 'customerid=' . $customerid . '&sdcustomno=' . $sdcustomno . '&orderAmount=' . $orderAmount . '&cardno=' . $cardno . '&noticeurl=' . $noticeurl . '&backurl=' . $backurl . $key;
-                        $sign = strtoupper(md5($Md5str));//发送给网关的签名字符串,为以上参数加商户在网关系秘钥（key）一起按照顺序MD5加密并转为大写的字符串
-                        $mark = $ref['id'];     //商户自定义信息，不能包含中文字符，因为可能编码不一致导致MD5加密结果不一致,返回用户uid 然后查询该纪录
-                        //拼接url
-                        $url = 'http://www.51card.cn/gateway/weixinpay/wap-weixinpay.asp?customerid=' . $customerid . '&sdcustomno=' . $sdcustomno . '&orderAmount=' . $orderAmount . '&cardno=' . $cardno . '&noticeurl=' . $noticeurl . '&backurl=' . $backurl . '&sign=' . $sign . '&mark=' . $mark;
-                        //跳转url
-                        Header("HTTP/Financial.Financial 303 See Other");
-                        Header("Location: $url");
-                }
-                else{
+                //查表获得该用户id
+                $ref =  $dbStaff->where('mobile=' . $refStaff['mobile'])->find();
+                //添加session用户id信息
+                $_SESSION['userid'] = $ref['id'] ;
+                //跳转微信支付
+                $customerid = 102090;                               //商户在网关系统上的商户号 TODO 获得商户号
+                $sdcustomno = $customerid . time() . rand(1000000, 9999999);//订单在商户系统中的流水号 商户信息+日期+随机数
+                $orderAmount = 1;                                   //订单支付金额；单位:分(人民币)
+                $cardno = 51;                                       //微信wap  (固定值 51)
+                $key = 'b0308d76c651420ce1e4662f36dc11ee';          //       TODO 获得key
+                $noticeurl = 'http://' . $_SERVER['HTTP_HOST'] . '/home/login/wxcallback';    //在网关返回信息时通知商户的地址,该地址不能带任何参数，否则异步通知会不成功
+                $backurl   = 'http://' . $_SERVER['HTTP_HOST'] . '/home/login/registerSucc';    //在网关返回信息时回调商户的地址,跳转到完善信息页面
+                //sign进行加密
+                $Md5str = 'customerid=' . $customerid . '&sdcustomno=' . $sdcustomno . '&orderAmount=' . $orderAmount . '&cardno=' . $cardno . '&noticeurl=' . $noticeurl . '&backurl=' . $backurl . $key;
+                $sign = strtoupper(md5($Md5str));//发送给网关的签名字符串,为以上参数加商户在网关系秘钥（key）一起按照顺序MD5加密并转为大写的字符串
+                $mark = $ref['id'];     //商户自定义信息，不能包含中文字符，因为可能编码不一致导致MD5加密结果不一致,返回用户uid 然后查询该纪录
+                //拼接url
+                $url = 'http://www.51card.cn/gateway/weixinpay/wap-weixinpay.asp?customerid=' . $customerid . '&sdcustomno=' . $sdcustomno . '&orderAmount=' . $orderAmount . '&cardno=' . $cardno . '&noticeurl=' . $noticeurl . '&backurl=' . $backurl . '&sign=' . $sign . '&mark=' . $mark;
+                //跳转url
+                Header("HTTP/1.1 303 See Other");
+                Header("Location: $url");
+            }
+            else{
                 $this->error('验证码错误！', U('Login/register'));
             }
-
-
         }
-
         $this->display();
     }
 
@@ -158,7 +151,7 @@ class LoginController extends \Think\Controller {
     public function wxcallback(){
         //判断请求
         if($_REQUEST){
-            $state      =   $_REQUEST['state'];          //Financial.充值成功 2.充值失败
+            $state      =   $_REQUEST['state'];          //1.充值成功 2.充值失败
             $customerid =   $_REQUEST['customerid'];     //商户注册的时候，网关自动分配的商户ID
             $sd51no     =   $_REQUEST['sd51no'];         //该订单在网关系统的订单号
             $sdcustomno =   $_REQUEST['sdcustomno'];     //该订单在商户系统的流水号
@@ -183,9 +176,8 @@ class LoginController extends \Think\Controller {
                 $dbregCharge = M('reg_charge');
                 //回调参数获得该用户id
                 $uid = $mark;
-
                 if($state==1){//充值成功
-                    if($ordermoney>=1000){
+                    if($ordermoney>=0.01){
                         //金额支付大于等于1000
                         $refStaff = array(
                             'pay_status' => 3,
@@ -220,15 +212,15 @@ class LoginController extends \Think\Controller {
 
                 }
                 else{//充值失败
-                        $refStaff=array(
-                            'pay_status' => 2,
-                        );
+                    $refStaff=array(
+                        'pay_status' => 2,
+                    );
                     //更新staff表支付状态
                     $dbStaff->where('id='.$uid)->save($refStaff);
                 }
                 //保存session方便跳转后获得该用户id号进行完善信息
                 //$_SESSION['userid'] = $uid;
-                if($refFlow&&$refStaff&&$refregCharge){
+                if($refFlow && $refStaff && $refregCharge){
                     //返回1给网关
                     echo '<result>1</result>';
                 }
@@ -242,6 +234,7 @@ class LoginController extends \Think\Controller {
     /* 注册成功 */
     public function registerSucc()
     {   //查Staff表
+        //判断请求
         $dbStaff = M('staff');
         $refStaff = $dbStaff->where('id='.$_SESSION['userid'])->find();
         switch ($refStaff['pay_status']) //支付状态
@@ -256,17 +249,16 @@ class LoginController extends \Think\Controller {
                 break;
             //付款成功状态
             case 3:
-               $refStaff = array(
-                   'status' => 1
-               );
+                $refStaff = array(
+                    'status' => 1
+                );
                 //更新staff表用户的status状态为1
-               $refStaff = $dbStaff->where('id='.$_SESSION['userid'])->save($refStaff);
-               if($refStaff){
-                   $this->display();
-               }
-               break;
+                $refStaff = $dbStaff->where('id='.$_SESSION['userid'])->save($refStaff);
+//               if($refStaff){
+//                   $this->display();
+//               }
+                break;
         }
-
         $this->display();
     }
 
@@ -307,7 +299,7 @@ class LoginController extends \Think\Controller {
 
         $statusStr =    array(
             "0" => "短信发送成功",
-            "-Financial" => "参数不全",
+            "-1" => "参数不全",
             "-2" => "服务器空间不支持,请确认支持curl或者fsocket，联系您的空间商解决或者更换空间！",
             "30" => "密码错误",
             "40" => "账号不存在",

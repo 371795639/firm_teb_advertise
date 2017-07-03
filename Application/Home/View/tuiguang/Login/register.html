@@ -25,11 +25,13 @@
 			<label>手机号码:</label>
 			<input id='phoneNum' name="phoneNum" type="text" class="mui-input-clear mui-input" placeholder="">
 		</div>
+
 		<div class="mui-input-row" >
 			<label>验证码:</label>
 			<input id = "testNum" name="verifyNum" type="text" class=" mui-input" >
 			<input type="button" id = "getTestNum" class="button" value="获取验证码"  name="phone" onclick="showtime(60)">
 		</div>
+
 		<div class="mui-input-row">
 			<label>密&nbsp;&nbsp;码:</label>
 			<input id='password1' name="password1" type="password" class="mui-input-clear mui-input" placeholder="">
@@ -49,6 +51,7 @@
 </div>
 <script src="/Public/Home/js/mui.min.js"></script>
 <script src="/Public/Home/js/jQuery/jquery-1.11.3.min.js"></script>
+
 <script type="text/javascript" charset="utf-8">
     mui.init();
     $("#regBtn").attr("disabled","disabled");
@@ -58,7 +61,6 @@
         var val2 = $("#testNum").val();
         var val3 = $("#password1").val();
         var val4 = $("#password2").val();
-
         var bb = val0&&val1&&val2&&val3&&val4;
         return bb;
     }
@@ -125,13 +127,10 @@
             data: {"phoneNum":$("#phoneNum").val()},
 
         });
-
-
         $("#getTestNum").attr("disabled","disabled");
         for(i=1;i<=t;i++){
             window.setTimeout("update_p(" + i + ","+t+")", i * 1000);
         }
-
     }
 
     function update_p(num,t) {
@@ -144,6 +143,110 @@
             $("#getTestNum").val("重新获取"+" ("+ printnr +")");
         }
     }
+
 </script>
+
+<!--
+<script type="text/javascript" charset="utf-8">
+    mui.init();
+    $("#regBtn").attr("disabled","disabled");
+    var test = function(){
+        var val0 = $("#userName").val();
+        var val1 = $("#phoneNum").val();
+//        var val2 = $("#testNum").val();
+        var val3 = $("#password1").val();
+        var val4 = $("#password2").val();
+
+//        var bb = val0&&val1&&val2&&val3&&val4;
+        var bb = val0&&val1&&val3&&val4;
+        return bb;
+    }
+    var isChecked = function(){
+        var val6 = $("input[name = checkbox]").is(':checked');
+        var cc = test();
+        var isOk = val6&&cc;
+        btn(isOk);
+    }
+    //按钮逻辑处理方法
+    var btn = function(a){
+        if( a ){
+            $("#regBtn").removeAttr("disabled");
+        }else{
+            $("#regBtn").attr("disabled","disabled");
+        }
+    }
+    //input框绑定事件
+    $('input').bind('keyup',function(){
+        //验证空值；
+        test();
+        isChecked();
+    });
+    //验证手机号码；
+    $("#phoneNum").blur(function(){
+        var val1 = $("#phoneNum").val();
+        checkMobile(val1);
+        btn(0);
+    });
+    var checkMobile = function(str){
+        var reg = /^1\d{10}$/;
+        if (reg.test(str)) {
+            return null;
+        } else {
+            mui.toast("请填写正确的手机号码！");
+            $("#phoneNum").val("");
+        }
+    }
+    //双密码一致验证；
+    $("#password2").blur(function(){
+        //验证两次输入密码；
+        testPsd();
+    });
+    var testPsd = function(){
+        var val3 = $("#password1").val();
+        var val4 = $("#password2").val();
+        if( val3==val4 ){
+            return null;
+        }else{
+            mui.toast("两次密码不一致！");
+            $("#password1").val("");
+            $("#password2").val("");
+        }
+    }
+
+    //获取验证码事件（时间在绑定调用处传入，）
+    function showtime(t){
+        //TODO请求验证码
+        $.ajax({
+            type: "POST",
+            url:"{:U('Login/msgVerify')}",
+            dataType: 'json',
+            async:true,  //默认是true异步传输，false是同步传输
+            data: {"phoneNum":$("#phoneNum").val()},
+
+        });
+
+        /*
+         $("#getTestNum").attr("disabled","disabled");
+         for(i=1;i<=t;i++){
+         window.setTimeout("update_p(" + i + ","+t+")", i * 1000);
+         }
+         */
+
+    }
+
+    /*
+     function update_p(num,t) {
+     if(num == t) {
+     $("#getTestNum").val("重新获取");
+     $("#getTestNum").removeAttr("disabled");
+     }
+     else {
+     printnr = t-num;
+     $("#getTestNum").val("重新获取"+" ("+ printnr +")");
+     }
+     }
+     */
+</script>
+-->
 </body>
 </html>

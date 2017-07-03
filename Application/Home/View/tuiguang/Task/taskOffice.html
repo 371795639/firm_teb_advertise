@@ -26,11 +26,12 @@
 				font-size:15px ;
 			}
 			.mui-table-view-cell img{
-				margin-left:0.5rem ;
+				margin-left:0.4rem ;
 			}
 			.state{
-				margin-left:0.5rem ;
+				margin-left:0.4rem ;
 				font-size:13px ;
+				padding: 1px;
 			}
 			.get{/*可领取*/
 				border: 1px solid #FF3334;
@@ -59,8 +60,15 @@
 			}
 			.mind-txt{
 				background: #fff;
-			    padding: 0 1rem 0.5rem 1rem;
+			    padding: 0 10px 5px 10px;
 			}
+			.drop-down-list{
+				display: inline !important;
+				margin: 0 0 -5px 5px !important;
+				font-size:15px !important;
+				color: #9B9B9B !important;
+				margin-left:0  !important;
+			}			
 		</style>
 	</head>
 	<body class="gradient">	
@@ -131,9 +139,9 @@
                         <volist name="weeklyTypeTwo" id="vo">
                             <if condition="$vo.type eq 2">
                                 <li class="mui-table-view-cell  mui-collapse"> 
-                                	<a class="mui-navigate-right" href="#">
+                                	<a class="  drop-down-list" href="#">
 	                                	{$vo.name}
-	                                    <span class="right">
+	                                    <span  class="right">
 	                                        <if condition="$vo.nstatus eq null">
 	                                            <if condition="$extra eq 1"><span class="state over-date"> 不可领 </span>
 	                                                <else />  <a href="{:U('Home/Task/taskOfficeDetail',array('task_id'=>$vo['task_id'],'method'=>'extra'))}"><span class="state get">可领取</span></a>

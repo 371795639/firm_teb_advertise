@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
-    <title>兔尔宝</title>
+    <title>系统消息</title>
     <link href="/Public/Home/css/mui.css" rel="stylesheet"/>
     <!--自定义样式-->
     <link rel="stylesheet" href="/Public/Home/css/mui.min.css" />
@@ -49,13 +49,7 @@
             <volist name="sysNotice" id="vo">
                 <div class="msg">
                     <p><span>
-
-                        <if condition="$date neq $vo.new_time">
-                            {$vo.create_time|time_formatssss}
-                            <else />
-                            {$vo.news_time}
-                        </if>
-
+                        {$vo.create_time}
                     </span></p>
                     <div>
                         <p class="">{$vo.notice_title}</p><!--居中-->
