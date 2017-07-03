@@ -53,6 +53,7 @@
 			<h1 class="mui-title">活动消息</h1>
 		</header>
 		<div class="mui-content show">
+<<<<<<< HEAD
             <notempty name="eventNotice">
                 <volist name="eventNotice" id="vo">
                     <div class="msg">
@@ -69,6 +70,21 @@
                 </volist>
                 <else/><div class="no-data">暂时没有活动消息。</div> 
             </notempty>
+=======
+            <volist name="eventNotice" id="vo">
+                <div class="msg">
+                    <p>
+                    	<span>
+	                        {$vo.create_time}
+	                    </span>
+                    </p>
+                    <div class="msg-detail">
+                        <p class="msg-title">{$vo.notice_title}</p>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{$vo.notice_content}
+                    </div>
+                </div>
+            </volist>
+>>>>>>> e8f540f214c4ccf487734a58a013e21efae13564
 		</div>
 		<script src="/Public/Home/js/mui.min.js"></script>
 	</body>

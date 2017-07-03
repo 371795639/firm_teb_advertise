@@ -1,0 +1,186 @@
+Index: Application/Admin/Common/function.php
+===================================================================
+--- Application/Admin/Common/function.php	(revision 66)
++++ Application/Admin/Common/function.php	(working copy)
+@@ -371,3 +371,19 @@
+ 	}
+ 	return $list[$type];
+ }
++
++
++/**
++ * 时间格式化
++ * @param  string $date
++ * @return string 完整的时间显示
++ */
++function time_formats($date,$format='Y-m-d H:i'){
++    if($date == 0){
++        $re = '-';
++    }else{
++        $time = strtotime($date);
++        $re = date($format, $time);
++    }
++    return $re;
++}
+\ No newline at end of file
+Index: Application/Admin/Controller/MainController.class.php
+===================================================================
+--- Application/Admin/Controller/MainController.class.php	(revision 66)
++++ Application/Admin/Controller/MainController.class.php	(working copy)
+@@ -549,10 +549,10 @@
+         }
+         $resNotice = $this -> lists($dbNotice,$map);
+         foreach ($resNotice as $k => $v) {
+-            if(strlen($resNotice[$k]['notice_content']) < 100){
++            if(strlen($resNotice[$k]['notice_content']) < 40){
+                 $resNotice[$k]['n_content'] = $resNotice[$k]['notice_content'];
+             }else{
+-                $resNotice[$k]['n_content'] = msubstr($resNotice[$k]['notice_content'],0,80);
++                $resNotice[$k]['n_content'] = msubstr($resNotice[$k]['notice_content'],0,40);
+             }
+             $id['id'] =$resNotice[$k]['notice_type_id'];
+             $type = $noticeType -> where($id) -> find();
+@@ -619,6 +619,8 @@
+                 $data['notice_content'] = $_POST['content'];
+                 $data['notice_type_id'] = $_POST['notice_type'];
+                 $data['notice_title'] = $_POST['notice_title'];
++                $data['create_time'] = date('Y-m-d H:i:s');
++                /*
+                 //上传图片信息
+                 $upload = new \Think\Upload();
+                 $upload->maxSize   =     2*1024*1024 ;// 设置附件上传大小
+@@ -629,10 +631,9 @@
+                 $savename = $info['savename'];//图片名
+                 $img_url = 'http://'.$_SERVER['HTTP_HOST'].'/Uploads/Picture/'.$savepath.$savename;//拼接图片地址
+                 $data['img_url'] = $img_url;//存放图片路径
+-                if($info&&$notice->add($data)){
++                */
++                if($notice->add($data)){
+                     $this -> success('提交成功',U('Main/notice'));
+-                }elseif(empty($info)){
+-                    $this -> error('请选择图片再提交');
+                 }else{
+                     $this -> error('提交失败');
+                 }
+@@ -667,11 +668,12 @@
+             $data = array(
+                 'id'            => I('post.noticeID'), //消息id
+                 'notice_title'  => I('post.noticeTitle'),//消息标题
+-                'notice_content'=> I('post.noticeContent'),//消息内容
+-                'create_time'   => time(),
++                'notice_content'=> I('noticeContent'),//消息内容
++                'create_time'   => date('Y-m-d H:i:s'),
+                 'create_ip'     => $_SERVER['REMOTE_ADDR'],
+                 'notice_type_id'=> $resNoticeTypeID,
+             );
++            /*
+             //图片信息
+             $upload = new \Think\Upload();
+             $upload->maxSize   =     2*1024*1024 ;// 设置附件上传大小
+@@ -683,10 +685,12 @@
+             $savename = $info['savename'];//图片名
+             $img_url = 'http://'.$_SERVER['HTTP_HOST'].'/Uploads/Picture/'.$savepath.$savename;//拼接图片地址
+             $data['img_url'] = $img_url;//存放图片路径
+-            if($dbNotice->where(array('id='.$data['id']))->save($data)){
++            */
++            $res = $dbNotice->where(array('id='.$data['id']))->save($data);
++            if($res){
+                 $this -> success('修改成功',U('Main/notice'));
+             }else{
+-                $this -> error('修改失败',U('Main/notice'));
++                $this -> error('修改失败');
+             }
+         }else {
+             $this->assign('noticeID', $resNotice);
+Index: Application/Admin/View/Main/Notice/notice.html
+===================================================================
+--- Application/Admin/View/Main/Notice/notice.html	(revision 66)
++++ Application/Admin/View/Main/Notice/notice.html	(working copy)
+@@ -33,7 +33,7 @@
+                 <th class="text-center">公告主题</th>
+                 <th class="text-center" style="width:40%">公告内容</th>
+                 <th class="text-center">发布IP</th>
+-                <th class="text-center">图片查看</th>
++                <!--<th class="text-center">图片查看</th>-->
+                 <th class="text-center">发布时间</th>
+                 <th class="text-center">发布人</th>
+                 <th class="text-center">操作</th>
+@@ -48,10 +48,12 @@
+                     <td>{$vo.notice_title}</td>
+                     <td><a title="点击“编辑”可查看详情" style="color:black;">{$vo.n_content}</a></td>
+                     <td>{$vo.create_ip}</td>
++                    <!--
+                     <td>
+                         <a href="{$vo.img_url}" target="_blank">图片查看</a>
+                     </td>
+-                    <td>{$vo.create_time|time_format}</td>
++                    -->
++                    <td>{$vo.create_time|time_formats}</td>
+                     <td>{$vo.poster}</td>
+                     <td>
+                         <a href="{:U('Main/noticeEdit',array('id'=>$vo['id']))}">编辑</a>
+Index: Application/Admin/View/Main/Notice/noticeEdit.html
+===================================================================
+--- Application/Admin/View/Main/Notice/noticeEdit.html	(revision 66)
++++ Application/Admin/View/Main/Notice/noticeEdit.html	(working copy)
+@@ -6,8 +6,8 @@
+     <form action="{:U('Main/noticeEdit')}" method="post" enctype="multipart/form-data" class="form-horizontal" >
+         <div class="form-item">
+             <input type="hidden" class="text input-large" name="noticeID" value="{$noticeID.id}">
+-            <label class="item-label">消息类型
+-                <span class="check-tips">
++            <label class="item-label">消息类型<span class="check-tips">（下拉选择新的消息类型）</span></label>
++            <div class="controls">
+                 <select name="noticeType" class="form-control">
+                     <option name="noticeType" value="{$noticeType.notice_type_name}">{$noticeType.notice_type_name}</option>
+                     <volist name="noticeAllType" id="vo">
+@@ -14,10 +14,6 @@
+                         <option value="{$vo.notice_type_name}">{$vo.notice_type_name}</option>
+                     </volist>
+                 </select>
+-                </span>
+-            </label>
+-            <div class="controls">
+-
+             </div>
+             <label class="item-label">消息主题 <span class="check-tips">（请输入新的消息主题）</span></label>
+             <div class="controls">
+@@ -25,10 +21,15 @@
+             </div>
+             <label class="item-label">消息内容 <span class="check-tips">（请输入新的消息内容）</span></label>
+             <div class="controls">
+-                <input type="text" class="textarea input-large" name="noticeContent" value="{$noticeContent.notice_content}">
++                <!--<textarea name="content" value="{$noticeContent.notice_content}">{$noticeContent.notice_content}</textarea>-->
+             </div>
++            <label class="textarea input-large">
++                <textarea name="noticeContent"> {$noticeContent.notice_content} </textarea>
++            </label>
+         </div>
++        <!--
+         <input id="files" type="file" name="photo" onchange="previewImage(this, 'prvid')" multiple="multiple"  value="上传图片" />
++        -->
+             <div class="form-item">
+                 <label class="item-label"></label>
+                 <div class="controls">
+Index: Application/Admin/View/Main/Notice/noticePost.html
+===================================================================
+--- Application/Admin/View/Main/Notice/noticePost.html	(revision 66)
++++ Application/Admin/View/Main/Notice/noticePost.html	(working copy)
+@@ -22,7 +22,9 @@
+             <label class="textarea input-large">
+                 <textarea name="content"></textarea>
+             </label>
++            <!--
+             <input id="files" type="file" name="photo1" onchange="previewImage(this, 'prvid')" multiple="multiple"  value="上传图片" />
++            -->
+             <div class="form-item">
+                 <label class="item-label"></label>
+                 <div class="controls">
+@@ -31,6 +33,7 @@
+                 </div>
+             </div>
+         </form>
++        <!--
+         <div id="prvid"></div><!--预览容器--><br>
+     </div>
+ </block>
