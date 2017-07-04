@@ -15,9 +15,9 @@ class TaskDoneModel extends Model{
      */
     public function get_done_by_uid($key,$value,$what=null){
         if($what == 'find'){
-            $re = $this -> where(array($key => (int)$value)) -> find();
+            $re = $this -> where(array($key => $value)) -> find();
         }elseif($what == 'select') {
-            $re = $this -> where(array($key => (int)$value)) -> select();
+            $re = $this -> where(array($key => $value)) -> select();
         }else{
             $re = null;
         }

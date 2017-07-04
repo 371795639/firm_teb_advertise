@@ -74,10 +74,28 @@ class UserController extends HomeController {
 
 	/* 我的页面 */
 	public function my(){
-        $dbStaff  = D('staff');
-        $userid   = $_SESSION['userid'];
-        $resStaff = $dbStaff->where('id='.$userid)->find();
-
+        $dbStaff        = D('staff');
+        $dbStaffInfo    = D('StaffInfo');
+        $resStaff       = $dbStaff      -> get_staff_by_id($_SESSION['userid']);
+        $resStaffInfo   = $dbStaffInfo  -> get_staff_by_uid($_SESSION['userid']);
+        $class          = $resStaffInfo['class'];
+        if($resStaff['is_league'] = 0){
+            $re = '推广专员';
+        }else{
+            $res = '级加盟商';
+            switch($class){
+                case 1:
+                    $re = '一'.$res;
+                    break;
+                case 2:
+                    $re = '二'.$res;
+                    break;
+                case 3:
+                    $re = '三'.$res;
+                    break;
+            }
+        }
+        $this->assign('re',$re);
         $this->assign('resStaff',$resStaff);
 	    $this->display();
 	}

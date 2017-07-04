@@ -5,7 +5,7 @@
 	    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-mobile-web-app-status-bar-style" content="black">
-	    <title>兔尔宝</title>
+	    <title>消息管理</title>
 	    <link href="/Public/Home/css/mui.css" rel="stylesheet"/>
 	    <!--自定义样式-->
 	    <link rel="stylesheet" type="text/css" href="/Public/Home/css/common/common.css"/>   
@@ -24,7 +24,9 @@
 							<div class="mui-media-body">
 								系统公告
 							</div>
-							<span class="mui-badge">10</span>
+                            <if condition="$sysCount eq 0">
+							    <else/><span class="mui-badge">{$sysCount}</span>
+                            </if>
 						</a>
 					</li>
 					<li class="mui-table-view-cell" onclick="taskNotice()">
@@ -33,7 +35,9 @@
 							<div class="mui-media-body">
 								任务消息
 							</div>
-							<span class="mui-badge">10</span>
+                            <if condition="$taskCount eq 0">
+                                <else/><span class="mui-badge">{$taskCount}</span>
+                            </if>
 						</a>
 					</li>
 					<li class="mui-table-view-cell" onclick="eventNotice()">
@@ -42,7 +46,9 @@
 							<div class="mui-media-body">
 								活动提醒
 							</div>
-							<span class="mui-badge">10</span>
+                            <if condition="$eventCount eq 0">
+                                <else/><span class="mui-badge">{$eventCount}</span>
+                            </if>
 						</a>
 					</li>
 					<li class="mui-table-view-cell" onclick="moneyNotice()">

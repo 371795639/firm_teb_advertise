@@ -62,13 +62,6 @@
 				background: #fff;
 			    padding: 0 10px 5px 10px;
 			}
-			.drop-down-list{
-				/*display: inline !important;*/
-				margin: 0 0 -5px 5px !important;
-				font-size:15px !important;
-				color: #9B9B9B !important;
-				margin-left:0  !important;
-			}						
 		</style>
 	</head>
 	<body class="gradient">	
@@ -112,7 +105,7 @@
                             </if>
                         </volist>
                     </ul>
-                    <else />暂时还没有日常任务哦。
+                    <else /><div class="no-data">暂时还没有日常任务哦。</div>
                 </notempty>
             </div>
             <if condition="$daily eq 1">
@@ -157,9 +150,7 @@
                             </if>
                         </volist>
                     </ul>                  
-                    <else /><div class="no-data">
-                	暂时还没有额外任务哦。
-                </div>
+                    <else /><div class="no-data">暂时还没有额外任务哦。</div>
                 </notempty>
             </div>
 		</div>
