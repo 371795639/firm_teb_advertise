@@ -16,12 +16,6 @@ use User\Api\UserApi;
  */
 class LoginController extends \Think\Controller {
 
-
-    public function index(){
-        //nothing need to do here.s
-
-    }
-
     /* 登录页面 */
     public function login(){
         if(IS_POST){ //登录验证
@@ -39,7 +33,7 @@ class LoginController extends \Think\Controller {
                         if($regStaff['pay_status']==2){//缴费失败
                             $this->error( '登录失败，该账号缴费失败，请重新注册缴费!',U('Login/register') );
                         }
-                        //TODO 判断该用户是否完善信息
+                        //判断该用户是否完善信息
                         $dbUser = $dbStaff->where('id='.$_SESSION['userid'])->find();
                         if(($dbUser['card_id']==null)||($dbUser['referee']==null) || ($dbUser['game_id']==null) || ($dbUser['address']==null))
                         {
@@ -64,13 +58,16 @@ class LoginController extends \Think\Controller {
         }
     }
 
+
     /* 退出登录 */
     public function logout(){
         //销毁session
         session('[destroy]');
     }
 
+
     public function register(){
+        $dbStaff = M('staff');
         //判断提交方式
         if( IS_POST ) {
             //解决中文乱码
@@ -80,36 +77,43 @@ class LoginController extends \Think\Controller {
                 unset($_SESSION['verifyNum']['content']);
             }
             //判断手机验证码
-//            if ($_SESSION['verifyNum']['content'] == $_POST['verifyNum']) { //$_SESSION['verifyNum']['content'] == $_POST['verifyNum']
-            if ($_POST['verifyNum'] == 1) { //$_SESSION['verifyNum']['content'] == $_POST['verifyNum']
-                //实例化staff对象
-                $dbStaff = M('staff');
+//            if ($_SESSION['verifyNum']['content'] == $_POST['verifyNum']) {
+            if ($_POST['verifyNum'] == 1) {
+                if($_POST['password1'] !== $_POST['password2']){
+                    $this -> error('输入的两次密码不一致，再检查下。');
+                }
                 //获取记录
                 $refStaff = array(
                     'mobile'     => $_POST['phoneNum'],              //注册手机号码
                     'staff_pwd'  => md5($_POST['password1']),        //密码md5
                     'staff_real' => $_POST['staffName'],             //个人姓名
-                    'create_time'=> date('y-m-d h:i:s', time()),     //创建时间
+                    'create_time'=> date('Y-m-d h:i:s'),             //创建时间
                     'status'     => 2,                               //禁用
                     'pay_status' => 1 ,                              //默认等待付款状态
                 );
                 //判断手机号重复
                 $phoneRepeat =  $dbStaff->where('mobile=' . $_POST['phoneNum'])->find();
-                if($phoneRepeat){
-                    if($phoneRepeat['pay_status']==3){
+                if($phoneRepeat){ //找出已存在的手机号
+                    if($phoneRepeat['pay_status']== 3 && $phoneRepeat['status'] == 1){
                         //该手机号重复且付款成功
-                        $this->error('该手机号已注册！', U('Login/login'));
+                        $this->error('该手机号已注册，别再瞎注册了。', U('Login/login'));
                         //验证码失效
                         unset($_SESSION['verifyNum']['content']);
                     }
-                    else{
+                    elseif($phoneRepeat['pay_status']== 1 || $phoneRepeat['pay_status']== 2){
+                        //TODO:付款状态为1或2，说明未付款或者付款失败，重新加载微信支付
+
+                        /* 下面的代码是邵杰写的。
                         //该手机号付款状态为其他
-                        $dbStaff->where('mobile='.$refStaff['mobile'])->save($refStaff);
-                        //验证码失效
-                        unset($_SESSION['verifyNum']['content']);
+                        else{
+                            $dbStaff->where('mobile='.$refStaff['mobile'])->save($refStaff);
+                            //验证码失效
+                            unset($_SESSION['verifyNum']['content']);
+                        }
+                        */
                     }
                 }
-                else{//新增记录
+                else{//表中未检测到用户的手机号，说明是新用户，新增记录
                     if($dbStaff->add($refStaff)){
                         //验证码失效
                         unset($_SESSION['verifyNum']['content']);
@@ -117,19 +121,21 @@ class LoginController extends \Think\Controller {
                     else{
                         $this->error('新增用户记录失败，请重新注册！', U('Login/register'));
                     }
+                    echo 123;
                 }
                 //查表获得该用户id
                 $ref =  $dbStaff->where('mobile=' . $refStaff['mobile'])->find();
                 //添加session用户id信息
                 $_SESSION['userid'] = $ref['id'] ;
                 //跳转微信支付
-                $customerid = 102090;                               //商户在网关系统上的商户号 TODO 获得商户号
+                $customerid = 102090;                               //商户在网关系统上的商户号 - 获得商户号
                 $sdcustomno = $customerid . time() . rand(1000000, 9999999);//订单在商户系统中的流水号 商户信息+日期+随机数
                 $orderAmount = 1;                                   //订单支付金额；单位:分(人民币)
                 $cardno = 51;                                       //微信wap  (固定值 51)
-                $key = 'b0308d76c651420ce1e4662f36dc11ee';          //       TODO 获得key
-                $noticeurl = 'http://' . $_SERVER['HTTP_HOST'] . '/home/login/wxcallback';    //在网关返回信息时通知商户的地址,该地址不能带任何参数，否则异步通知会不成功
-                $backurl   = 'http://' . $_SERVER['HTTP_HOST'] . '/home/login/registerSucc';    //在网关返回信息时回调商户的地址,跳转到完善信息页面
+                $key = 'b0308d76c651420ce1e4662f36dc11ee';          //获得key
+//                $noticeurl = 'http://' . $_SERVER['HTTP_HOST'] . '/index.php?s=/Home/Login/wxcallback';    //在网关返回信息时通知商户的地址,该地址不能带任何参数，否则异步通知会不成功
+//                $backurl   = 'http://' . $_SERVER['HTTP_HOST'] . '/index.php?s=/Home/Login/registerSucc';  //在网关返回信息时回调商户的地址,跳转到完善信息页面
+                $noticeurl   = 'http://' . $_SERVER['HTTP_HOST'] . '/index.php?s=/Home/Login/registerSucc';  //在网关返回信息时回调商户的地址,跳转到完善信息页面
                 //sign进行加密
                 $Md5str = 'customerid=' . $customerid . '&sdcustomno=' . $sdcustomno . '&orderAmount=' . $orderAmount . '&cardno=' . $cardno . '&noticeurl=' . $noticeurl . '&backurl=' . $backurl . $key;
                 $sign = strtoupper(md5($Md5str));//发送给网关的签名字符串,为以上参数加商户在网关系秘钥（key）一起按照顺序MD5加密并转为大写的字符串
@@ -147,6 +153,7 @@ class LoginController extends \Think\Controller {
         $this->display();
     }
 
+
     /* 微信支付通知 */
     public function wxcallback(){
         //判断请求
@@ -161,7 +168,7 @@ class LoginController extends \Think\Controller {
             $sign       =   $_REQUEST['sign'];           //发送给商户的签名字符串
             $resign     =   $_REQUEST['resign'];         //发送给商户的二次签名字符串
             $des        =   $_REQUEST['des'];            //描述订单支付成功或失败的系统备注
-            $key        =   'b0308d76c651420ce1e4662f36dc11ee'; //TODO 获取key
+            $key        =   'b0308d76c651420ce1e4662f36dc11ee'; //获取key
             //sign第一次加密结果
             $signRef    =   md5('customerid='.$customerid.'&sd51no='.$sd51no.'&sdcustomno='.$sdcustomno.'&mark='.$mark.'&key='.$key);
             //验证sign
@@ -231,9 +238,11 @@ class LoginController extends \Think\Controller {
         }
     }
 
+
     /* 注册成功 */
     public function registerSucc()
-    {   //查Staff表
+    {
+        //查Staff表
         //判断请求
         $dbStaff = M('staff');
         $refStaff = $dbStaff->where('id='.$_SESSION['userid'])->find();
@@ -261,6 +270,7 @@ class LoginController extends \Think\Controller {
         }
         $this->display();
     }
+
 
     /* 密码找回 */
     public function getNewPsd()
@@ -293,6 +303,7 @@ class LoginController extends \Think\Controller {
         }
         $this->display();
     }
+
 
     /* 短信宝验证 */
     public function msgVerify(){
