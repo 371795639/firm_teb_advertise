@@ -9,15 +9,11 @@ class NoticeModel extends Model{
     /**
      * 根据任务类型查找数据，以倒序形式展现
      * @param $type     integer     消息类型=>1：系统公告消息；2：活动提醒消息；3：任务提醒消息；
-     * @param $read     integer     是否已读=>1：未读；2：已读；
      * @return bool|mixed   array   $re
      */
-    public function get_notice_by_type($type,$read){
+    public function get_notice_by_type($type){
         if($type){
             $map['notice_type_id'] = $type;
-        }
-        if($read){
-            $map['is_read'] = $read;
         }
         $re = $this -> where($map) -> order('id DESC') -> select();
         if($re){
@@ -31,11 +27,10 @@ class NoticeModel extends Model{
     /**
      * 根据任务类型查找数据，以倒序形式展现，并对时间进行处理，如果是当天发布，只显示时间，否则显示日期
      * @param $type     integer     消息类型=>1：系统公告消息；2：活动提醒消息；3：任务提醒消息；
-     * @param $read     integer     是否已读=>1：未读；2：已读；
      * @return bool|mixed   array   $re
      */
-    public function get_notice_by_type_time_format($type,$read){
-        $re = $this -> get_notice_by_type($type,$read);
+    public function get_notice_by_type_time_format($type){
+        $re = $this -> get_notice_by_type($type);
         $date = date('Y-m-d');
         foreach($re as $k => $v){
             if(time_formatiss($re[$k]['create_time']) == $date){
@@ -53,19 +48,22 @@ class NoticeModel extends Model{
 
 
     /**
-     * 根据类型返回表中未读/已读消息的条数
+     * 根据类型返回表中未读消息的条数
      * @param $type integer 消息类型
-     * @param $read integer 是否已读 1：未读；2：已读
      * @return int  integer 数量
      */
-    public function count_notice_by_type($type,$read){
-        $re = $this -> get_notice_by_type($type,$read);
-        if($re){
-            $res = count($re) == 0 ? 0 :count($re);
-        }else{
-            $res = 0;
+    public function count_notice_by_type($type){
+        $re = $this -> get_notice_by_type($type);
+        $total = count($re);
+        $count = 0;
+        foreach($re as $item){
+            $ids = explode(',',$item['id_read']);
+            if(in_array($_SESSION['userid'],$ids)){
+                $count ++;
+            }
         }
-        return $res;
+        $number = $total - $count;
+        return $number;
     }
 
 
@@ -89,17 +87,18 @@ class NoticeModel extends Model{
     /**
      * 设置消息成已读或未读
      * @param $type     integer     消息类型
-     * @param $read     integer     要更新的状态
-     * @param $newRead  integer     更新后的状态
      * @return bool     true：更新成功；false：更新失败
      */
-    public function set_is_read($type,$read,$newRead){
-        $re = $this -> get_notice_by_type($type,$read);
-        foreach($re as $k => $v){
-            if($re[$k]['is_read'] == $read){
-                $id = $re[$k]['id'];
-                $data['is_read']  = $newRead;
-                $res = $this -> save_notice('id',$id,$data);
+    public function set_is_read($type){       //TODO !!!!怎么解决数据重复插入!!!
+        $re = $this -> get_notice_by_type($type);
+        foreach($re as $item => $v){
+            $notice_id = $re[$item]['id'];
+            $ids = explode(',',$item['id_read']);
+            if(in_array($_SESSION['userid'],$ids)){
+                $data['id_read'] = $re[$item]['id_read'].$_SESSION['userid'].',';
+                $res = $this -> save_notice('id',$notice_id,$data);
+            }else{
+
             }
         }
         if($res){
@@ -111,6 +110,10 @@ class NoticeModel extends Model{
 
 
 
+    public function get_notice_by_id($id){
+        $re = $this -> where(array('id' => (int)$id)) -> find();
+        return $re;
+    }
 
 
 
