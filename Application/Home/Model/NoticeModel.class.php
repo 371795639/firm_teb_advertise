@@ -7,6 +7,31 @@ use User\Api\UserApi;
 class NoticeModel extends Model{
 
     /**
+     * 根据ID获取消息
+     * @param $id       integer 消息ID
+     * @param $search   string  搜索类型：find/select
+     * @return mixed|string     array
+     */
+    public function get_notice_by_id($id,$search){
+        switch($search){
+            case 'find':
+                $re = $this -> where(array('id' => (int)$id)) -> order('id DESC') -> find();
+                break;
+            case 'select':
+                $re = $this -> where(array('id' => (int)$id)) -> order('id DESC') -> select();
+                break;
+            default:
+                $re = '参数错误';
+        }
+        if($re){
+            return $re;
+        }else{
+            return false;
+        }
+    }
+
+
+    /**
      * 根据任务类型查找数据，以倒序形式展现
      * @param $type     integer     消息类型=>1：系统公告消息；2：活动提醒消息；3：任务提醒消息；
      * @return bool|mixed   array   $re
@@ -85,20 +110,18 @@ class NoticeModel extends Model{
 
 
     /**
-     * 设置消息成已读或未读
-     * @param $type     integer     消息类型
-     * @return bool     true：更新成功；false：更新失败
+     * 设置未读消息成已读
+     * @param $re   array   调用get_notice_by_type_time_format方法获取数组
+     * @param $type integer 消息类型
+     * @return bool true：更新成功；false：更新失败
      */
-    public function set_is_read($type){       //TODO !!!!怎么解决数据重复插入!!!
-        $re = $this -> get_notice_by_type($type);
-        foreach($re as $item => $v){
-            $notice_id = $re[$item]['id'];
-            $ids = explode(',',$item['id_read']);
-            if(in_array($_SESSION['userid'],$ids)){
-                $data['id_read'] = $re[$item]['id_read'].$_SESSION['userid'].',';
+    public function set_is_read($re,$type){
+        foreach($re as $k => $v){
+            $notice_id = $re[$k]['id'];
+            $ids = explode(',',$re[$k]['id_read']);
+            if(!in_array($_SESSION['userid'],$ids)){
+                $data['id_read'] = $re[$k]['id_read'].$_SESSION['userid'].',';
                 $res = $this -> save_notice('id',$notice_id,$data);
-            }else{
-
             }
         }
         if($res){
@@ -107,21 +130,6 @@ class NoticeModel extends Model{
             return false;
         }
     }
-
-
-
-    public function get_notice_by_id($id){
-        $re = $this -> where(array('id' => (int)$id)) -> find();
-        return $re;
-    }
-
-
-
-
-
-
-
-
 
 
 
