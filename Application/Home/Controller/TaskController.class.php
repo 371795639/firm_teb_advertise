@@ -150,7 +150,7 @@ class TaskController extends HomeController {
         $doneExtra      = $taskDone -> get_this_week_task('2');  //额外任务
 
         $refereeCount   = $staff    -> count_staff_by_referee($_SESSION['userid']);
-        $refereeCount   = 1;
+        $refereeCount   = 15;
         $left           = $staff    -> get_staff_by_id($_SESSION['userid']);
         if(empty($doneDaily)){
             $dailyTask = 0;
@@ -163,22 +163,22 @@ class TaskController extends HomeController {
                 }
             }
             if ($dailyTaskFiveStatus == 1) {
-                $recommend_num = $left['recommend_num'];
-                $recommend_left_num = $refereeCount - $left['recommend_num'] - $dailyTaskFiveInneed;
-            }
-            if ($recommend_left_num >= 0) { //任务完成
-                $dailyTaskFive = 1;
-                $data = array(
-                    'recommend_num' => $refereeCount - $left['recommend_num'],
-                    'recommend_left_num' => $recommend_num - $dailyTaskFiveInneed + $left['recommend_left_num'],
-                );
-                $staff    -> save_staff_by_id($_SESSION['userid'],$data); //必须是当这周任务完成后，才插入数据
-                $date['status'] = 2;
-                $date['done_time'] = '';
-                $taskDone -> where("id = $dailyTaskFiveId") -> save($date);
-                //上一步只是将task_done表中此任务的状态值更改成2，其他的写流水等数据待写
-            } else {
-                $dailyTaskFive = 2;
+                $recommend_num = $refereeCount;
+                $recommend_left_num = $refereeCount - $left['recommend_num'] - $dailyTaskFiveInneed + $left['recommend_left_num'];
+                if ($recommend_left_num >= 0) { //任务完成
+                    $dailyTaskFive = 1;
+                    $data = array(
+                        'recommend_num' => $refereeCount,
+                        'recommend_left_num' => $recommend_left_num,
+                    );
+                    $staff    -> save_staff_by_id($_SESSION['userid'],$data); //必须是当这周任务完成后，才插入数据
+                    $date['status'] = 2;
+                    $date['done_time'] = '';
+                    $taskDone -> where("id = $dailyTaskFiveId") -> save($date);
+                    //上一步只是将task_done表中此任务的状态值更改成2，其他的写流水等数据待写
+                } else {
+                    $dailyTaskFive = 2;
+                }
             }
             p($recommend_num);
             p($recommend_left_num);
