@@ -145,94 +145,99 @@ class TaskController extends HomeController {
         $userShip       = D('UserShip');
         $userCharge     = D('UserCharge');
 
-        $refereeCount   = $staff    -> count_staff_by_referee($_SESSION['userid']);
         $class          = $staff    -> get_staff_league($_SESSION['userid']);//获取当前等陆用户的加盟商等级
         $doneDaily      = $taskDone -> get_this_week_task('1',$class);  //日常任务
         $doneExtra      = $taskDone -> get_this_week_task('2');  //额外任务
+
+        $refereeCount   = $staff    -> count_staff_by_referee($_SESSION['userid']);
+        $refereeCount   = 1;
         $left           = $staff    -> get_staff_by_id($_SESSION['userid']);
-        foreach($doneDaily as $k => $v){
-            if(empty($doneDaily[$k]['name'])) { //未领取分享推广专员任务
-                $dailyTaskFive = 0;
-            }else{
+        if(empty($doneDaily)){
+            $dailyTask = 0;
+        }else {
+            foreach ($doneDaily as $k => $v) {
                 if ($doneDaily[$k]['name'] == '分享推广专员') { //任务名称必须设置成 分享推广专员
-                    $dailyTaskFiveInneed = $doneDaily[$k]['inneed'];
+                    $dailyTaskFiveInneed    = $doneDaily[$k]['inneed'];
+                    $dailyTaskFiveStatus    = $doneDaily[$k]['status'];
+                    $dailyTaskFiveId        = $doneDaily[$k]['id'];
                 }
             }
-        }
-        p($doneDaily);
-        $data['recommend_num'] = $refereeCount;
-        if($left['recommend_num'] == 0){ //第一次做任务
-            $data['recommend_left_num'] = $refereeCount - $dailyTaskFiveInneed;
-        }else{
-            $data['recommend_left_num'] = $refereeCount - $left['recommend_num'] - $dailyTaskFiveInneed + $left['recommend_left_num'];
-        }
-        $data['recommend_left_num'] = $data['recommend_left_num'] <= 0 ? 0 :$data['recommend_left_num'];
-//        $resStaff = $staff -> save_staff_by_id($_SESSION['userid'],$data);
-        $result = $staff -> get_staff_by_id($_SESSION['userid']);
-        if($result['recommend_num'] > 0 && $result['recommend_left_num'] >= 0){
-            $dailyTaskFive = 1;
-            //更改 task_done中 分享推广专员 任务的状态为2
-        }else{
-            $dailyTaskFive = 2;
-        }
-// return $dailyTaskFive     分享推广专员 =>0：未领取任务； 1：已领取并完成；2：领取未完成；
+            if ($dailyTaskFiveStatus == 1) {
+                $recommend_num = $left['recommend_num'];
+                $recommend_left_num = $refereeCount - $left['recommend_num'] - $dailyTaskFiveInneed;
+            }
+            if ($recommend_left_num >= 0) { //任务完成
+                $dailyTaskFive = 1;
+                $data = array(
+                    'recommend_num' => $refereeCount - $left['recommend_num'],
+                    'recommend_left_num' => $recommend_num - $dailyTaskFiveInneed + $left['recommend_left_num'],
+                );
+                $staff    -> save_staff_by_id($_SESSION['userid'],$data); //必须是当这周任务完成后，才插入数据
+                $date['status'] = 2;
+                $date['done_time'] = '';
+                $taskDone -> where("id = $dailyTaskFiveId") -> save($date);
+                //上一步只是将task_done表中此任务的状态值更改成2，其他的写流水等数据待写
+            } else {
+                $dailyTaskFive = 2;
+            }
+            p($recommend_num);
+            p($recommend_left_num);
+            p($dailyTaskFive);
+            p($data);
+// return $dailyTask = 0 未领取任务
+// return $dailyTaskFive     分享推广专员 => 1：已领取并完成；2：领取未完成；
 
 
 //判断分享玩家任务（日常任务和额外任务） $dailyTaskOne  $extraTaskOneReward
-        $number     = $userShip -> count_user_by_superior($_SESSION['userid'],'0');
-        foreach($doneDaily as $k => $v){
-            if(empty($doneDaily[$k]['name'])){
-                $dailyTaskOne = 0;
+            $number = $userShip -> count_user_by_superior($_SESSION['userid'], '0');
+            foreach ($doneDaily as $k => $v) {
+                if ($doneDaily[$k]['name'] == '分享玩家') { //任务名称必须设置成 分享玩家
+                    $dailyTaskOneInneed = $doneDaily[$k]['inneed'];
+                }
             }
-            if($doneDaily[$k]['name'] == '分享玩家'){ //任务名称必须设置成 分享玩家
-                $dailyTaskOneInneed = $doneDaily[$k]['inneed'];
+            if ($number < $dailyTaskOneInneed) {
+                $dailyTaskOne = 2;
+            } else {
+                $dailyTaskOne = 1;
+                //更改 task_done中 分享玩家 任务的状态为2
+                if (empty($doneExtra)) {
+                    //未领取 额外分享玩家 任务，不发奖励
+                } else {
+                    $extraNumber = $dailyTaskOneInneed - $number;  //实际额外分享玩家数
+                    $extraNumberFact = $extraNumber >= 50 ? 50 : $extraNumber;  //实际奖励额外分享玩家数
+                    $extraTaskOneReward = $extraNumberFact * 2;
+                }
             }
-        }
-        if($number < $dailyTaskOneInneed){
-            $dailyTaskOne = 2;
-        }else{
-            $dailyTaskOne = 1;
-            //更改 task_done中 分享玩家 任务的状态为2
-            if(empty($doneExtra)){
-                //未领取 额外分享玩家 任务，不发奖励
-            }else {
-                $extraNumber = $dailyTaskOneInneed - $number;  //实际额外分享玩家数
-                $extraNumberFact = $extraNumber >= 50 ? 50 : $extraNumber;  //实际奖励额外分享玩家数
-                $extraTaskOneReward = $extraNumberFact * 2;
-            }
-        }
-//return $dailyTaskOne;         //分享玩家 => 0：未领取；1：领取并完成；2：领取未完成
+//return $dailyTask = 0 未领取任务
+//return $dailyTaskOne;         //分享玩家 =>1：领取并完成；2：领取未完成
 //return $extraTaskOneReward;   //额外分享玩家 任务可获得的奖励
 
 
 //判断首充人数任务（日常任务） $dailyTaskTwo
-        $users = $userShip -> get_user_by_superior($_SESSION['userid']);
-        foreach($users as $k => $v){
-            $game_id[] = $users[$k]['game_id'];
-        }
-        $chargeNumber = $userCharge -> get_user_first_charge($game_id,0);   //本周内首充人数
-        foreach($doneDaily as $k => $v){
-            if(empty($doneDaily[$k]['name'])){
-                $dailyTaskTwo = 0;
-            }else {
+            $users = $userShip->get_user_by_superior($_SESSION['userid']);
+            foreach ($users as $k => $v) {
+                $game_id[] = $users[$k]['game_id'];
+            }
+            $chargeNumber = $userCharge->get_user_first_charge($game_id, 0);   //本周内首充人数
+            foreach ($doneDaily as $k => $v) {
                 if ($doneDaily[$k]['name'] == '首充人数') { //任务名称必须设置成 首充人数
                     $dailyTaskTwoInneed = $doneDaily[$k]['inneed'];
                 }
             }
-        }
-        if($chargeNumber < $dailyTaskTwoInneed){
-            $dailyTaskTwo = 2;
-        }else{
-            $dailyTaskTwo = 1;
-            //更改 task_done中 首充人数 任务的状态为2
-        }
-//return $dailyTaskTwo;   //首充人数 => 0：未领取；1：领取并完成；2：领取未完成
+            if ($chargeNumber < $dailyTaskTwoInneed) {
+                $dailyTaskTwo = 2;
+            } else {
+                $dailyTaskTwo = 1;
+                //更改 task_done中 首充人数 任务的状态为2
+            }
+//return $dailyTask = 0 未领取任务
+//return $dailyTaskTwo;   //首充人数 =>1：领取并完成；2：领取未完成
 
 
 //判断完成3次游戏任务（日常任务）  $dailyTaskThree
 //目的：判断是否完成三次游戏任务
 //需求：接口的返回值直接给我游戏任务的状态值就行了 => 同时完成三个任务，返回1；三个任务中只要有一个未完成的，返回0。
-
+        }
 
 
 

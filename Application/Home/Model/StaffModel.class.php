@@ -12,7 +12,7 @@ class StaffModel extends Model{
      */
     public function count_staff_by_referee($referee){
         $re = $this -> where(array('referee'=>(int)$referee)) -> select();
-        $res = count($re) == 0 ? 0 :count($re);
+        $res = count($re) == 0 ? 0 : count($re);
         if($res){
             return $res;
         }else{

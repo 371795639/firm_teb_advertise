@@ -50,7 +50,36 @@ class NoticeController extends HomeController {
 
     /**资金变动**/
     public function moneyNotice(){
-        //资金变动
+        $dbFlow     = D('Flow');
+        $moneyNotice= $dbFlow -> get_flow_by_uid($_SESSION['userid'],'select');
+        foreach($moneyNotice as $k => $v){
+            $type = $moneyNotice[$k]['type'];
+            switch($type){
+                case 1:
+                    $newType = '完成任务';
+                    break;
+                case 2:
+                    $newType = '推荐用户';
+                    break;
+                case 3:
+                    $newType = '推荐代理商';
+                    break;
+                case 4:
+                    $newType = '玩家充值';
+                    break;
+                case 5:
+                    $newType = '提现';
+                    break;
+                case 6:
+                    $newType = '兑换中心';
+                    break;
+                case 7:
+                    $newType = '注册缴费';
+                    break;
+            }
+            $moneyNotice[$k]['i_type'] = $newType;
+        }
+        $this -> assign('moneyNotice',$moneyNotice);
         $this -> display();
     }
 
