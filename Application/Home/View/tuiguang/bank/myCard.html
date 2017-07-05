@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>兔尔宝</title>
+    <link href="/Public/Home/css/mui.css" rel="stylesheet"/>
+    <!--自定义样式-->
+    <link rel="stylesheet" href="/Public/Home/css/mui.min.css" />
+    <link rel="stylesheet" type="text/css" href="/Public/Home/css/common/common.css"/>
+    <link rel="stylesheet" type="text/css" href="/Public/Home/css/myCard/mycard.css"/>
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav gradient">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left "></a>
+			<h1 class="mui-title">我的银行卡</h1>
+		</header>
+		<div class="mui-content">
+			<ul class="mui-table-view">
+				<volist name="list" id="vo">
+				<li class="mui-table-view-cell mui-media">
+					<a href="javascript:;">
+						<switch name="vo.bank_name">
+							<case value="中国银行">
+								<img class="mui-media-object mui-pull-left" src="/Public/Home/img/1.jpg">
+								<div class="mui-media-body">
+									{$vo.bank_name}
+									<p class='mui-ellipsis'>{$vo.bank_card}</p>
+								</div>
+							</case>
+							<case value="工商银行">
+								<img class="mui-media-object mui-pull-left" src="/Public/Home/img/1.jpg">
+								<div class="mui-media-body">
+									{$vo.bank_name}
+									<p class='mui-ellipsis'>{$vo.bank_card}</p>
+								</div>
+							</case>
+							<case value="农业银行">
+								<img class="mui-media-object mui-pull-left" src="/Public/Home/img/1.jpg">
+								<div class="mui-media-body">
+									{$vo.bank_name}
+									<p class='mui-ellipsis'>{$vo.bank_card}</p>
+								</div>
+							</case>
+							<case value="建设银行">
+								<img class="mui-media-object mui-pull-left" src="/Public/Home/img/1.jpg">
+								<div class="mui-media-body">
+									{$vo.bank_name}
+									<p class='mui-ellipsis'>{$vo.bank_card}</p>
+								</div>
+							</case>
+							<default />
+						</switch>
+
+					</a>
+				</li>
+				</volist>
+			</ul>
+			<a  style="background: #fff; padding-bottom: 5px;" href="{:U('bank/bindCard')}">
+				<span class="mui-icon mui-icon-plusempty"></span><br>
+				<span >
+					添加银行卡
+				</span>
+			</a>
+		</div>
+		<script src="/Public/Home/js/mui.min.js"></script>
+	</body>
+
+</html>

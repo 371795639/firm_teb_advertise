@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>兔尔宝</title>
+    <link href="/Public/Home/css/mui.css" rel="stylesheet"/>
+    <!--自定义样式-->
+    <link rel="stylesheet" href="/Public/Home/css/mui.min.css" />
+    <link rel="stylesheet" type="text/css" href="/Public/Home/css/common/common.css"/>
+    <link rel="stylesheet" href="/Public/Home/css/submitCardInfo/submitCardInfo.css"/>
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav gradient">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left "></a>
+			<h1 class="mui-title">添加银行卡</h1>
+		</header>
+		<div class="mui-content">
+			<span style="color: #9B9B9B;">请绑定本人银行卡号信息</span>
+			<form action="" method="post">
+				<div class="text-box" style="border-top: 1px solid #e8e8e8;">
+					<label >持卡人：</label>
+					<input type="text"  id="name" name="holder_name"/>
+				</div>
+				<div class="text-box" >
+					<label >卡号：</label>
+					<input type="text" id="cardNum" name="card"/>
+				</div>
+				<div class="text-box">
+					<label >选择银行：</label>
+					<select name="bank_type" id="selectBank">
+						<option value="1">中国银行</option>
+						<option value="2">农业银行</option>
+						<option value="3">工商银行</option>
+						<option value="4">建设银行</option>
+					</select>
+				</div >
+				<div class="text-box">
+					<label >开户支行：</label>
+					<input type="text"  id = "address" name="subbranch"/>
+				</div>
+				<div class="btn-box">
+					<button id="submit" type="button">提交</button>
+				</div>				
+			</form>
+		</div>
+		<script src="/Public/Home/js/mui.min.js"></script>
+		<script src="/Public/Home/js/jQuery/jquery-1.11.3.min.js"></script>
+		<script type="text/javascript">
+			$("#submit").attr("disabled","disabled");	
+			var test = function(){
+				var name = $('#name').val();
+				var cardNum = $('#cardNum').val();
+				var selectBank = $('#selectBank').val();
+				var address = $('#address').val();
+				var isOk = name&&cardNum&&selectBank&&address;
+				if( isOk ){
+		         	$("#submit").removeAttr("disabled");
+		        }else{
+		         	$("#submit").attr("disabled","disabled");
+		        }
+			}
+			//input框绑定事件
+			$('input').bind('keyup',function(){
+				//验证空值；
+				test();	
+			});	
+			$("#selectBank").change(function () {
+				test();	
+			})
+			
+			/*提交银行卡信息*/
+			$('#submit').on('click',function () {
+				var holder_name = $('#name').val();
+				var card = $('#cardNum').val();
+				var bank_type = $('#selectBank').val();
+				var subbranch = $('#address').val();
+				$.ajax({
+					url:"{:U('bank/bindCard')}",
+					type:'post',
+					dataType:'json',
+					data:{holder_name:holder_name,card:card,bank:bank_type,subbranch:subbranch},
+					success:function (data) {
+						if(data['code'] == 1){
+                            mui.toast("银行卡绑定成功!");
+                            setTimeout(function () {
+                                mui.back();
+                            },2000);
+						}
+                        if(data['code'] == 2){
+                            mui.toast("银行卡绑定失败,请重新绑定!");
+                            setTimeout(function () {
+                                mui.back();
+                            },2000);
+                        }
+                        if(data['code'] == 3){
+                            mui.toast("该银行卡已被绑定!");
+                            setTimeout(function () {
+                                mui.back();
+                            },2000);
+                        }
+                    }
+				});
+            })
+		</script>
+	</body>
+</html>
+
+

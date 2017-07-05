@@ -56,7 +56,7 @@
 					</a>
 				</li>
 				<li class="mui-table-view-cell">
-					<a class="mui-navigate-right" href="/Public/Home/pages/myCard/myCard.html">
+					<a class="mui-navigate-right" href="{:U('Home/Bank/myCard')}">
 						<img class="mui-media-object mui-pull-left" src="/Public/Home/img/66.png">
 						<span>我的银行卡</span>
 					</a>
@@ -70,7 +70,7 @@
 			</ul>
 			<ul class="mui-content mui-table-view" style="margin-top: 1.4rem;">
 				<li class="mui-table-view-cell">
-					<a class="mui-navigate-right" href="/Public/Home/pages/share/share.html">
+					<a class="mui-navigate-right" onclick="shareImg()">
 						<img class="mui-media-object mui-pull-left" src="/Public/Home/img/44.png">
 						<span>分享二维码</span>
 					</a>
@@ -109,6 +109,10 @@
 			mui.init({
 				swipeBack:true //启用右滑关闭功能
 			});
+						
+			function shareImg(){
+				mui.toast("努力开发中，敬请期待！");
+			}
 			
 			function goHome(){
 				mui.openWindow("{:U('User/index')}");
