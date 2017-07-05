@@ -50,7 +50,7 @@ class NoticeController extends HomeController {
 
     /**资金变动**/
     public function moneyNotice(){
-
+        //资金变动
         $this -> display();
     }
 

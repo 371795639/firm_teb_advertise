@@ -20,7 +20,7 @@
             </div>
             <label class="item-label">内容 </label>
             <label class="textarea input-large">
-                <textarea name="content"></textarea>
+                <textarea name="content" placeholder="可用<br/>进行换行操作，这样用户在收到消息的时候，有换行，看着更加清晰。注意一定用<br/>，<br/>中不可有多余的空格，否则无效！"></textarea>
             </label>
             <!--
             <input id="files" type="file" name="photo1" onchange="previewImage(this, 'prvid')" multiple="multiple"  value="上传图片" />
@@ -33,7 +33,25 @@
                 </div>
             </div>
         </form>
+        <br><br>
+        <h3 style="color: green;cursor: pointer" id="show">点击查看消息内容演示</h3><br>
+        <div id="abc">
+            <span style="color: gray;font-size:10px;font-weight: normal;">图片截取自编辑消息页面</span><br><br>
+            <h4>后台输入：</h4>
+            <img style="border: 1px solid green;" src="/Public/Admin/img/admin_xiaoguo.png">
+            <h4>用户展示：</h4>
+            <img style="border: 1px solid green;" src="/Public/Admin/img/user_xiaoguo.png">
+        </div>
         <!--
         <div id="prvid"></div><!--预览容器--><br>
     </div>
+</block>
+<block name="script">
+    <script src="/Public/Admin/js/jQuery/jquery-1.11.3.min.js"></script>
+    <script>
+        $("#abc").hide();
+        $("#show").click(function(){
+            $("#abc").toggle();
+        });
+    </script>
 </block>

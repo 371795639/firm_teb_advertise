@@ -554,7 +554,8 @@ class MainController extends AdminController {
             }else{
                 $resNotice[$k]['n_content'] = msubstr($resNotice[$k]['notice_content'],0,40);
             }
-            $id['id'] =$resNotice[$k]['notice_type_id'];
+            $resNotice[$k]['s_content']  = str_replace('<br/>','',$resNotice[$k]['n_content']);//屏蔽<br/>
+            $id['id'] = $resNotice[$k]['notice_type_id'];
             $type = $noticeType -> where($id) -> find();
             $resNotice[$k]['notice_type_name'] = $type['notice_type_name'];
         }
