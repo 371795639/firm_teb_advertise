@@ -34,12 +34,21 @@ class NoticeModel extends Model{
     /**
      * 根据任务类型查找数据，以倒序形式展现
      * @param $type     integer     消息类型=>1：系统公告消息；2：活动提醒消息；3：任务提醒消息；
+     * @param $uid      integer     用户ID ID为0则是管理员发布的公告
+     * @param $kind     integer     公告种类1：管理员发布的公告；2：系统提示消息
      * @return bool|mixed   array   $re
      */
-    public function get_notice_by_type($type){
+    public function get_notice_by_type($type,$uid,$kind){
+        $map = array(
+            'uid' => $uid,
+            'kind'=> $kind,
+        );
         if($type){
             $map['notice_type_id'] = $type;
+        }else{
+            $map['notice_type_id'] = array('in','1,2,3');
         }
+
         $re = $this -> where($map) -> order('id DESC') -> select();
         if($re){
             return $re;
@@ -52,10 +61,12 @@ class NoticeModel extends Model{
     /**
      * 根据任务类型查找数据，以倒序形式展现，并对时间进行处理，如果是当天发布，只显示时间，否则显示日期
      * @param $type     integer     消息类型=>1：系统公告消息；2：活动提醒消息；3：任务提醒消息；
+     * @param $uid      integer     用户ID ID为0则是管理员发布的公告
+     * @param $kind     integer     公告种类1：管理员发布的公告；2：系统提示消息
      * @return bool|mixed   array   $re
      */
-    public function get_notice_by_type_time_format($type){
-        $re = $this -> get_notice_by_type($type);
+    public function get_notice_by_type_time_format($type,$uid,$kind){
+        $re = $this -> get_notice_by_type($type,$uid,$kind);
         $date = date('Y-m-d');
         foreach($re as $k => $v){
             if(time_formatiss($re[$k]['create_time']) == $date){
@@ -74,11 +85,13 @@ class NoticeModel extends Model{
 
     /**
      * 根据类型返回表中未读消息的条数
-     * @param $type integer 消息类型
-     * @return int  integer 数量
+     * @param $type     integer 消息类型
+     * @param $uid      integer     用户ID ID为0则是管理员发布的公告
+     * @param $kind     integer     公告种类1：管理员发布的公告；2：系统提示消息
+     * @return int      integer 数量
      */
-    public function count_notice_by_type($type){
-        $re = $this -> get_notice_by_type($type);
+    public function count_notice_by_type($type,$uid,$kind){
+        $re = $this -> get_notice_by_type($type,$uid,$kind);
         $total = count($re);
         $count = 0;
         foreach($re as $item){
@@ -111,11 +124,11 @@ class NoticeModel extends Model{
 
     /**
      * 设置未读消息成已读
-     * @param $re   array   调用get_notice_by_type_time_format方法获取数组
      * @param $type integer 消息类型
      * @return bool true：更新成功；false：更新失败
      */
-    public function set_is_read($re,$type){
+    public function set_is_read($type,$uid,$kind){
+        $re = $this -> get_notice_by_type($type,$uid,$kind);
         foreach($re as $k => $v){
             $notice_id = $re[$k]['id'];
             $ids = explode(',',$re[$k]['id_read']);

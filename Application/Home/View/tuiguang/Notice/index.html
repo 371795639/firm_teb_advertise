@@ -57,7 +57,9 @@
 							<div class="mui-media-body">
 								资金变动
 							</div>
-							<span class="mui-badge">10</span>
+                            <if condition="$moneyCount eq 0">
+                                <else/><span class="mui-badge">{$moneyCount}</span>
+                            </if>
 						</a>
 					</li>
 				</ul>

@@ -533,7 +533,8 @@ class MainController extends AdminController {
     public function notice($method = null){
         $dbNotice = D('notice');
         $noticeType = M('notice_type');
-        $map = $this -> _queryTime();
+        $cash = A('Cash');
+        $map = $cash -> _queryCreateTime();
         $notice_name = I('notice_name');
         $notice_type = I('notice_type');
         $this -> assign('notice_type',$notice_type);
@@ -547,6 +548,7 @@ class MainController extends AdminController {
         if($notice_type){
             $map['notice_type_id'] = $notice_type;
         }
+        $map['kind'] = 1;
         $resNotice = $this -> lists($dbNotice,$map);
         foreach ($resNotice as $k => $v) {
             if(strlen($resNotice[$k]['notice_content']) < 40){
@@ -559,7 +561,8 @@ class MainController extends AdminController {
             $type = $noticeType -> where($id) -> find();
             $resNotice[$k]['notice_type_name'] = $type['notice_type_name'];
         }
-        $type = $noticeType -> select();
+        $where['id'] = array('in','1,2,4');
+        $type = $noticeType -> where($where)-> select();
         $this -> assign('type',$type);
         $this -> assign('resNotice',$resNotice);
         //导出查询到的数据（不含分页）
@@ -567,10 +570,9 @@ class MainController extends AdminController {
         $xlsCell = array(
             array('id', 'ID'),
             array('notice_title', '公告主题'),
-            array('create_ip', 'IP'),
             array('notice_content', '功能内容'),
             array('notice_type_id', '公告类型'),
-            array('img_url', '图片地址'),
+            array('create_ip', '发布人IP'),
             array('poster', '发布人'),
             array('create_time', '创建时间'),
         );
@@ -592,7 +594,7 @@ class MainController extends AdminController {
         }
         $xlsData = $dbNotice -> get_all_notice($field,$map);
         foreach ($xlsData as $k => $v) {
-            $xlsData[$k]['create_time'] = $v['create_time'] == 0 ? '-' : date("Y-m-d H:i",$v['create_time']);
+            $xlsData[$k]['create_time'] = $v['create_time'] == 0 ? '-' : $v['create_time'];
             $xlsData[$k]['status']      = $v['status']      == 1 ? '正常' : '禁用';
         }
         switch (strtolower($method)){
@@ -621,6 +623,8 @@ class MainController extends AdminController {
                 $data['notice_type_id'] = $_POST['notice_type'];
                 $data['notice_title'] = $_POST['notice_title'];
                 $data['create_time'] = date('Y-m-d H:i:s');
+                $data['uid'] = 0;
+                $data['kind'] = 1;
                 /*
                 //上传图片信息
                 $upload = new \Think\Upload();
@@ -643,7 +647,8 @@ class MainController extends AdminController {
                 echo "<script>alert('请正确输入信息');history.go(-1); </script>";
             }
         }else {
-            $result = M('notice_type')->select();
+            $where['id'] = array('in','1,2,4');
+            $result = M('notice_type')->where($where)->select();
             $this->assign('type', $result);
             $this->meta_title = '消息管理';
             $this->display('Main/notice/noticePost');
@@ -704,6 +709,7 @@ class MainController extends AdminController {
         }
     }
 
+
     /**删除消息**/
     public function noticeDelete()
     {
@@ -711,6 +717,27 @@ class MainController extends AdminController {
         $noticeDeleteId = I('id');//获取删除的ID
         $notice->where('id='.$noticeDeleteId)->delete(); // 删除id为5的用户数据
         $this -> success('删除成功',U('Main/notice'));
+    }
+
+
+    /**金额变动消息**/
+    public function moneyNotice(){
+        $dbNotice = D('notice');
+        $cash = A('Cash');
+        $map = $cash -> _queryCreateTime();
+        $notice_name = I('notice_name');
+        if($notice_name) {
+            if (is_numeric($notice_name)) {
+                $map['uid|notice_title'] = array(intval($notice_name), array('EQ', $notice_name));
+            } else {
+                $map['notice_title'] = array('like', '%' . $notice_name . '%');
+            }
+        }
+        $map['kind'] = 2;
+        $resNotice = $this -> lists($dbNotice,$map);
+        $this -> assign('resNotice',$resNotice);
+        $this -> meta_title = '金额变动消息';
+        $this -> display('Main/notice/moneyNotice');
     }
 
 

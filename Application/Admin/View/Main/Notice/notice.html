@@ -27,7 +27,6 @@
         <table  id="" class="display">
             <thead>
             <tr>
-                <th class="row-selected row-selected"><input class="check-all" type="checkbox"/></th>
                 <th class="text-center">ID</th>
                 <th class="text-center">公告类型</th>
                 <th class="text-center">公告主题</th>
@@ -42,7 +41,6 @@
             <tbody class="text-center">
             <volist name="resNotice" id="vo">
                 <tr>
-                    <td><input class="ids" type="checkbox" name="id[]" value="{$vo.id}" /></td>
                     <td>{$vo.id}</td>
                     <td>{$vo.notice_type_name}</td>
                     <td>{$vo.notice_title}</td>
