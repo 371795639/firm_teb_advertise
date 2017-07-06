@@ -8,7 +8,7 @@
     <!--自定义样式-->
     <link rel="stylesheet" href="/Public/Home/css/mui.min.css" />
     <link rel="stylesheet" type="text/css" href="/Public/Home/css/common/common.css"/>
-    <link rel="stylesheet" type="text/css" href="/Public/Home/css/myCard/mycard.css"/>
+    <link rel="stylesheet" type="text/css" href="/Public/Home/css/myCard/mycard.css"/>   
 	</head>
 	<body>
 		<header class="mui-bar mui-bar-nav gradient">
@@ -16,37 +16,38 @@
 			<h1 class="mui-title">我的银行卡</h1>
 		</header>
 		<div class="mui-content">
-			<ul class="mui-table-view">
+			<ul class="ul">
 				<volist name="list" id="vo">
-				<li class="mui-table-view-cell mui-media">
+				<li class="list-unit">
 					<a href="javascript:;">
 						<switch name="vo.bank_name">
 							<case value="中国银行">
-								<img class="mui-media-object mui-pull-left" src="/Public/Home/img/1.jpg">
-								<div class="mui-media-body">
+								<!--<img src="/Public/Home/img/icbc.png" style="width:100%;position:absolute;top:0;left:0;z-index: 0; ">-->
+								<img src="/Public/Home/img/zgbank2.png" style="width:100%;z-index: 0; ">
+								<div class="bank-info">
 									{$vo.bank_name}
-									<p class='mui-ellipsis'>{$vo.bank_card}</p>
+									<p class='card-info'>{$vo.bank_card}</p>
 								</div>
 							</case>
 							<case value="工商银行">
-								<img class="mui-media-object mui-pull-left" src="/Public/Home/img/1.jpg">
-								<div class="mui-media-body">
+								<img src="/Public/Home/img/gsbank2.png" style="width:100%;z-index: 0; ">
+								<div class="bank-info">
 									{$vo.bank_name}
-									<p class='mui-ellipsis'>{$vo.bank_card}</p>
+									<p class='card-info'>{$vo.bank_card}</p>
 								</div>
 							</case>
 							<case value="农业银行">
-								<img class="mui-media-object mui-pull-left" src="/Public/Home/img/1.jpg">
-								<div class="mui-media-body">
+								<img src="/Public/Home/img/nybank2.png" style="width:100%;z-index: 0; ">
+								<div class="bank-info">
 									{$vo.bank_name}
-									<p class='mui-ellipsis'>{$vo.bank_card}</p>
+									<p class='card-info'>{$vo.bank_card}</p>
 								</div>
 							</case>
 							<case value="建设银行">
-								<img class="mui-media-object mui-pull-left" src="/Public/Home/img/1.jpg">
-								<div class="mui-media-body">
+								<img src="/Public/Home/img/jsbank2.png" style="width:100%;z-index: 0; ">
+								<div class="bank-info">
 									{$vo.bank_name}
-									<p class='mui-ellipsis'>{$vo.bank_card}</p>
+									<p class='card-info'>{$vo.bank_card}</p>
 								</div>
 							</case>
 							<default />
@@ -56,7 +57,7 @@
 				</li>
 				</volist>
 			</ul>
-			<a  style="background: #fff; padding-bottom: 5px;" href="{:U('bank/bindCard')}">
+			<a  style=" padding-bottom: 5px; margin:14px 0 ;" href="{:U('bank/bindCard')}">
 				<span class="mui-icon mui-icon-plusempty"></span><br>
 				<span >
 					添加银行卡

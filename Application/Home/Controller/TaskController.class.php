@@ -150,7 +150,7 @@ class TaskController extends HomeController {
         $doneExtra      = $taskDone -> get_this_week_task('2');  //额外任务
 
         $refereeCount   = $staff    -> count_staff_by_referee($_SESSION['userid']);
-        $refereeCount   = 15;
+        $refereeCount   = 25;
         $left           = $staff    -> get_staff_by_id($_SESSION['userid']);
         if(empty($doneDaily)){
             $dailyTask = 0;
@@ -174,7 +174,7 @@ class TaskController extends HomeController {
                     $staff    -> save_staff_by_id($_SESSION['userid'],$data); //必须是当这周任务完成后，才插入数据
                     $date['status'] = 2;
                     $date['done_time'] = '';
-                    $taskDone -> where("id = $dailyTaskFiveId") -> save($date);
+                    $taskDone -> where("id = $dailyTaskFiveId") -> save($date); //任务已过期该怎么写？
                     //上一步只是将task_done表中此任务的状态值更改成2，其他的写流水等数据待写
                 } else {
                     $dailyTaskFive = 2;
@@ -238,7 +238,6 @@ class TaskController extends HomeController {
 //目的：判断是否完成三次游戏任务
 //需求：接口的返回值直接给我游戏任务的状态值就行了 => 同时完成三个任务，返回1；三个任务中只要有一个未完成的，返回0。
         }
-
 
 
 //

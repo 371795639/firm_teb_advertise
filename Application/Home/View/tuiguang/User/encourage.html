@@ -51,7 +51,12 @@
 						<volist name="taskReward" id="vo">
 						<li>
 							<div class="left ">
-								<span class="text-overflow">任务奖励</span>
+                                <span class="text-overflow">
+                                    <if condition="$vo.type eq 1">
+                                         日常任务奖励
+                                        <else/> 额外任务奖励
+                                    </if>
+                                </span>
 								<span class="time">{$vo.create_time}</span>
 							</div>
 						 	<div class="right col-ye">

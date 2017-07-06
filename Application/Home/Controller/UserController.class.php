@@ -104,10 +104,11 @@ class UserController extends HomeController {
     public function encourage(){
         $dbReward  = M('reward');
         $userid    = $_SESSION['userid'];
+        //类型 1：分红、2：任务奖励、3：推荐奖励、4：充值提成；5中心推荐奖励；6中心业绩奖励;7:分销奖励
         //游戏分红
-        $bonusReward = $dbReward->where(array('uid' => $userid , 'type' => 1))->order('create_time desc')->select();
+        $bonusReward = $dbReward->where(array('uid' => $userid , 'type' => 8))->order('create_time desc')->select();
         //任务奖励
-        $taskReward = $dbReward->where(array('uid' => $userid , 'type' => 2))->order('create_time desc')->select();
+        $taskReward = $dbReward->where(array('uid' => $userid , 'type' => array('in','1,2')))->order('create_time desc')->select();
         //推荐奖励
         $map['uid']  = array('EQ',$userid);
         $map['type'] = array('EGT',3);
