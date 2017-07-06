@@ -335,4 +335,8 @@ class LoginController extends \Think\Controller {
         echo $statusStr[$result];
     }
 
+	public function decla(){
+		$this -> display();
+	}
+
 }

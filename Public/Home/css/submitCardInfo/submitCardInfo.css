@@ -18,13 +18,13 @@
 	line-height: 40px;
 }
 .mui-content form input,#selectBank{
+	font-size: 16px;
 	display: inline-block;
 	width: calc(100% - 9.9rem);
-	border: 1px solid transparent;
+	border: 1px solid transparent !important;
 	margin-bottom: 0 !important;   		
 	
 }
-
 .text-box{
 	border-bottom: 1px solid #e8e8e8;
 	background: #FFF;
@@ -33,12 +33,10 @@
 .btn-box{
 	padding: 10px 15px;
 	margin: 5px 0;
-	/*border: 1px solid #000000;*/
 }
 .mui-content form button{
 	height: 40px;
-	border: 1px solid #9b9b9b;
 	width: 100%;
 	font-size: 16px;
-	color: #9b9b9b;
+	color: #fff;
 }

@@ -188,9 +188,15 @@ class ConfigController extends AdminController {
     }
 /**参数设置**/
     public function varSet(){
+        $p = D('parameter');
+        $list = $this->lists($p);
         if (IS_POST){
             $id = I('post.id');
-            $val = I('post.val');
+            if(I('post.week') != ""){
+                $val = I('post.week');
+            }else{
+                $val = I('post.val');
+            }
             $result = M('parameter')->where(array('id'=>$id))->save(array('value'=>$val));
             if($result){
                 $data['code'] = 1;
@@ -199,8 +205,7 @@ class ConfigController extends AdminController {
             }
             $this->ajaxReturn($data,'json');
         }
-        $list = M('parameter')->select();
         $this->assign('var',$list);
-        $this->display();
+        $this->display('varSet');
     }
 }

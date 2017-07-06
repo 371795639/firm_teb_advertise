@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	    <meta charset="utf-8">
+	    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+	    <title>兔尔宝</title>
+	    <link href="/Public/Home/css/mui.css" rel="stylesheet"/>
+	    <!--自定义样式-->
+	    <link rel="stylesheet" href="/Public/Home/css/mui.min.css" />
+	    <link rel="stylesheet" type="text/css" href="/Public/Home/css/common/common.css"/>
+	    <link rel="stylesheet" href="/Public/Home/css/cash/cash.css"/>	
+	</head>
+	<body>
+		<div id="Display">
+			<header class="mui-bar mui-bar-nav gradient">
+				<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left "  ></a>
+				<h1 class="mui-title">提现</h1>
+			</header>
+			<div class="mui-content">
+				<form action="" method="post">								
+					<ul class="mui-content mui-table-view" style="margin-top: 14px;">
+						<li class="mui-table-view-cell">
+							<a class="mui-navigate-right" id="choose">							
+								<div class="mui-media-body" id="showcard">
+									请选择银行卡
+								</div>
+								<input type="hidden" value="" id="card-id"/>
+							</a>
+						</li>
+					</ul>
+					<div class="sum">
+						<span class = "cash-num" >提现金额</span>
+						<span class = "cash-img">￥</span><input type="" name="" id="money-num" value="" />
+						<span class = "remain-money">可用余额<span id="available">{$money}</span></span>
+					</div>
+					<div class="btn-box">
+						<button type="button" id="submit">确认提现</button>
+					</div>				
+				</form>
+			</div>
+		</div>
+		<div id="hidden">
+			<header class="mui-bar mui-bar-nav gradient">
+				<a class="mui-icon mui-icon-left-nav mui-pull-left " id="goback"></a>
+				<h1 class="mui-title">请选择银行卡</h1>
+			</header>
+			<div class="mui-content">
+				<ul class="mui-table-view mui-table-view-radio">
+					<volist name="list" id="vo">
+						<li class="mui-table-view-cell">
+							<switch name="vo.bank_name">
+								<case value="中国银行">
+									<a class="mui-navigate-right">
+										<img src="" class="bank-image"/>
+										<div class="card-info">
+											<span class="bank-name">中国银行</span>
+											<span class="card-id" style="background-color:transparent;color: transparent;">{$vo.bank_card}</span>
+											<span class="card-num">尾号为{$vo.card}储蓄卡</span>
+										</div>
+									</a>
+								</case>
+								<case value="工商银行">
+									<a class="mui-navigate-right">
+										<img src="" class="bank-image"/>
+										<div class="card-info">
+											<span class="bank-name">工商银行</span></br>
+											<span class="card-id" style="background-color:transparent;color: transparent;">{$vo.bank_card}</span>
+											<span class="card-num">尾号为{$vo.card}储蓄卡</span>
+										</div>
+									</a>
+								</case>
+								<case value="农业银行">
+									<a class="mui-navigate-right">
+										<img src="" class="bank-image"/>
+										<div class="card-info">
+											<span class="bank-name">农业银行</span></br>
+											<span class="card-id" style="background-color:transparent;color: transparent;">{$vo.bank_card}</span>
+											<span class="card-num">尾号为{$vo.card}储蓄卡</span>
+										</div>
+									</a>
+								</case>
+								<case value="建设银行">
+									<a class="mui-navigate-right">
+										<img src="" class="bank-image"/>
+										<div class="card-info">
+											<span class="bank-name">建设银行</span></br>
+											<span class="card-id" style="background-color:transparent;color: transparent;">{$vo.bank_card}</span>
+											<span class="card-num">尾号为{$vo.card}储蓄卡</span>
+										</div>
+									</a>
+								</case>
+								<default />
+							</switch>
+						</li>
+					</volist>
+				</ul>				
+			</div>
+		</div>
+		<script src="/Public/Home/js/mui.min.js"></script>
+		<script src="/Public/Home/js/jQuery/jquery-1.11.3.min.js"></script>
+		<script type="text/javascript">
+			//切换页面
+			$("#hidden").hide();
+			$("#choose").click(function(){
+				$("#Display").hide();
+				 $("#hidden").show();
+			})
+			$("#goback").click(function(){
+				$("#Display").show();
+				 $("#hidden").hide();
+			})
+			//获取选择数据
+			document.querySelector('.mui-table-view.mui-table-view-radio').addEventListener('selected',function(e){
+			    var _display = e.detail.el.innerText;
+                var _html = _display.split('\n');
+				$("#showcard").html(_html[0]+'\r'+_html[2]);
+				$("#card-id").val(_html[1]);
+
+			});
+			//验证
+			$("#submit").attr("disabled","disabled").css("background-color","#ccc");	
+			var test = function(){
+				var isChoose = $("#showcard").html();
+				var num = $('#money-num').val();
+				if( (isChoose != "请选择银行卡")&&(num) ){
+		         	$("#submit").removeAttr("disabled");
+		        }else{
+		         	$("#submit").attr("disabled","disabled");
+		        }
+			}
+			var test2 = function(){
+				var available = $("#available").html();
+				var a = parseFloat(available);
+				var num = $('#money-num').val();
+				var n = parseFloat(num);
+				if( a >= n ){
+		         	$("#submit").removeAttr("disabled").css("background-color","#f00");
+		        }else{
+//                    mui.toast("提现金额不能大于可用余额!")
+		         	$("#submit").attr("disabled","disabled").css("background-color","#ccc");
+
+		        }
+			}
+			//input框绑定事件；
+			$('input').bind('keyup',function(){
+				test();
+				test2();
+			});
+
+			//提交数据
+			$('#submit').on('click',function () {
+				var card = $('#card-id').val();
+				var money = $('#money-num').val();
+                $.ajax({
+                    url:"{:U('wallet/cash')}",
+                    type:"post",
+					dataType:'json',
+					data:{card:card,money:money},
+					success:function (data) {
+						if(data['code'] == 1){
+                            mui.toast("提现成功!");
+                            setTimeout(function () {
+                                mui.back();
+                            },2000);
+						}
+                        if(data['code'] == 2){
+                            mui.toast("提现失败!");
+                            setTimeout(function () {
+                                mui.back();
+                            },2000);
+                        }
+                        if(data['code'] == 3){
+                            mui.toast("今日提现次数已用完!");
+                            setTimeout(function () {
+                                mui.back();
+                            },2000);
+                        }
+                    }
+                });
+            });
+		</script>
+	</body>
+</html>
+
+

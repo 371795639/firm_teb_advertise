@@ -28,7 +28,7 @@
 				</div>
 				<div class="text-box">
 					<label >选择银行：</label>
-					<select name="bank_type" id="selectBank">
+					<select name="bank_type" id="selectBank" style="font-size: 16px;">
 						<option value="1">中国银行</option>
 						<option value="2">农业银行</option>
 						<option value="3">工商银行</option>
@@ -47,7 +47,8 @@
 		<script src="/Public/Home/js/mui.min.js"></script>
 		<script src="/Public/Home/js/jQuery/jquery-1.11.3.min.js"></script>
 		<script type="text/javascript">
-			$("#submit").attr("disabled","disabled");	
+			
+			$("#submit").attr("disabled","disabled").css("background","#CCCCCC");	
 			var test = function(){
 				var name = $('#name').val();
 				var cardNum = $('#cardNum').val();
@@ -55,9 +56,9 @@
 				var address = $('#address').val();
 				var isOk = name&&cardNum&&selectBank&&address;
 				if( isOk ){
-		         	$("#submit").removeAttr("disabled");
+		         	$("#submit").removeAttr("disabled").css("background","#ff0000");
 		        }else{
-		         	$("#submit").attr("disabled","disabled");
+		         	$("#submit").attr("disabled","disabled").css("background","#CCCCCC");
 		        }
 			}
 			//input框绑定事件
@@ -68,6 +69,20 @@
 			$("#selectBank").change(function () {
 				test();	
 			})
+//			正则验证银行卡   暂定15~19位卡号数；
+			$("#cardNum").change(function () {
+				var cardNum = $('#cardNum').val();
+				checkcard( cardNum );	
+			})
+			var checkcard = function(str){
+				var reg = /^(\d{15}|\d{16}|\d{17}|\d{18}|\d{19})$/;
+			    if (reg.test(str)) {
+					return null;
+				} else {
+					mui.toast("该卡暂不支持！");
+					$("#cardNum").val("");
+				 }
+			}
 			
 			/*提交银行卡信息*/
 			$('#submit').on('click',function () {

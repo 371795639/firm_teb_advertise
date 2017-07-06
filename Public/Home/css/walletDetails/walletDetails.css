@@ -2,6 +2,9 @@
 	margin-bottom: 0 !important;
 	text-align: center;
 	color: #fff;
+	padding: 20px;
+	font-size: 18px;
+	font-weight: 700;
 }
 .gradient span{
 	display: block;

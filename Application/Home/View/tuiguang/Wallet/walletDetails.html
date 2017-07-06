@@ -12,14 +12,14 @@
 </head>
 <body>
 	<header class="mui-bar mui-bar-nav gradient">
-			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left "></a>
-			<h1 class="mui-title">余额</h1>
-		</header>
+		<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left "></a>
+		<h1 class="mui-title">余额</h1>
+	</header>
 	<div class="mui-content ">
 		<div class="gradient">
-			<span>0.11</span>
-			<p>昨日收益（元）</p>
-			<p>总收入</p>
+			<!--<span>0.11</span>-->
+			<!--<p>昨日收益（元）</p>-->
+			<p>总收入 {$staff.income}</p>
 		</div>
 		<div id="profit">
 			<div class="right" style="border-left: 1px solid #CCCCCC;">			
@@ -30,31 +30,43 @@
 			</div>
 			<div class="right" >
 				<span class="mui-h3">
-					{$staff.money}
+				{$staff.money}
 				</span>
 				<p>现金（元）</p>
 			</div>
 		</div>
 		<ul class="mui-table-view">
 			<li class="mui-table-view-cell">
-				<a class="mui-navigate-right">
+				<a class="mui-navigate-right" href="{:U('wallet/recharge')}">
 					个人游戏充值
 				</a>
 			</li>
 			<li class="mui-table-view-cell">
-				<a class="mui-navigate-right">
+				<a class="mui-navigate-right" href="{:U('wallet/recharge')}">
 					为他人充值
 				</a>
 			</li>
 		</ul>
-		<ul class="mui-table-view"style="margin-top: 1.4rem;">
+		<ul class="mui-table-view">
 			<li class="mui-table-view-cell">
-				<a class="mui-navigate-right">
+				<if condition="$staff.week eq 1">
+				<a class="mui-navigate-right" href="{:U('wallet/cash')}">
 					提现
 				</a>
+				<else />
+					<a class="mui-navigate-right" href="#" onclick="remark()">
+						提现
+					</a>
+				</if>
 			</li>
 		</ul>	
 	</div>
+	
 	<script src="/Public/Home/js/mui.min.js"></script>
+	<script>
+		function remark() {
+            mui.toast("今天不是提现日,请于每周三提现!");
+        }
+	</script>
 </body>
 </html>

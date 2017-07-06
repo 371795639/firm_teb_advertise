@@ -19,7 +19,7 @@
 			<form action="" method="post" style=" padding-bottom: 2rem; margin-top:1.5rem; background: transparent;">
 				<div class="mui-input-row border-top">
 					<label>原密码</label>
-					<input id='oldPassword' type="password" class=" mui-input" placeholder="">
+					<input id='oldPassword' type="password" class=" mui-input" placeholder="" value="">
 					<span ><img src="/Public/Home/img/eye.png" id="img1" onclick="showOldPsd()"/></span>
 				</div>
 				<div class="mui-input-row">
@@ -34,15 +34,72 @@
 				</div>
 				<div class="mui-input-row" >
 					<label>验证码:</label>
-					<input id = "testNum" type="text" class=" mui-input" >				
-					<input type="button" id = "getTestNum" class="button" value="获取验证码"  name="phone" onclick="showtime(60)"> 
+					<input id = "testNum" type="text" class=" mui-input" >
+					<input id = "phoneNum" type="hidden" value="{$mobile}" >
+					<input type="button" id = "getTestNum" class="button" value="获取验证码"  name="phone" onclick="showtime(60)">
 				</div>
-				<button id="btn" class="gradient-btn">完&nbsp;&nbsp;成</button>
+				<button id="btn" class="gradient-btn" type="button">完&nbsp;&nbsp;成</button>
 			</form>
 		</div>
 		<script src="/Public/Home/js/mui.min.js"></script>
 		<script src="/Public/Home/js/jQuery/jquery-1.11.3.min.js"></script>
-		<script src="/Public/Home/js/setTest/setTest.js"></script>
+		<script type="text/javascript">
+            //获取验证码事件（时间在绑定调用处传入，）
+            function showtime(t){
+                //TODO请求验证码
+                $.ajax({
+                    type: "POST",
+                    url:"{:U('Login/msgVerify')}",
+                    dataType: 'json',
+                    async:true,  //默认是true异步传输，false是同步传输
+                    data: {"phoneNum":$("#phoneNum").val()},
+                });
+                $("#getTestNum").attr("disabled","disabled");
+                for(i=1;i<=t;i++){
+                    window.setTimeout("update_p(" + i + ","+t+")", i * 1000);
+                }
+            }
+
+            function update_p(num,t) {
+                if(num == t) {
+                    $("#getTestNum").val("重新获取");
+                    $("#getTestNum").removeAttr("disabled");
+                }
+                else {
+                    printnr = t-num;
+                    $("#getTestNum").val("重新获取"+" ("+ printnr +")");
+                }
+            }
+			$('#btn').on('click',function () {
+				var old_pwd = $('#oldPassword').val();
+				var new_pwd = $('#newPassword').val();
+				var test = $('#testNum').val();
+
+				$.ajax({
+					url:"{:U('set/setLoginPsd')}",
+					type:'post',
+					dataType:'json',
+					data:{old_pwd:old_pwd,new_pwd:new_pwd,test:test},
+					success:function (data) {
+						if(data['code'] == 1){
+                            mui.toast("修改成功!");
+                            setTimeout(function () {
+                                mui.back();
+                            },2000);
+						}
+						if(data['code'] == 2){
+                            mui.toast("验证码错误!");
+						}
+                        if(data['code'] == 3){
+                            mui.toast("原密码填写错误!");
+                        }
+                        if(data['code'] == 4){
+                            mui.toast("修改失败，请重新提交!");
+                        }
+                    }
+				});
+            });
+		</script>
 	</body>
 </html>
 

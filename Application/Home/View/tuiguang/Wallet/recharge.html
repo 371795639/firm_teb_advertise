@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>兔尔宝</title>
+    <link href="/Public/Home/css/mui.css" rel="stylesheet"/>
+    <!--自定义样式-->
+    <link rel="stylesheet" href="/Public/Home/css/mui.min.css" />
+    <link rel="stylesheet" type="text/css" href="/Public/Home/css/common/common.css"/>
+    <link rel="stylesheet" href="/Public/Home/css/recharge/recharge.css"/>
+    <style type="text/css">
+    	.mui-badge{
+    		background: transparent;
+    		color: #9B9B9B;
+    		font-size: 16px;
+    	}
+    	.mui-media-body{
+    		font-size: 16px;
+    	}
+    	.mui-content.mui-table-view{
+    		margin: 14px 0;  	
+    	}
+    	.text-box{
+    		padding :0 15px;
+    		background: #FFF;
+    		border-top:1px solid #E8E8E8;
+    	} 
+    	.text-box label{
+    		display: inline-block;
+    		width: 90px;
+    	}	
+		.text-box input{
+			display: inline-block;
+			width:calc(100% - 99px);
+			width:-moz-calc(100% - 99px );
+			width: -webkit-calc(100% - 99px);	
+			margin-bottom: 0 !important; 
+			border: 1px solid transparent;  					
+		}
+		.btn-box{
+			padding: 15px;
+			
+		}
+		.btn-box button{
+			width: 100%;
+			height: 40px;
+			font-size: 16px;
+			color: #9B9B9B;
+			background: #CDCDCD;
+			
+		}
+    </style>
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav gradient">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left "></a>
+			<h1 class="mui-title">充值</h1>
+		</header>
+		<div class="mui-content">
+			<form action="" method="post">
+				<ul class="mui-content mui-table-view">
+					<li class="mui-table-view-cell" >
+						<a class="mui-navigate-right">							
+							<div class="mui-media-body">
+								游戏币余额
+							</div>
+							<span class="mui-badge" id="usable">{$consume_coin}</span>
+						</a>
+					</li>
+				</ul>
+				<div class="text-box"  >
+					<label >游戏账号：</label>
+					<input type="text"  id="gameId" name="game_id"/>
+				</div>
+				<div class="text-box" style="border-bottom: 1px solid #E8E8E8;">
+					<label >金额：</label>
+					<input type="text" id="cash-Num" name="coin"/>
+				</div>
+				<div class="btn-box">
+					<button type="button" id="submit"  style="color: #fff;">确认充值</button>
+				</div>				
+			</form>
+		</div>
+		<script src="/Public/Home/js/mui.min.js"></script>
+		<script src="/Public/Home/js/jQuery/jquery-1.11.3.min.js"></script>
+		<script type="text/javascript">
+			$("#submit").attr("disabled","disabled");	
+			var test = function(){
+				var gameId = $('#gameId').val();
+				var cashNum = $('#cash-Num').val();				
+				var isOk = gameId&&cashNum;
+				if( isOk ){
+		         	$("#submit").removeAttr("disabled").css("background","#f00");
+		        }else{
+		         	$("#submit").attr("disabled","disabled").css("background","#ccc");
+		        }
+			}
+			//input框绑定事件
+			$('input').bind('keyup',function(){
+				//验证空值；
+				test();
+			});
+			
+			//正则游戏账号只能是数字，长度不限；  var reg = /^[0-9]*$/   
+			var check = function(str){
+			    var reg = /^[0-9]*$/ 
+			    if (reg.test(str)) {
+					return true;
+				} else {
+					mui.toast("请填写正确的游戏id！");
+					$("#gameId").val("");
+				}
+			}
+			//验证输入提现数是否小于剩余游戏币数量；
+			var checkNum = function( x ){
+				//正则验证确保输入充值e是数字
+				var reg = /^[0-9]*$/ 
+			    if (reg.test(x)) {
+					//可用余额；
+					var x = parseFloat(x);
+					var usable =parseFloat($("#usable").html());
+					if( usable>=x ){
+						return true;
+					}else{
+						$('#cash-Num').val("");
+						mui.toast("充值额度不能大于游戏币余额");
+						return false;
+					}
+				} else {
+					mui.toast("金额请输入数字");
+					$("#cash-Num").val("");
+				}
+			}		
+			//充值功能；
+			$('#submit').on('click',function () {
+				var game_id = $('#gameId').val();
+				var coin = $('#cash-Num').val();
+				var a = check(game_id);
+				var b = checkNum(coin);
+				
+				if(a&&b){
+//					alert("ajax");
+	//				var game_id = $('#gameId').val();
+	//				var coin = $('#cash-Num').val();
+					$.ajax({
+						url:"{U:('wallet/recharge')}",
+						type:'post',
+						dataType:'json',
+						data:{game_id:game_id,coin:coin},
+						success:function (data) {
+							if(data['code'] == 1){
+	                            mui.toast("充值成功!");
+	                            setTimeout(function () {
+	                                mui.back();
+	                            },2000);
+							}
+							if(data['code'] == 2){
+	                            mui.toast("充值失败,充值账号不正确！")
+							}
+	                        if(data['code'] == 3){
+	                            mui.toast("充值失败,网络异常！")
+	                        }
+	                    }
+					});
+				
+				}else{					
+						return null;
+					}
+	            });
+		</script>
+	</body>
+</html>
+
+

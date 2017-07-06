@@ -1,0 +1,87 @@
+<extend name="Public/base"/>
+<block name="body">
+	<div class="data-table table-striped">
+		<table>
+			<tr><h2>变量参数</h2></tr>
+			<thead>
+			<tr>
+				<th>编号</th>
+				<th>参数类型</th>
+				<th>附加变量</th>
+				<th>变量名称</th>
+				<th>比例值(%)/数值(点)</th>
+				<th>操作</th>
+			</tr>
+			</thead>
+			<tbody>
+			<volist name="var" id="vo">
+			<tr>
+				<td>{$vo.id}</td>
+				<td><if condition="$vo.type eq 1">基本变量<else/>特殊变量</if></td>
+				<td><if condition="$vo.extra eq null">无<else/>{$vo.extra}</if></td>
+				<td>{$vo.name}</td>
+				<td>
+					<if condition="$vo.name eq '提现日期'">
+						<select name="week" id="week" style="width: 80px;">
+							<option value="{$vo.value}">
+								<switch name="vo.value">
+									<case value="1">周一</case>
+									<case value="2">周二</case>
+									<case value="3">周三</case>
+									<case value="4">周四</case>
+									<case value="5">周五</case>
+									<case value="6">周六</case>
+									<case value="0">周日</case>
+									<default />
+								</switch>
+							</option>
+							<option value="1">周一</option>
+							<option value="2">周二</option>
+							<option value="3">周三</option>
+							<option value="4">周四</option>
+							<option value="5">周五</option>
+							<option value="6">周六</option>
+							<option value="0">周日</option>
+						</select>
+						<else />
+						<input class="var{$vo.id}" name="val" value="{$vo.value}" style="width: 80px;border-radius: 5px;text-align: center"/>
+					</if>
+				</td>
+				<td><button class="bottom btn bte" data-id="{$vo.id}">确认修改</button></td>
+			</tr>
+			</volist>
+			</tbody>
+		</table>
+	</div>
+	<div class="page">
+		{$_page}
+	</div>
+</block>
+<block name="script">
+	<script src="__STATIC__/thinkbox/jquery.thinkbox.js"></script>
+	<script>
+        $('.btn').on('click',function(){
+            var id = $(this).attr('data-id');
+            var _val = $('.var'+ id).val();
+            var week = $('#week').val();
+            $.ajax({
+                url:'{:U("Config/varSet")}',
+                type:'post',
+                dataType:'json',
+                data:{id:id,val:_val,week:week},
+                success:function (data) {
+                    if(data['code'] == 1){
+                        alert('修改成功！');
+                    }else{
+                        alert('修改失败，请重新操作！');
+                    }
+                },
+//
+//                error: function(e) {
+//                    alert(e);
+//                }
+            });
+        });
+
+	</script>
+</block>

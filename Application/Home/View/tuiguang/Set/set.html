@@ -13,18 +13,21 @@
 		<link rel="stylesheet" type="text/css" href="/Public/Home/css/common/common.css"/>
 		<style>
 			.mui-table-view>p{
-				line-height: 5rem;
-				padding: 0 1.5rem;
+				line-height: 50px;
+				padding: 0 15px;
 				color: #333333;
-				font-size: 1.6rem;
+				font-size: 16px;
 			}
 			.mui-table-view>p>img{
-				height: 5rem;
-				width: 5rem;
-				margin-right: 1rem;
+				height: 50px;
+				width: 50px;
+				margin-right: 10px;
 			}
 			body{
 				color: #333333 !important;
+			}
+			.mui-table-view{
+				font-size: 16px;
 			}
 		</style>
 	</head>
@@ -35,7 +38,7 @@
 		</header>
 		<div class="mui-content">
 			<ul class="mui-table-view">
-				<p style="padding:0.8rem 1.5rem;">
+				<p style="padding:8px 15px;">
 					头像
 					<img src="/Public/Home/img/logo-color.jpg" class="right" style="border: 1px solid #fff;  border-radius:50%;"/>
 					<span class="clearfloat"></span>
@@ -45,38 +48,38 @@
 				<ul class="mui-table-view">
 					<li class="mui-table-view-cell mui-media">
 						<a  href="../login/login.html">
-							<span>姓名</span><span class="right">小明</span>
+							<span>姓名</span><span class="right">{$staff.staff_real}</span>
 						</a>
 					</li>
 					<li class="mui-table-view-cell mui-media">
 						<a  href="javascript:;">
-							<span>注册时间</span><span class="right">2015-07-01</span>
+							<span>注册时间</span><span class="right">{$staff.create_time}</span>
 						</a>
 					</li>
 					<li class="mui-table-view-cell mui-media">
 						<a href="javascript:;">
-							<span>身份证</span><span class="right">342901199222222222</span>
+							<span>身份证</span><span class="right">{$staff.card_id}</span>
 						</a>
 					</li>
 					<li class="mui-table-view-cell mui-media">
 						<a href="javascript:;">
-							<span>手机号</span><span class="right">13888888888</span>
+							<span>手机号</span><span class="right">{$staff.mobile}</span>
 						</a>
 					</li>
 				</ul>
-				<ul class="mui-table-view" style="margin-top: 1.4rem;">
+				<ul class="mui-table-view" style="margin-top: 14px;">
 					<li class="mui-table-view-cell mui-media">
 						<a href="javascript:;">
-							<span>已绑定游戏账号</span><span class="right">13888888888</span>
+							<span>已绑定游戏账号</span><span class="right">{$staff.game_id}</span>
 						</a>
 					</li>
 				</ul>
-				<ul class="mui-table-view" style="margin-top: 1.4rem;">
-					<li class="mui-table-view-cell mui-media">
-						<a href="{:U('set/setPayPsd')}">
-							修改支付密码
-						</a>
-					</li>
+				<ul class="mui-table-view" style="margin-top: 14px;">
+					<!--<li class="mui-table-view-cell mui-media">-->
+						<!--<a href="{:U('set/setPayPsd')}">-->
+							<!--修改支付密码-->
+						<!--</a>-->
+					<!--</li>-->
 					<li class="mui-table-view-cell mui-media">
 						<a href="{:U('set/setLoginPsd')}">
 							修改登录密码
