@@ -193,4 +193,20 @@ class TaskDoneModel extends Model{
         return $re = $re == 0 ? 0 : $re;
     }
 
+
+    /**根据$key，$value更新已完成任务信息
+     * @param $key      string  字段名
+     * @param $value    string  字段值
+     * @param $data     array   要更新的数据
+     * @return bool     true：更新成功；false：更新失败
+     */
+    public function save_done($key,$value,$data){
+        $re = $this -> where(array($key => $value)) -> save($data);
+        if($re){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
 }

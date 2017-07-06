@@ -10,10 +10,10 @@ class UserShipModel extends Model{
     /**
      * 获取本周内superior是同一值的玩家/玩家数量
      * @param $id       integer     加盟商ID
-     * @param $count    integer     0：返回玩家数量；1：返回玩家列表
+     * @param $what     integer     count：返回玩家数量；select：返回玩家列表
      * @return int/array    $number：玩家数量；$res：玩家列表
      */
-    public function count_user_by_superior($id,$count){
+    public function get_weekly_user_by_superior($id,$what){
         $TaskWeekly = D('TaskWeekly');
         $date       = date('Y-m-d H:i:s');
         $start      = $TaskWeekly -> get_start_time($date);
@@ -23,12 +23,12 @@ class UserShipModel extends Model{
             'reg_time' => array(array('gt',$start),array('lt',$end)),
         );
         $res = $this -> where($where) -> select();
-        switch($count){
-            case '0':
+        switch($what){
+            case 'count':
                 $number = $res == 0 ? 0 : count($res);
                 return $number;
             break;
-            case '1':
+            case 'select':
                 return $res;
             break;
             default:
@@ -40,14 +40,21 @@ class UserShipModel extends Model{
     /**
      * 获取所有superior是同一值的玩家
      * @param $id   integer     加盟商ID
+     * @param $what     integer     count：返回玩家数量；select：返回玩家列表
      * @return bool|mixed       玩家列表
      */
-    public function get_user_by_superior($id){
+    public function get_user_by_superior($id,$what){
         $res = $this -> where(array('superior'=>(int)$id)) -> select();
-        if($res){
-            return $res;
-        }else{
-            return false;
+        switch($what){
+            case 'count':
+                $number = $res == 0 ? 0 : count($res);
+                return $number;
+                break;
+            case 'select':
+                return $res;
+                break;
+            default:
+                return '参数错误';
         }
     }
 
