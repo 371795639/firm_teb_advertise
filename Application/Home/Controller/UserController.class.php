@@ -151,35 +151,20 @@ class UserController extends HomeController {
         $this->assign('hisMonthWithdraw',$hisMonthWithdraw);
         $this->assign('preMonthCharge',$preMonthCharge );
         $this->assign('hisMonthCharge',$hisMonthCharge );
-        $this->display();
+        $this->display('rechargeWithdrawCash');
     }
 
     /* 推广管理 */
     public function spreadManage(){
-//        $uid   = $_SESSION['userid'];
-//        //$staffAllCount = $dbStaff->where(1)->count();             //查询表的总记录数
-//
-//
-//        var_dump($this->fen($uid)) ; die();
-//        //$this->assign('spreadCooperate', $staffSub);
-//        $this->display();
+        header('Content-Type:text/html;charset=utf-8');
+        $uid   = $_SESSION['userid'];
+        $list = M('staff')->where(array('referee'=>$uid))->order('create_time desc')->select();
+        $list['count'] = count($list);
+        $game_id = M('staff')->where(array('id'=>$uid))->getField('game_id');
+        $lists = M('user_ship')->where(array('recommend'=>$game_id,'superior'=>$uid))->order('create_time desc')->select();
+        $lists['count'] = count($lists);
+        $this->assign('list',$list);
+        $this->assign('lists',$lists);
+        $this->display('spreadManage');
     }
-//
-//    private function fen($uid){
-//        $dbStaff     = M('staff');
-//        $staffAll    = $dbStaff->where("id = $uid")->select();                  //查询表的记录详情
-//        global $str;
-//        foreach($staffAll as $key=>$val)
-//        {
-//            if($staffAll['referee']!=NULL){
-//                $str.=$staffAll['staff_name']."<br>";//拼接改用户的昵称
-//                $this->fen($val['id']);
-//            }
-//
-//        }
-//        return $str;
-//    }
-
-
-
 }

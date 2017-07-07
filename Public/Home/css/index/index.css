@@ -37,7 +37,7 @@
 .gradient.head p .p-left{
 	display: inline-block;
 	text-align: left;
-	font-size: 16px;
+	font-size: 14px;
 	width: 49%;
 }
 .gradient.head p .p-left span{
@@ -47,7 +47,7 @@
 .gradient.head p .p-right{
 	display: inline-block;
 	text-align:right;
-	font-size: 16px;
+	font-size: 14px;
 	width: 49%;
 }
 .topTabs{

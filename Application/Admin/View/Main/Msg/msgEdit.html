@@ -6,27 +6,34 @@
     <form action="{:U('')}" method="post" class="form-horizontal">
         <div class="form-item">
             <input type="hidden" class="text input-large" name="id" value="{$resStaffEdit.id}">
-            <label class="item-label">昵称 <span class="check-tips">（请输入新的推广专员的昵称）</span></label>
+            <label class="item-label">昵称 <span class="check-tips">（请输入的新推广专员的昵称）</span></label>
             <div class="controls">
                 <input type="text" class="text input-large" name="name" value="{$resStaffEdit.staff_name}">
             </div>
-            <label class="item-label">推荐人<span class="check-tips">（请输入新的推荐人ID，只能是数字）</span></label>
+            <label class="item-label">姓名<span class="check-tips">（请输入的新推广专员的名字）</span></label>
+            <div class="controls">
+                <input type="text" class="text input-large" name="real" value="{$resStaffEdit.staff_real}">
+            </div>
+            <label class="item-label">推荐人ID<span class="check-tips">（请输入的新推荐人）</span></label>
             <div class="controls">
                 <input type="text" class="text input-large" name="referee" value="{$resStaffEdit.referee}">
             </div>
-            <label class="item-label">联系方式<span class="check-tips">（请输入推广专员新的手机号）</span></label>
+            <label class="item-label">联系方式<span class="check-tips">（请输入推广专员的新手机号）</span></label>
             <div class="controls">
                 <input type="text" class="text input-large" name="mobile" value="{$resStaffEdit.mobile}">
+            </div>
+            <label class="item-label">身份证号码<span class="check-tips">（请输入推广专员的新身份证号码）</span></label>
+            <div class="controls">
+                <input type="text" class="text input-large" name="card" value="{$resStaffEdit.card_id}">
+            </div>
+            <label class="item-label">游戏ID<span class="check-tips">（请输入推广专员的新游戏ID）</span></label>
+            <div class="controls">
+                <input type="text" class="text input-large" name="game_id" value="{$resStaffEdit.game_id}">
             </div>
         </div>
         <div class="form-item">
             <label class="item-label"></label>
             <div class="controls">
-                <!--提交按钮
-                <empty name="list"><button type="submit" disabled class="btn submit-btn disabled" target-form="form-horizontal">确 定</button>
-                    <else/><button type="submit" class="btn submit-btn ajax-post" target-form="form-horizontal">确 定</button>
-                </empty>
-                -->
                 <button type="submit" class="btn submit-btn" target-form="form-horizontal">确 定</button>
                 <button class="btn btn-return" onclick="javascript:history.back(-1);return false;">返 回</button>
             </div>

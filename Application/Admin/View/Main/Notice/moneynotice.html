@@ -1,0 +1,95 @@
+<extend name="Public/base"/>
+<block name="body">
+    <div class="main-title">
+        <h2>金额变动消息列表</h2>
+    </div>
+    <div class="cf">
+        <div class="search-form fr cf">
+            <div class="sleft">
+                <input type="text" class="search-input" onClick="WdatePicker()" name="start_time" style="cursor: pointer;" value="{:I('start_time')}" placeholder="创建时间/始" />
+                <input type="text" class="search-input" onClick="WdatePicker()" name="end_time" style="cursor: pointer;" value="{:I('end_time')}" placeholder="创建时间/止" />
+                <input type="text" name="notice_name" class="search-input" value="{:I('notice_name')}" placeholder="输入用户ID或者公告主题">
+                <a class="btn" href="javascript:;"  url="{:U('Main/moneyNotice')}" id="search">搜索</a>
+            </div>
+        </div>
+    </div>
+    <div class="data-table table-striped">
+        <table  id="" class="display">
+            <thead>
+            <tr>
+                <th class="text-center">ID</th>
+                <th class="text-center">用户ID</th>
+                <th class="text-center">公告主题</th>
+                <th class="text-center">公告内容</th>
+                <th class="text-center">创建时间</th>
+                <th class="text-center">操作</th>
+            </tr>
+            </thead>
+            <tbody class="text-center">
+            <volist name="resNotice" id="vo">
+                <tr>
+                    <td>{$vo.id}</td>
+                    <td>{$vo.uid}</td>
+                    <td>{$vo.notice_title}</td>
+                    <td>{$vo.notice_content}</td>
+                    <td>{$vo.create_time|time_formats}</td>
+                    <td>
+                        <a class="confirm ajax-get" href="{:U('Main/noticeDelete',array('id'=>$vo['id']))}">删除</a>
+                    </td>
+                </tr>
+            </volist>
+            </tbody>
+        </table>
+    </div>
+    <div class="page">
+        {$_page}
+    </div>
+</block>
+
+<block name="script">
+    <script src="__STATIC__/thinkbox/jquery.thinkbox.js"></script>
+    <script language="javascript" type="text/javascript" src="__STATIC__/My97DatePicker/WdatePicker.js"></script>
+    <script type="text/javascript">
+        //搜索功能
+        $("#search").click(function(){
+            var url = $(this).attr('url');
+            var query  = $('.search-form').find('input').serialize();
+            var query_select  = $('.search-form').find('select').serialize();
+            query = query.replace(/(&|^)(\w*?\d*?\-*?_*?)*?=?((?=&)|(?=$))/g,'');
+            query = query.replace(/^&/g,'');
+            query_select = query_select.replace(/(&|^)(\w*?\d*?\-*?_*?)*?=?((?=&)|(?=$))/g,'');
+            query_select = query_select.replace(/^&/g,'');
+            if( url.indexOf('?')>0 ){
+                url += '&' + query + '&' + query_select;
+            }else{
+                url += '?' + query + '?' + query_select;
+            }
+            window.location.href = url;
+        });
+        //导出
+        $("#out").click(function(){
+            var url = $(this).attr('url');
+            var query  = $('.search-form').find('input').serialize();
+            var query_select  = $('.search-form').find('select').serialize();
+            query = query.replace(/(&|^)(\w*?\d*?\-*?_*?)*?=?((?=&)|(?=$))/g,'');
+            query = query.replace(/^&/g,'');
+            query_select = query_select.replace(/(&|^)(\w*?\d*?\-*?_*?)*?=?((?=&)|(?=$))/g,'');
+            query_select = query_select.replace(/^&/g,'');
+            if( url.indexOf('?')>0 ){
+                url += '&' + query + '&' + query_select;
+            }else{
+                url += '?' + query + '?' + query_select;
+            }
+            window.location.href = url;
+        });
+        //回车搜索
+        $(".search-input").keyup(function(e){
+            if(e.keyCode === 13){
+                $("#search").click();
+                return false;
+            }
+        });
+        //导航高亮
+        highlight_subnav("{:U('Main/taskList')}");
+    </script>
+</block>

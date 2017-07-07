@@ -96,4 +96,27 @@ class StaffModel extends Model {
         return $re;
     }
 
+
+    public function get_staff_by_referee($referee,$what){
+        switch($what){
+            case 'find':
+                $re = $this -> where(array('referee'=>(int)$referee)) -> find();
+                break;
+            case 'select':
+                $re = $this -> where(array('referee'=>(int)$referee)) -> select();
+                break;
+            case 'count':
+                $res = $this -> where(array('referee'=>(int)$referee)) -> select();
+                $re = count($res) == 0 ? 0 : count($res);
+                break;
+            default:
+                $re = '参数错误';
+        }
+        if($re){
+            return $re;
+        }else{
+            return false;
+        }
+    }
+
 }

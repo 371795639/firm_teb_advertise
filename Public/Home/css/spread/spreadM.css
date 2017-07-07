@@ -4,7 +4,7 @@
 }
 .mui-segmented-control .mui-control-item.mui-active{
 	background:transparent; 			
-	border-bottom:2px solid #FFF;
+	border-bottom:1px solid #FFF;
 }
 .mui-segmented-control .mui-control-item{
 	border-color: none;
@@ -75,5 +75,5 @@ img{
 .inline .mui-control-item{
 	display: inline-block;
 	width:11rem;
-	border: 2px solid transparent;
+	border: 1px solid transparent;
 }

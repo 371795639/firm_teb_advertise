@@ -1,0 +1,52 @@
+<extend name="Public/base"/>
+<block name="body">
+    <div class="main-title">
+        <h2>关系详情</h2>
+    </div>
+    <div class="data-table table-striped">
+        <table>
+            <tr>
+                <td style="width: 15%;">ID：</td>
+                <td>{$staff['id']}</td>
+            </tr>
+            <tr>
+                <td>姓名：</td>
+                <td>{$staff['staff_real']}</td>
+            </tr>
+            <tr>
+                <td>手机：</td>
+                <td>{$staff['mobile']}</td>
+            </tr>
+            <tr>
+                <td>游戏账号：</td>
+                <td>{$staff['game_id']}</td>
+            </tr>
+            <tr>
+                <td>推荐人：</td>
+                <td>{$staff['referee']}</td>
+            </tr>
+            <tr>
+                <td>伞下推广专员：</td>
+                <td>{$refereeIds}</td>
+            </tr>
+            <tr>
+                <td>个人充值总额：</td>
+                <td>￥{$chargeSelf}</td>
+            </tr>
+            <tr>
+                <td>伞下玩家：</td>
+                <td>{$superiorGameIds}</td>
+            </tr>
+            <tr>
+                <td>伞下充值总额：</td>
+                <td>￥{$chargeBlow}</td>
+            </tr>
+        </table>
+    </div><br>
+    <div class="form-item">
+        <label class="item-label"></label>
+        <div class="controls">
+            <button class="btn btn-return" onclick="javascript:history.back(-1);return false;">返&nbsp;&nbsp;&nbsp;&nbsp;回</button>
+        </div>
+    </div>
+</block>

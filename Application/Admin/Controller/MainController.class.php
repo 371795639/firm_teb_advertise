@@ -31,6 +31,7 @@ class MainController extends AdminController {
     /**推广专员信息管理及导出**/
     public function msgList($method = null){
         $dbStaff = D('Staff');
+        $dbStaffInfo = D('StaffInfo');
         $map = $this -> _queryTime();
         $staff_name = I('staff_name');
         $map['status'] = array('egt',0);
@@ -42,6 +43,11 @@ class MainController extends AdminController {
             }
         }
         $resStaff = $this -> lists($dbStaff);
+        foreach($resStaff as $k => $v){
+            $id = $resStaff[$k]['id'];
+            $info = $dbStaffInfo -> where("uid = $id") -> find();
+            $resStaff[$k]['class'] = $info['class'];
+        }
         //导出查询到的数据（不含分页）
         $excel = A('Excel');
         $xlsCell = array(
@@ -103,6 +109,9 @@ class MainController extends AdminController {
                 'staff_name' => I('name'),
                 'referee'    => I('referee'),
                 'mobile'     => I('mobile'),
+                'staff_real' => I('real'),
+                'card_id'    => I('card'),
+                'game_id'    => I('game_id'),
             );
             $resStaff = $dbStaff -> msg_save($id,$data);
             if($resStaff == 0){
@@ -741,11 +750,38 @@ class MainController extends AdminController {
     }
 
 
-    /**关系管理**/
-    public function relation(){
-
-        $this -> meta_title = '关系管理';
-        $this -> display('Main/relation/index');
+    /**关系管理详情**/
+    public function relationDetail(){
+        $dbStaff        = D('Staff');
+        $dbUserShip     = D('UserShip');
+        $dbUserCharge   = D('UserCharge');
+        $staffId        = I('id');
+        $staff = $dbStaff -> msg_find($staffId);
+        //获取伞下推广专员
+        $staffReferee = $dbStaff -> get_staff_by_referee($staffId,'select');
+        foreach($staffReferee as $k => $v){
+            $refereeId[] = $staffReferee[$k]['id'];
+        }
+        $refereeIds = implode(',',$refereeId);
+        //获取个人充值总金额
+        $gameId     = $staff['game_id'];
+        $chargeSelf = $dbUserCharge -> get_user_charge($gameId,'2','money');
+        //获取伞下玩家信息
+        $superior = $dbUserShip -> get_user_by_superior($staffId,'select');
+        foreach($superior as $k => $v){
+            $superiorGameId[] = $superior[$k]['game_id'];
+        }
+        //伞下玩家
+        $superiorGameIds = implode(',',$superiorGameId);
+        //获取伞下玩家充值总金额
+        $chargeBlow = $dbUserCharge -> get_user_charge($superiorGameId,'2','money');
+        $this -> assign('staff',$staff);
+        $this -> assign('chargeBlow',$chargeBlow);
+        $this -> assign('chargeSelf',$chargeSelf);
+        $this -> assign('refereeIds',$refereeIds);
+        $this -> assign('superiorGameIds',$superiorGameIds);
+        $this -> meta_title = '查看关系';
+        $this -> display('Main/msg/relationDetail');
     }
 
 

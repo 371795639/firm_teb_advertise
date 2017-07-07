@@ -13,6 +13,11 @@ class BankController extends HomeController{
         $bank = M('user_bank');
         $user_id   = $_SESSION['userid'];
         $list = $bank->where(array('user_id'=>$user_id))->select();
+        if(!empty($list)){
+            foreach ($list as $key=>$val){
+                $list[$key]['bank_card'] = substr_replace($val['bank_card'], '**** ****', 4, 8);
+            }
+        }
         $this->assign('list',$list);
         $this->display('myCard');
     }

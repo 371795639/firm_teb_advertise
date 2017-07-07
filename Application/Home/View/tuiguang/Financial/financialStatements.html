@@ -1,81 +1,116 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
 	<meta name="apple-mobile-web-app-capable" content="yes">
 	<meta name="apple-mobile-web-app-status-bar-style" content="black">
-	<title>兔尔宝</title>
-	<link href="/Public/Home/css/mui.css" rel="stylesheet"/>
-	<link rel="stylesheet" type="text/css" href="/Public/Home/css/common/common.css"/>
-	<link rel="stylesheet" type="text/css" href="/Public/Home/css/finance/echart.css"/>
-	<link rel="stylesheet" type="text/css" href="/Public/Home/loading/loading.css"/>
-</head>
-<body>
-<header class="mui-bar mui-bar-nav gradient">
-	<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left "></a>
-	<h1 class="mui-title">财务总报表</h1>
-</header>
-<div class="mui-content" style="margin-bottom:5rem ; padding:22px 0;">
-
-	<div id="segmentedControl" class="mui-segmented-control gradient">
-		<div class="inline">
-			<a class="mui-control-item" href="#item2"  id="last">
-				上周
-			</a>
+    <title>兔尔宝</title>
+    <link href="/Public/Home/css/mui.css" rel="stylesheet"/>
+    <link rel="stylesheet" type="text/css" href="/Public/Home/css/common/common.css"/>
+    <link rel="stylesheet" type="text/css" href="/Public/Home/css/finance/echart.css"/>
+   <style>
+    	#last-s{
+    		font-size: 16px;
+    		padding:5px;
+    		color: #FFF;
+    	}
+    	#now-s{
+    		font-size: 16px;
+    		padding:5px;
+    		color: #FFF;
+    	}
+    </style>
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav gradient">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left "></a>
+			<h1 class="mui-title">充值报表</h1>
+		</header>
+		<div class="mui-content" style="margin-bottom:5rem ;">
+			
+			<div id="segmentedControl" class="mui-segmented-control gradient">	
+				<div class="inline" id="last">
+					<span id="last-s">
+						上周
+					</span>
+				</div>
+				<div class="inline" id="now">
+					<span id="now-s">
+						本周
+					</span>
+				</div>
+			</div>
+			<div id="item1" >
+				<!--本周-->
+				<div class="chart" id="lineChart"></div>
+			</div>
+			<div id="item2" >
+				<!--上周-->
+				<div class="chart" id="lineChart2"></div>
+			</div>
+					
 		</div>
-		<div class="inline" >
-			<a class="mui-control-item mui-active" href="#item1" id="this">
-				本周
+		<nav class="mui-bar mui-bar-tab">
+			<a id="sy"  onclick="goHome()">
+				<img src="/Public/Home/img/sy2.png" />
+				首页
+			</a>		
+			<a id="bb" class="actives" onclick="goTabs()">
+				<img src="/Public/Home/img/bb1.png" />
+				报表
 			</a>
-		</div>
-	</div>
-	<!--<h5>报表视图</h5>-->
-	<div class="chart" id="lineChart"></div>
-</div>
-<nav class="mui-bar mui-bar-tab">
-	<a id="sy"  onclick="goHome()">
-		<img src="/Public/Home/img/sy2.png" />
-		首页
-	</a>
-	<a id="bb" class="actives" onclick="goTabs()">
-		<img src="/Public/Home/img/bb1.png" />
-		报表
-	</a>
-	<a id="xx" onclick="goInfo()">
-		<img src="/Public/Home/img/xx2.png" />
-		消息
-	</a>
-	<a id="wd"  onclick="goMy()">
-		<img src="/Public/Home/img/wd2.png" />
-		我的
-	</a>
-</nav>
-<script src="/Public/Home/js/mui.min.js"></script>
-<script src="/Public/Home/js/echarts-all.js"></script>
-<script src="/Public/Home/js/jQuery/jquery-1.11.3.min.js"></script>
-<script src="/Public/Home/js/echarts-all.js"></script>
-<!--数据动态显示在   financialStatements.js  中实现-->
-<script src="/Public/Home/loading/loading.js"></script>
-<script src="/Public/Home/js/financialStatements/financialStatements.js"></script>
-<script>
-    mui.init({
-        swipeBack:true //启用右滑关闭功能
-    });
-    function goHome(){
-        mui.openWindow("{:U('User/index')}");
-    }
-    function goTabs(){
-        mui.openWindow("{:U('Financial/financialStatements')}");
-    }
-    function goInfo(){
-        mui.openWindow("{:U('Notice/index')}");
-    }
-    function goMy(){
-        mui.openWindow("{:U('User/my')}");
-    }
-</script>
-</body>
+			<a id="xx" onclick="goInfo()">
+				<img src="/Public/Home/img/xx2.png" />
+				消息
+			</a>
+			<a id="wd"  onclick="goMy()">
+				<img src="/Public/Home/img/wd2.png" />
+				我的
+			</a>
+		</nav>
+		<script src="/Public/Home/js/mui.min.js"></script>
+		<script src="/Public/Home/js/jQuery/jquery-1.11.3.min.js"></script>
+		<script src="/Public/Home/js/echarts-all.js"></script>
+		<!--数据动态显示在   financialStatements.js  中实现-->
+		<script src="/Public/Home/js/financialStatements/financialStatements.js"></script>
+		
+		<script>
+			mui.init({ 
+				swipeBack:true //启用右滑关闭功能
+			});
+			
+			//点击显示本周和上周；
+			$("#item2").hide();
+			$("#now-s").css("border-bottom","1px solid #FFF");
+			$("#last").on("click",function(){
+				$("#last-s").css("border-bottom","1px solid #FFF")
+				$("#now-s").css("border-bottom","1px solid transparent")
+				$("#item1").hide();
+				$("#item2").show();
+			})
+			$("#now").on("click",function(){
+				$("#now-s").css("border-bottom","1px solid #FFF")
+				$("#last-s").css("border-bottom","1px solid transparent")
+				$("#item1").show();
+				$("#item2").hide();
+			})
+			
+			function goHome(){
+				mui.openWindow("/Public/Home/index.html");
+			}
+			function goTabs(){
+				mui.openWindow("/Public/Home/pages/finance/financialStatements.html");
+			}
+			function goInfo(){
+				mui.openWindow("/Public/Home/pages/info/infoManagement.html");
+			}
+			function goMy(){
+				mui.openWindow("/Public/Home/pages/home/my.html");
+			}
+			
+		</script>
+	</body>
 
 </html>
 

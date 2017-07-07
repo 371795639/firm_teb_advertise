@@ -13,6 +13,7 @@
 	color: #FFF
 }
 .mui-segmented-control{
+	border-radius: 0;
 	border: transparent;
 	padding: 10px;
 	margin-bottom: 10px;

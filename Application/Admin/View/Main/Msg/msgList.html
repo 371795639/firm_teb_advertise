@@ -36,6 +36,8 @@
                 <th class="text-center">游戏ID</th>
                 <th class="text-center">余额</th>
                 <th class="text-center">消费币</th>
+                <th class="text-center">服务中心</th>
+                <th class="text-center">加盟商等级</th>
                 <th class="text-center">注册时间</th>
                 <th class="text-center">状态</th>
                 <th class="text-center">操作</th>
@@ -56,6 +58,19 @@
                             <td>{$vo.money}</td>
                             <td>{$vo.consume_coin}</td>
                             <td>
+                                <if condition="$vo.is_service eq 0">否
+                                    <else/>是
+                                </if>
+                            </td>
+                            <td>
+                                <if condition="$vo.is_league eq 0"> 推广专员
+                                    <elseif condition="$vo.class eq 1"/> 一级加盟商
+                                    <elseif condition="$vo.class eq 2"/> 二级加盟商
+                                    <elseif condition="$vo.class eq 3"/> 三级加盟商
+                                    <else/> -
+                                </if>
+                            </td>
+                            <td>
                                 <if condition="$vo.create_time eq 0"> -
                                     <else/>{$vo.create_time}
                                 </if>
@@ -66,11 +81,12 @@
                             </td>
                             <td>
                                 <if condition="$vo.status eq 1">
-                                    <a href="{:U('main/msgEdit',array('id'=>$vo['id']))}">修改</a>
+                                    <a href="{:U('main/msgEdit',array('id'=>$vo['id']))}">编辑</a>
                                     <else />
-                                    修改
+                                    编辑
                                 </if>
-
+                                |
+                                <a href="{:U('Main/relationDetail',array('id'=>$vo['id']))}">关系</a>
                                 |
                                 <a class="confirm ajax-get" href="{:U('Main/changeStatus',array('method'=>'deleteUser','id'=>$vo['id'],'dbname'=>'Staff'))}">删除</a>
                             </td>

@@ -77,11 +77,39 @@
 	
 }
 .sum input{
-	width: 100%;
-	height: 30px;
-	margin-right:-50px ;
+	border-radius: 0;
+	height: 40px;
+	font-size: 24px;
+	color: #febe20;
+	width: calc( 100% - 50px);
+	width: -moz-calc( 100% - 50px);
+	width: -webkit-calc( 100% - 50px);
 	border: none;
 	border-bottom: 1px solid #DDDDDD;
 	background: transparent;
 	text-align: center;
+}
+.bank-image{
+	width: 36px;
+}
+.card-info{
+	position: relative;
+
+}
+.card-id{
+	z-index: -1;
+	background-color:transparent !important;
+	color: transparent !important;
+	position: absolute;
+	top: 0;
+	right: 0;
+	font-size: 12px;
+	padding: 0;
+	margin: 0;
+}
+.card-num{
+	font-size: 13px;
+}
+.btn-box button{
+	color: #fff;
 }

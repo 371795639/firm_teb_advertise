@@ -1,7 +1,7 @@
 .mui-segmented-control .mui-control-item.mui-active{
 	background: #FFF;
 	color: #000;
-	border-bottom:2px solid #F2D7AA;	
+	border-bottom:1px solid #F2D7AA;	
 }
 .mui-segmented-control .mui-control-item{
 	border-color: none;
@@ -50,5 +50,5 @@
 .inline .mui-control-item{
 	display: inline-block;
 	width:7rem;
-	border: 2px solid transparent;
+	border: 1px solid transparent;
 }

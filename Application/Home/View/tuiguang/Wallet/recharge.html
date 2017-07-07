@@ -125,11 +125,14 @@
 					}else{
 						$('#cash-Num').val("");
 						mui.toast("充值额度不能大于游戏币余额");
+						$("#submit").attr("disabled","disabled").css("background","#ccc");
 						return false;
 					}
 				} else {
 					mui.toast("金额请输入数字");
 					$("#cash-Num").val("");
+					$("#submit").attr("disabled","disabled").css("background","#ccc");
+					return false;
 				}
 			}		
 			//充值功能；
@@ -140,9 +143,7 @@
 				var b = checkNum(coin);
 				
 				if(a&&b){
-//					alert("ajax");
-	//				var game_id = $('#gameId').val();
-	//				var coin = $('#cash-Num').val();
+//					alert(123);
 					$.ajax({
 						url:"{U:('wallet/recharge')}",
 						type:'post',
@@ -163,7 +164,7 @@
 	                        }
 	                    }
 					});
-				
+
 				}else{					
 						return null;
 					}

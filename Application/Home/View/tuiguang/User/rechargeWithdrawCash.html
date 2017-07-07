@@ -45,7 +45,7 @@
 									<span class="time">{$vo.create_time}</span>
 								</div>
 							 	<div class="right col-ye">
-									+{$vo.money}
+									-{$vo.money}
 								</div>
 							</li>
 							</volist>
@@ -64,7 +64,7 @@
 										<span class="time">{$vo.create_time}</span>
 									</div>
 									<div class="right col-ye">
-										+{$vo.money}
+										-{$vo.money}
 									</div>
 								</li>
 							</volist>
@@ -93,7 +93,7 @@
 									</case>
 									<case value="2">
 										<div class="left ">
-											<span class="text-overflow">为他人充值</span>
+											<span class="text-overflow">为{$vo.game_id}充值</span>
 											<span class="time">{$vo.create_time}</span>
 										</div>
 										<div class="right col-red">
@@ -125,7 +125,7 @@
 										</case>
 										<case value="2">
 											<div class="left ">
-												<span class="text-overflow">为他人充值</span>
+												<span class="text-overflow">为{$vo.game_id}充值</span>
 												<span class="time">{$vo.create_time}</span>
 											</div>
 											<div class="right col-red">
