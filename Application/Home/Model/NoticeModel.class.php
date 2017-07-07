@@ -48,7 +48,6 @@ class NoticeModel extends Model{
         }else{
             $map['notice_type_id'] = array('in','1,2,3');
         }
-
         $re = $this -> where($map) -> order('id DESC') -> select();
         if($re){
             return $re;
@@ -92,7 +91,11 @@ class NoticeModel extends Model{
      */
     public function count_notice_by_type($type,$uid,$kind){
         $re = $this -> get_notice_by_type($type,$uid,$kind);
-        $total = count($re);
+        if($re == null){
+            $total = 0;
+        }else{
+            $total = count($re);
+        }
         $count = 0;
         foreach($re as $item){
             $ids = explode(',',$item['id_read']);
@@ -101,6 +104,7 @@ class NoticeModel extends Model{
             }
         }
         $number = $total - $count;
+//        p($total);
         return $number;
     }
 

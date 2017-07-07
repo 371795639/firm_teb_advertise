@@ -95,19 +95,19 @@
 				$("#item1").show();
 				$("#item2").hide();
 			})
-			
-			function goHome(){
-				mui.openWindow("/Public/Home/index.html");
-			}
-			function goTabs(){
-				mui.openWindow("/Public/Home/pages/finance/financialStatements.html");
-			}
-			function goInfo(){
-				mui.openWindow("/Public/Home/pages/info/infoManagement.html");
-			}
-			function goMy(){
-				mui.openWindow("/Public/Home/pages/home/my.html");
-			}
+
+            function goHome(){
+                mui.openWindow("{:U('User/index')}");
+            }
+            function goTabs(){
+                mui.openWindow("{:U('Financial/financialStatements')}");
+            }
+            function goInfo(){
+                mui.openWindow("{:U('Notice/index')}");
+            }
+            function goMy() {
+                mui.openWindow("{:U('User/my')}");
+            }
 			
 		</script>
 	</body>

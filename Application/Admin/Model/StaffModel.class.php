@@ -97,6 +97,12 @@ class StaffModel extends Model {
     }
 
 
+    /**
+     * 获取所有推荐人是同一人的推广专员
+     * @param $referee  integer 推荐人ID
+     * @param $what     string  find：返回一条数据；select：返回所有信息；count：反馈数量
+     * @return bool|int|mixed|string
+     */
     public function get_staff_by_referee($referee,$what){
         switch($what){
             case 'find':
