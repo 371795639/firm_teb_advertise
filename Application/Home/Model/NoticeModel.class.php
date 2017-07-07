@@ -104,7 +104,6 @@ class NoticeModel extends Model{
             }
         }
         $number = $total - $count;
-//        p($total);
         return $number;
     }
 

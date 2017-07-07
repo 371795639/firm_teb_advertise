@@ -109,7 +109,7 @@ class TaskController extends HomeController {
                 if(in_array('1',$status)){
                     //日常任务的状态值有1，说明日常任务没有都完成，不能领取额外任务
                 }else {
-                    $weeklyDone = $dbTaskDone -> get_done_by_task_id();
+                    $weeklyDone = $dbTaskDone -> get_this_week_all_task();
                     $resDone    = $dbTaskDone -> i_array_column($weeklyDone, 'task_id');
                     $task_id    = I('task_id');
                     if (in_array($task_id, $resDone)) {

@@ -9,15 +9,16 @@ class TaskDoneModel extends Model{
     /**
      * 根据字段和值，查找已完成任务
      * @param $key          string    字段
-     * @param $value        integer     值
-     * @param null $what    string      find：查询一条；select：查询所有
+     * @param $value        integer    值
+     * @param null $what    string     find：查询一条；select：查询所有
      * @return bool|mixed|null
      */
     public function get_done_by_uid($key,$value,$what=null){
+        $where['uid'] = $_SESSION['userid'];
         if($what == 'find'){
-            $re = $this -> where(array($key => $value)) -> find();
+            $re = $this -> where(array($key => $value)) -> where($where) -> find();
         }elseif($what == 'select') {
-            $re = $this -> where(array($key => $value)) -> select();
+            $re = $this -> where(array($key => $value)) -> where($where)-> select();
         }else{
             $re = null;
         }
@@ -29,12 +30,8 @@ class TaskDoneModel extends Model{
     }
 
 
-    public function get_done_by_task_id(){
-        $re = $this -> field('task_id') -> select();
-        return $re;
-    }
-
     /**
+     * 插入数据
      * @param $data
      * @return bool|mixed
      */
@@ -94,13 +91,13 @@ class TaskDoneModel extends Model{
     public function get_this_week_all_task(){
         $date = date('Y-m-d H:i:s');
         $start_time = $this -> get_start_time($date);
-        $end_time = $this -> get_end_time($date);
+        $end_time   = $this -> get_end_time($date);
         $map['get_time']    = array(array('gt', $start_time), array('lt', $end_time));
         $map['uid']         = $_SESSION['userid'];
         $res = $this -> where($map) -> select();//有值就说明已经领取过了
         foreach($res as $k => $v){
-            $task_id = $res[$k]['task_id'];
-            $task_ids = D('Task') -> get_task_by_id($task_id);
+            $task_id    = $res[$k]['task_id'];
+            $task_ids   = D('Task') -> get_task_by_id($task_id);
             $res[$k]['type']    = $task_ids['type'];
             $res[$k]['money']   = $task_ids['money'];
             $res[$k]['inneed']  = $task_ids['inneed'];
