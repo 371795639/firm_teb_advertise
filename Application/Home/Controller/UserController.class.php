@@ -27,7 +27,7 @@ class UserController extends HomeController {
                 'game_id' => $_POST['gameId'],
                 'card_id' => $_POST['cardNum'],
                 'address' => $_POST['address'],
-                'status' => 2,
+                'status' => 1,  //1：正常；2：禁用；3：未完善信息
             );
             if (empty($_POST['refPhoneNum'])) {
                 //用户上次注册时未完善信息，再次登陆的时候，将跳转到完善信息页面

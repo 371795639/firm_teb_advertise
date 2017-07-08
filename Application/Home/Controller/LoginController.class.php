@@ -35,8 +35,7 @@ class LoginController extends \Think\Controller {
                             echo "<script>alert('用户被禁用，请联系管理员!');</script>";
                         }
                     }else{
-                        $this-> wxcallback();
-                        echo '再次请求微信支付';
+                        echo "<script>alert('该账号支付失败，请到注册页重新填写注册信息并完成支付！');window.location.href='".U('Home/Login/register')."';</script>";
                     }
                 }else{
                     echo "<script>alert('密码错误!');</script>";
@@ -83,30 +82,28 @@ class LoginController extends \Think\Controller {
                 );
                 //判断手机号重复
                 $phoneRepeat =  $dbStaff->where('mobile=' . $_POST['phoneNum'])->find();
-                if($phoneRepeat){ //找出已存在的手机号
-                    if($phoneRepeat['pay_status']== 3 && $phoneRepeat['status'] == 1){
-                        //该手机号重复且付款成功
-                        echo "<script>alert('该手机号已注册，别再瞎注册了!');</script>";
-                        //验证码失效
-                        unset($_SESSION['verifyNum']['content']);
-                    }
-                    elseif($phoneRepeat['pay_status']== 1 || $phoneRepeat['pay_status']== 2){
-                        $this->wxcallback();
-                    }
-                } else{//表中未检测到用户的手机号，说明是新用户，新增记录
+
+                if(empty($phoneRepeat)){ //表中未检测到用户的手机号，说明是新用户，新增记录
                     if($dbStaff->add($refStaff)){
-                        //验证码失效
                         unset($_SESSION['verifyNum']['content']);
+                    }else{
+                        echo "<script>alert('新增用户记录失败，请重新注册!');window.location.href='".U('Home/Login/register')."';</script>";
                     }
-                    else{
-                        echo "<script>alert('新增用户记录失败，请重新注册!');</script>";
+                }else{
+                    if($phoneRepeat['pay_status'] == 3 && $phoneRepeat['status'] == 1){
+                        echo "<script>alert('该手机号已注册，别再瞎注册了!');window.location.href='".U('Home/Login/login')."';</script>";
+                        unset($_SESSION['verifyNum']['content']);
+                        die;
+                    }
+                    if($phoneRepeat['pay_status'] !== 3){
+                        $this->wxcallback();
+                        die;
                     }
                 }
-                trace('$phoneRepeat');
                 //查表获得该用户id
                 $ref =  $dbStaff->where('mobile=' . $refStaff['mobile'])->find();
                 //添加session用户id信息
-                $_SESSION['userid'] = $ref['id'] ;
+                $_SESSION['user_id'] = $ref['id'] ;
                 //跳转微信支付
                 $customerid = 102090;                               //商户在网关系统上的商户号 - 获得商户号
                 $sdcustomno = $customerid . time() . rand(1000000, 9999999);//订单在商户系统中的流水号 商户信息+日期+随机数
@@ -155,13 +152,13 @@ class LoginController extends \Think\Controller {
             $yzsign     =   strtoupper($signRef);
             //验证resign
             $yzresign   =   strtoupper(md5('sign='.$signRef.'&customerid='.$customerid.'&ordermoney='.$ordermoney.'&sd51no='.$sd51no.'&state='.$state.'&key='.$key));
-            error_log(date("[Y-m-d H:i:s]")." -[".$_SERVER['REQUEST_URI']."] :".$_REQUEST."\n", 3, "/data/tuiguang/1.log");
+//            error_log(date("[Y-m-d H:i:s]")." -[".$_SERVER['REQUEST_URI']."] :".$_REQUEST."\n", 3, "./1.log");
             //实例化flow流水表 staff表 reg_charge表
             $dbFlow  = M('flow');
             $dbStaff = M('staff');
             $dbregCharge = M('reg_charge');
             //验证sign resign
-            if(($yzsign == $sign)&&($yzresign == $resign)){
+//            if(($yzsign == $sign)&&($yzresign == $resign)){
                 //回调参数获得该用户id
                 // $uid = $mark;
                 $uid = $_SESSION['user_id'];
@@ -185,15 +182,14 @@ class LoginController extends \Think\Controller {
                     $refFlow = array(
                         'uid'   => $uid,
                         'type'  => 7,
-                        'money' => $ordermoney,
-                        'create_time' => date('Y-m-d H:i:s'),
+                        'money' => 15,
+                        'order_id' => $sdcustomno,
                     );
                     //注册资金记录
                     $refregCharge = array(
                         'pay_id'   => $uid,
-                        'money'    => $ordermoney,
+                        'money'    => 15,
                         'order_id' => $sdcustomno,
-                        'create_time' => date('Y-m-d H:i:s'),
                     );
                     //写入流水表,注册资金记录
                     $refFlow      =   $dbFlow->add($refFlow);
@@ -213,9 +209,9 @@ class LoginController extends \Think\Controller {
                     echo '<result>1</result>';
                 }
 
-            }else{//验证失败
-
-            }
+//            }else{//验证失败
+//
+//            }
         }
     }
 
