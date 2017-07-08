@@ -31,20 +31,20 @@ class UserController extends HomeController {
             );
             if (empty($_POST['refPhoneNum'])) {
                 //用户上次注册时未完善信息，再次登陆的时候，将跳转到完善信息页面
-            } else {
+            }else{
                 $refStaffExist = $dbStaff->where(array('staff_real' => $_POST['staffName'], 'mobile' => $_POST['refPhoneNum']))->find();
                 if ($refStaffExist) {
                     $cardId = $dbStaff->where(array('card_id' => $refData['card_id']))->select();
                     if ($cardId) {
                         echo "<script>alert('此身份证号已注册过，不能再注册哦!');</script>";
-                    } else {
+                    }else{
                         if ($refStaffExist['id'] == $userid) {
                             echo "<script>alert('推荐人不能是自己!');</script>";
-                        } else {
+                        }else{
                             $gameId = $dbStaff->where(array('game_id' => $refData['game_id']))->select();
                             if ($gameId) {
                                 echo "<script>alert('此游戏ID已被占用，请检查输入');</script>";
-                            } else {
+                            }else{
                                 $refData['referee'] = $refStaffExist['id'];
                                 $ref = $dbStaff->where('id=' . $userid)->save($refData);
                                 if ($ref) {
@@ -53,7 +53,7 @@ class UserController extends HomeController {
                             }
                         }
                     }
-                } else {
+                }else{
                     echo "<script>alert('推荐人和手机号不匹配!');window.history.back(-1);</script>";
                 }
             }

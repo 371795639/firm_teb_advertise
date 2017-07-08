@@ -82,7 +82,6 @@ class LoginController extends \Think\Controller {
                 );
                 //判断手机号重复
                 $phoneRepeat =  $dbStaff->where('mobile=' . $_POST['phoneNum'])->find();
-
                 if(empty($phoneRepeat)){ //表中未检测到用户的手机号，说明是新用户，新增记录
                     if($dbStaff->add($refStaff)){
                         unset($_SESSION['verifyNum']['content']);
