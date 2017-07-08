@@ -17,15 +17,9 @@ use Think\Controller;
  */
 class IndexController extends Controller {
 
-	//系统首页
+	//前台默认首页
     public function index(){
-        redirect('index.php?s=/Home/Login/login.html');
-//        $this->display();
+        //重定向路由，指向登录页
+        $this -> redirect('Login/login');
     }
-
-    public function login(){
-    	$this->display('login/login');
-
-    }
-
 }

@@ -23,39 +23,29 @@ class LoginController extends \Think\Controller {
             $username = $_POST['username'];
             $password = $_POST['password'];
             $regStaff = $dbStaff ->where(array('mobile' => $username))->find();
+            $_SESSION['userid'] = $regStaff['id'];    //用户id
             if($regStaff){ //验证手机号
-                if( $regStaff['staff_pwd']== md5($password)){ //验证密码
-                    if($regStaff['status']==1){//验证该用户处于可用状态
-                        $_SESSION['userid'] = $regStaff['id'];    //用户id
-                        if($regStaff['pay_status']==1){//该用户处于未缴费状态
-                            $this->error( '登录失败，该账号未缴费，请重新注册缴费!',U('Login/register') );
-                        }
-                        if($regStaff['pay_status']==2){//缴费失败
-                            $this->error( '登录失败，该账号缴费失败，请重新注册缴费!',U('Login/register') );
-                        }
-                        //判断该用户是否完善信息
-                        $dbUser = $dbStaff->where('id='.$_SESSION['userid'])->find();
-                        if(($dbUser['card_id']==null)||($dbUser['referee']==null) || ($dbUser['game_id']==null) || ($dbUser['address']==null))
-                        {
-                            $this->assign('waitSecond','3');
-                            $this->success( '登陆成功，正在跳转到完善信息页面!',U('User/compeleInfo'));
+                if($regStaff['staff_pwd']== md5($password)){ //验证密码
+                    if($regStaff['pay_status'] == 3){//该用户处于缴费失败状态
+                        if ($regStaff['status'] == 1) {//验证该用户处于可用状态
+                            $this -> redirect('User/index');
+                        }elseif($regStaff['status'] == 3){
+                            $this -> redirect('User/compeleInfo');
                         }else{
-                            $this->assign('waitSecond','3');
-                            $this->success( '登陆成功，正在跳转到主页面!',U('User/index'));
+                            echo "<script>alert('用户被禁用，请联系管理员!');</script>";
                         }
-                    }else{//验证该用户处于禁用状态
-                        $this->error( '登录失败，该账号被禁用！',U('Login/login') );
+                    }else{
+                        $this-> wxcallback();
+                        echo '再次请求微信支付';
                     }
-
-                }else{ //手机号或密码错误
-                    $this->error( '密码错误,请重新输入!',U('Login/login') );
+                }else{
+                    echo "<script>alert('密码错误!');</script>";
                 }
             }else{
-                $this->error( '该手机号不存在!',U('Login/login') );
+                echo "<script>alert('该手机号不存在!');</script>";
             }
-        } else { //显示登录表单
-            $this->display();
         }
+        $this->display();
     }
 
 
@@ -80,15 +70,15 @@ class LoginController extends \Think\Controller {
 //            if ($_SESSION['verifyNum']['content'] == $_POST['verifyNum']) {
             if ($_POST['verifyNum'] == 1) {
                 if($_POST['password1'] !== $_POST['password2']){
-                    $this -> error('输入的两次密码不一致，再检查下。');
+                    echo "<script>alert('输入的两次密码不一致，再检查下!');</script>";
                 }
                 //获取记录
                 $refStaff = array(
                     'mobile'     => $_POST['phoneNum'],              //注册手机号码
                     'staff_pwd'  => md5($_POST['password1']),        //密码md5
                     'staff_real' => $_POST['staffName'],             //个人姓名
-                    'create_time'=> date('Y-m-d h:i:s'),             //创建时间
-                    'status'     => 2,                               //禁用
+                    'create_time'=> date('Y-m-d H:i:s'),             //创建时间
+                    'status'     => 3,                               //未完善信息
                     'pay_status' => 1 ,                              //默认等待付款状态
                 );
                 //判断手机号重复
@@ -96,33 +86,23 @@ class LoginController extends \Think\Controller {
                 if($phoneRepeat){ //找出已存在的手机号
                     if($phoneRepeat['pay_status']== 3 && $phoneRepeat['status'] == 1){
                         //该手机号重复且付款成功
-                        $this->error('该手机号已注册，别再瞎注册了。', U('Login/login'));
+                        echo "<script>alert('该手机号已注册，别再瞎注册了!');</script>";
                         //验证码失效
                         unset($_SESSION['verifyNum']['content']);
                     }
                     elseif($phoneRepeat['pay_status']== 1 || $phoneRepeat['pay_status']== 2){
-                        //TODO:付款状态为1或2，说明未付款或者付款失败，重新加载微信支付
-
-                        /* 下面的代码是邵杰写的。
-                        //该手机号付款状态为其他
-                        else{
-                            $dbStaff->where('mobile='.$refStaff['mobile'])->save($refStaff);
-                            //验证码失效
-                            unset($_SESSION['verifyNum']['content']);
-                        }
-                        */
+                        $this->wxcallback();
                     }
-                }
-                else{//表中未检测到用户的手机号，说明是新用户，新增记录
+                } else{//表中未检测到用户的手机号，说明是新用户，新增记录
                     if($dbStaff->add($refStaff)){
                         //验证码失效
                         unset($_SESSION['verifyNum']['content']);
                     }
                     else{
-                        $this->error('新增用户记录失败，请重新注册！', U('Login/register'));
+                        echo "<script>alert('新增用户记录失败，请重新注册!');</script>";
                     }
-                    echo 123;
                 }
+                trace('$phoneRepeat');
                 //查表获得该用户id
                 $ref =  $dbStaff->where('mobile=' . $refStaff['mobile'])->find();
                 //添加session用户id信息
@@ -133,13 +113,13 @@ class LoginController extends \Think\Controller {
                 $orderAmount = 1;                                   //订单支付金额；单位:分(人民币)
                 $cardno = 51;                                       //微信wap  (固定值 51)
                 $key = 'b0308d76c651420ce1e4662f36dc11ee';          //获得key
-//                $noticeurl = 'http://' . $_SERVER['HTTP_HOST'] . '/index.php?s=/Home/Login/wxcallback';    //在网关返回信息时通知商户的地址,该地址不能带任何参数，否则异步通知会不成功
-//                $backurl   = 'http://' . $_SERVER['HTTP_HOST'] . '/index.php?s=/Home/Login/registerSucc';  //在网关返回信息时回调商户的地址,跳转到完善信息页面
-                $noticeurl   = 'http://' . $_SERVER['HTTP_HOST'] . '/index.php?s=/Home/Login/registerSucc';  //在网关返回信息时回调商户的地址,跳转到完善信息页面
+                $noticeurl = 'http://' . $_SERVER['HTTP_HOST'] . '/index.php/Home/Login/wxcallback';    //在网关返回信息时通知商户的地址,该地址不能带任何参数，否则异步通知会不成功
+                $backurl   = 'http://' . $_SERVER['HTTP_HOST'] . '/index.php/Home/Login/registerSucc';  //在网关返回信息时回调商户的地址,跳转到完善信息页面
                 //sign进行加密
                 $Md5str = 'customerid=' . $customerid . '&sdcustomno=' . $sdcustomno . '&orderAmount=' . $orderAmount . '&cardno=' . $cardno . '&noticeurl=' . $noticeurl . '&backurl=' . $backurl . $key;
                 $sign = strtoupper(md5($Md5str));//发送给网关的签名字符串,为以上参数加商户在网关系秘钥（key）一起按照顺序MD5加密并转为大写的字符串
                 $mark = $ref['id'];     //商户自定义信息，不能包含中文字符，因为可能编码不一致导致MD5加密结果不一致,返回用户uid 然后查询该纪录
+                $_SESSION['user_id'] = $ref['id'];
                 //拼接url
                 $url = 'http://www.51card.cn/gateway/weixinpay/wap-weixinpay.asp?customerid=' . $customerid . '&sdcustomno=' . $sdcustomno . '&orderAmount=' . $orderAmount . '&cardno=' . $cardno . '&noticeurl=' . $noticeurl . '&backurl=' . $backurl . '&sign=' . $sign . '&mark=' . $mark;
                 //跳转url
@@ -147,7 +127,7 @@ class LoginController extends \Think\Controller {
                 Header("Location: $url");
             }
             else{
-                $this->error('验证码错误！', U('Login/register'));
+                echo "<script>alert('验证码错误!');</script>";
             }
         }
         $this->display();
@@ -164,7 +144,7 @@ class LoginController extends \Think\Controller {
             $sdcustomno =   $_REQUEST['sdcustomno'];     //该订单在商户系统的流水号
             $ordermoney =   $_REQUEST['ordermoney'];     //商户订单实际金额 单位：（元）
             $cardno     =   $_REQUEST['cardno'];         //支付类型，为固定值 51
-            $mark       =   $_REQUEST['mark'];           //未启用暂时返回空值//返回用户手机号码
+            $mark       =   $_REQUEST['mark'];           //未启用暂时返回空值//返回用户id
             $sign       =   $_REQUEST['sign'];           //发送给商户的签名字符串
             $resign     =   $_REQUEST['resign'];         //发送给商户的二次签名字符串
             $des        =   $_REQUEST['des'];            //描述订单支付成功或失败的系统备注
@@ -175,50 +155,51 @@ class LoginController extends \Think\Controller {
             $yzsign     =   strtoupper($signRef);
             //验证resign
             $yzresign   =   strtoupper(md5('sign='.$signRef.'&customerid='.$customerid.'&ordermoney='.$ordermoney.'&sd51no='.$sd51no.'&state='.$state.'&key='.$key));
+            error_log(date("[Y-m-d H:i:s]")." -[".$_SERVER['REQUEST_URI']."] :".$_REQUEST."\n", 3, "/data/tuiguang/1.log");
+            //实例化flow流水表 staff表 reg_charge表
+            $dbFlow  = M('flow');
+            $dbStaff = M('staff');
+            $dbregCharge = M('reg_charge');
             //验证sign resign
             if(($yzsign == $sign)&&($yzresign == $resign)){
-                //实例化flow流水表 staff表 reg_charge表
-                $dbFlow  = M('flow');
-                $dbStaff = M('staff');
-                $dbregCharge = M('reg_charge');
                 //回调参数获得该用户id
-                $uid = $mark;
-                if($state==1){//充值成功
-                    if($ordermoney>=0.01){
-                        //金额支付大于等于1000
-                        $refStaff = array(
-                            'pay_status' => 3,
-                        );
-                        //更新staff表支付状态为付款成功
-                        $refStaff = $dbStaff->where('id='.$uid)->save($refStaff);
-                    }
-                    else{//支付金额不足1000
-                        $refStaff = array(
-                            'pay_status' => 2,
-                        );
-                        //更新staff表支付状态为付款失败
-                        $refStaff = $dbStaff->where('id='.$uid)->save($refStaff);
-                    }
+                // $uid = $mark;
+                $uid = $_SESSION['user_id'];
+                if($state == 1){//充值成功
+                    // if($ordermoney>=0.01){
+                    //金额支付大于等于1000
+                    $refStaff = array(
+                        'pay_status' => 3,
+                    );
+                    //更新staff表支付状态为付款成功
+                    $refStaff = $dbStaff->where(array('id'=>$uid))->save($refStaff);
+                    // }
+                    // else{//支付金额不足1000
+                    //     $refStaff = array(
+                    //         'pay_status' => 2,
+                    //     );
+                    //     //更新staff表支付状态为付款失败
+                    //     $refStaff = $dbStaff->where('id='.$uid)->save($refStaff);
+                    // }
                     //流水表记录
                     $refFlow = array(
                         'uid'   => $uid,
                         'type'  => 7,
                         'money' => $ordermoney,
-                        'create_time' => date('y-m-d h:i:s', time()),
+                        'create_time' => date('Y-m-d H:i:s'),
                     );
                     //注册资金记录
                     $refregCharge = array(
                         'pay_id'   => $uid,
                         'money'    => $ordermoney,
                         'order_id' => $sdcustomno,
-                        'create_time' => date('y-m-d h:i:s', time()),
+                        'create_time' => date('Y-m-d H:i:s'),
                     );
                     //写入流水表,注册资金记录
                     $refFlow      =   $dbFlow->add($refFlow);
                     $refregCharge =   $dbregCharge->add($refregCharge);
 
-                }
-                else{//充值失败
+                }else{//充值失败
                     $refStaff=array(
                         'pay_status' => 2,
                     );
@@ -242,6 +223,7 @@ class LoginController extends \Think\Controller {
     /* 注册成功 */
     public function registerSucc()
     {
+        /*
         //查Staff表
         //判断请求
         $dbStaff = M('staff');
@@ -259,7 +241,7 @@ class LoginController extends \Think\Controller {
             //付款成功状态
             case 3:
                 $refStaff = array(
-                    'status' => 1
+                    'status' => 3,
                 );
                 //更新staff表用户的status状态为1
                 $refStaff = $dbStaff->where('id='.$_SESSION['userid'])->save($refStaff);
@@ -268,7 +250,9 @@ class LoginController extends \Think\Controller {
 //               }
                 break;
         }
-        $this->display();
+        */
+        $this->wxcallback();
+        $this->display('registerSucc');
     }
 
 
@@ -288,16 +272,14 @@ class LoginController extends \Think\Controller {
                     if($dbStaff->where('mobile='.$phoneNum)->save($RegStaff)){
                         //清空session指定字段值
                         unset($_SESSION['verifyNum']);
-                        $this->assign('waitSecond','3');
-                        $this->success('修改成功',U('Login/login'));
-                        exit();
+                        $this -> redirect('Login/login');
                     }
-
                 }else{
-                    $this -> error('该用户不存在!',U('Login/getNewPsd'));
+                    echo "<script>alert('该用户不存在!');</script>";
+
                 }
             }else{
-                $this -> error('验证码错误！',U('Login/getNewPsd'));
+                echo "<script>alert('验证码错误!');</script>";
             }
 
         }
@@ -335,8 +317,10 @@ class LoginController extends \Think\Controller {
         echo $statusStr[$result];
     }
 
-	public function decla(){
-		$this -> display();
-	}
+
+    /**协议**/
+    public function decla(){
+        $this -> display();
+    }
 
 }

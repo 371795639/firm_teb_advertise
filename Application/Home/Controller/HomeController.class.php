@@ -27,11 +27,12 @@ class HomeController extends Controller {
         C($config); //添加配置
 
         if(!C('WEB_SITE_CLOSE')){
-            $this->error('站点已经关闭，请稍后访问~');
+//            $this->error('站点已经关闭，请稍后访问~');
+            echo "<script>alert('站点已经关闭，请稍后访问~');</script>";
         }
         /* 验证登录 */
         if(($_SESSION['userid'])==""){
-            $this->error( '请先登录',U('Login/login') );
+            echo "<script>alert('请先登录!');window.location.href='".U('Login/login')."';</script>";
         }
 
     }

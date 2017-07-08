@@ -8,26 +8,7 @@
     <link rel="stylesheet" href="/Public/Home/css/mui.min.css" />
     <link rel="stylesheet" type="text/css" href="/Public/Home/css/common/common.css"/>
     <link rel="stylesheet" href="/Public/Home/css/spread/spreadM.css"/>
-    <style type="text/css">
-    	.num1{
-    		display:inline-block;
-    		padding: 0 !important;
-    		width: 100%;
-    	}
-    	.mui-media-body{
-    		font-size: 15px;
-    	}
-    	.time{
-    		font-size: 13px;
-    		color: #ccc;
-    		float: right;
-    		height: 50px;
-    		background: transparent;
-    	}
-    	.mui-segmented-control .mui-control-item{
-    		line-height: 20px;
-    	}
-    </style>
+   
 	</head>
 	<body>
 		<header class="mui-bar mui-bar-nav gradient">
@@ -55,18 +36,19 @@
 				</div>
 				<!--我的合作伙伴-->
 				<div id="item1" class="mui-control-content mui-active">
-					<!--<span class="time">本月</span>-->
-					<ul class="mui-content mui-table-view" style="margin-top: 14px;">
+					<ul class="mui-content mui-table-view" style="margin: 14px 0;">
 						<if condition="$list.count eq 0">
-							暂无信息
+							<div class="no-data">
+								暂无信息
+							</div>
 						<else />
 						<volist name="list" id="vo">
 						<li class="mui-table-view-cell" >
 							<a >
-								<img class="mui-media-object mui-pull-left" src="/Public/Home/img/102.png" class="imgEle">
+								<img class="mui-media-object mui-pull-left" src="/Public/Home/img/102.png">
 								<div class="mui-media-body">
 									专员:{$vo.staff_real}
-									<span class="time">{$vo.create_time}</span>
+									<p class='mui-ellipsis'>{$vo.create_time}</p>
 								</div>								
 							</a>
 						</li>
@@ -76,10 +58,11 @@
 				</div>
 				<!--我的伞下玩家-->
 				<div id="item2" class="mui-control-content">
-					<!--<span class="time">本月</span>-->
-					<ul class="mui-content mui-table-view" style="margin-top: 14px;">
+					<ul class="mui-content mui-table-view" style="margin: 14px 0;">
 						<if condition="$lists.count eq 0">
-							暂无信息
+							<div class="no-data">
+								暂无信息
+							</div>
 						<else />
 						<volist name="lists" id="vo">
 						<li class="mui-table-view-cell" >
@@ -87,7 +70,7 @@
 								<img class="mui-media-object mui-pull-left" src="/Public/Home/img/100.png" class="imgEle">
 								<div class="mui-media-body">
 									玩家:{$vo.game_id}
-									<span class="time">{$vo.create_time}</span>
+									<p class='mui-ellipsis'>{$vo.create_time}</p>
 								</div>								
 							</a>
 						</li>					
@@ -98,25 +81,7 @@
 			</div>			
 		</div>
 		<script src="/Public/Home/js/mui.min.js"></script>
-		<script src="/Public/Home/js/jQuery/jquery-1.11.3.min.js"></script>
-		<script type="text/javascript">
-		//创建一个图片路径数组
-		$(document).ready(function(){
-			
-			var imgArr = ['100.png','101.png','102.png','103.png','104.png','105.png','106.png','107.png','108.png'];//图片路径数组
-			//在数据中随机取出一个 
-			
-			var index = Math.floor((Math.random()*imgArr.length));//随机下标，保证随机的数字在数组中能取到 
-			
-			var imgSrc = imgArr[index];//随机获取的图片路径
-			//3动态的改变图片src属性
-			
-			var imgEle = document.getElementsByClassName('imgEle');//获取需要改变的img标签
-			imgEle.src = "/Public/Home/img/"+imgSrc;
-			
-		})
-		
-		</script>
+		<!--<script src="/Public/Home/js/jQuery/jquery-1.11.3.min.js"></script>-->
 	</body>
 </html>
 

@@ -18,14 +18,12 @@ class FinancialController extends HomeController {
 
     /* 报表 */
     public function financialStatements(){
-
         $this->display();
     }
 
     /* 报表本周信息返回 */
     public function financialThisWeekReturn(){
-        $dbwithdraw = M('withdraw');
-        $dbcharge   = M('charge');
+        $dbCharge   = M('charge');
         $uid = $_SESSION['userid'];
 
         //获取本周周一到周日的日期
@@ -41,69 +39,33 @@ class FinancialController extends HomeController {
         //获取本周周一到周日的充值记录
         $map['create_time'] = array(array('EGT',$timeStart[0]),array('ELT',$timeEnd[0]),'and');
         $map['pay_id'] = array('eq',$uid);
-        $refDbcharge[0] = $dbcharge->where($map)->Sum('money'); //本周一
+        $refDbCharge[0] = $dbCharge->where($map)->Sum('money'); //本周一
         $map['create_time'] = array(array('EGT',$timeStart[1]),array('ELT',$timeEnd[1]),'and');
         $map['pay_id'] = array('eq',$uid);
-        $refDbcharge[1] = $dbcharge->where($map)->Sum('money'); //本周二
+        $refDbCharge[1] = $dbCharge->where($map)->Sum('money'); //本周二
         $map['create_time'] = array(array('EGT',$timeStart[2]),array('ELT',$timeEnd[2]),'and');
         $map['pay_id'] = array('eq',$uid);
-        $refDbcharge[2] = $dbcharge->where($map)->Sum('money'); //本周三
+        $refDbCharge[2] = $dbCharge->where($map)->Sum('money'); //本周三
         $map['create_time'] = array(array('EGT',$timeStart[3]),array('ELT',$timeEnd[3]),'and');
         $map['pay_id'] = array('eq',$uid);
-        $refDbcharge[3] = $dbcharge->where($map)->Sum('money'); //本周四
+        $refDbCharge[3] = $dbCharge->where($map)->Sum('money'); //本周四
         $map['create_time'] = array(array('EGT',$timeStart[4]),array('ELT',$timeEnd[4]),'and');
         $map['pay_id'] = array('eq',$uid);
-        $refDbcharge[4] = $dbcharge->where($map)->Sum('money'); //本周五
+        $refDbCharge[4] = $dbCharge->where($map)->Sum('money'); //本周五
         $map['create_time'] = array(array('EGT',$timeStart[5]),array('ELT',$timeEnd[5]),'and');
         $map['pay_id'] = array('eq',$uid);
-        $refDbcharge[5] = $dbcharge->where($map)->Sum('money'); //本周六
+        $refDbCharge[5] = $dbCharge->where($map)->Sum('money'); //本周六
         $map['create_time'] = array(array('EGT',$timeStart[6]),array('ELT',$timeEnd[6]),'and');
         $map['pay_id'] = array('eq',$uid);
-        $refDbcharge[6] = $dbcharge->where($map)->Sum('money'); //本周日
+        $refDbCharge[6] = $dbCharge->where($map)->Sum('money'); //本周日
         //充值金额为NULL的转为0
         for($i=0 ; $i<7 ;$i++ ){
-            if(!$refDbcharge[$i]){
-                $refDbcharge[$i]=0;
+            if(!$refDbCharge[$i]){
+                $refDbCharge[$i] = 0;
             }
         }
-        //获取本周周一到周日的提现记录
-        $map['create_time'] = array(array('EGT',$timeStart[0]),array('ELT',$timeEnd[0]),'and');
-        $map['status'] = array('eq',2);
-        $map['uid'] = array('eq',$uid);
-        $refDbwithdraw[0] = $dbwithdraw->where($map)->Sum('money'); //本周一
-        $map['create_time'] = array(array('EGT',$timeStart[1]),array('ELT',$timeEnd[1]),'and');
-        $map['status'] = array('eq',2);
-        $map['uid'] = array('eq',$uid);
-        $refDbwithdraw[1] = $dbwithdraw->where($map)->Sum('money'); //本周二
-        $map['create_time'] = array(array('EGT',$timeStart[2]),array('ELT',$timeEnd[2]),'and');
-        $map['status'] = array('eq',2);
-        $map['uid'] = array('eq',$uid);
-        $refDbwithdraw[2] = $dbwithdraw->where($map)->Sum('money'); //本周三
-        $map['create_time'] = array(array('EGT',$timeStart[3]),array('ELT',$timeEnd[3]),'and');
-        $map['status'] = array('eq',2);
-        $map['uid'] = array('eq',$uid);
-        $refDbwithdraw[3] = $dbwithdraw->where($map)->Sum('money'); //本周四
-        $map['create_time'] = array(array('EGT',$timeStart[4]),array('ELT',$timeEnd[4]),'and');
-        $map['status'] = array('eq',2);
-        $map['uid'] = array('eq',$uid);
-        $refDbwithdraw[4] = $dbwithdraw->where($map)->Sum('money'); //本周五
-        $map['create_time'] = array(array('EGT',$timeStart[5]),array('ELT',$timeEnd[5]),'and');
-        $map['status'] = array('eq',2);
-        $map['uid'] = array('eq',$uid);
-        $refDbwithdraw[5] = $dbwithdraw->where($map)->Sum('money'); //本周六
-        $map['create_time'] = array(array('EGT',$timeStart[6]),array('ELT',$timeEnd[6]),'and');
-        $map['status'] = array('eq',2);
-        $map['uid'] = array('eq',$uid);
-        $refDbwithdraw[6] = $dbwithdraw->where($map)->Sum('money'); //本周日
-        //充值金额为NULL的转为0
-        for($i=0 ; $i<7 ;$i++ ){
-            if(!$refDbwithdraw[$i]){
-                $refDbwithdraw[$i]=0;
-            }
-        }
-
         $data = array(
-            array(
+            'categories'=>array(
                 '0' => $time[0], //第一下标必须是0
                 '1' => $time[1],
                 '2' => $time[2],
@@ -112,32 +74,22 @@ class FinancialController extends HomeController {
                 '5' => $time[5],
                 '6' => $time[6],
             ),//日期
-            array(
-                '0' => $refDbcharge[0], //第一下标必须是0
-                '1' => $refDbcharge[1],
-                '2' => $refDbcharge[2],
-                '3' => $refDbcharge[3],
-                '4' => $refDbcharge[4],
-                '5' => $refDbcharge[5],
-                '6' => $refDbcharge[6],
-            ),//充值
-            array(
-                '0' => $refDbwithdraw[0], //第一下标必须是0
-                '1' => $refDbwithdraw[1],
-                '2' => $refDbwithdraw[2],
-                '3' => $refDbwithdraw[3],
-                '4' => $refDbwithdraw[4],
-                '5' => $refDbwithdraw[5],
-                '6' => $refDbwithdraw[6],
-            ),//提现
+            'data'=>array(
+                '0' => $refDbCharge[0], //第一下标必须是0
+                '1' => $refDbCharge[1],
+                '2' => $refDbCharge[2],
+                '3' => $refDbCharge[3],
+                '4' => $refDbCharge[4],
+                '5' => $refDbCharge[5],
+                '6' => $refDbCharge[6],
+            )//充值
         );
-        echo json_encode($data);
+        $this->ajaxReturn($data);
     }
 
     /* 报表上周信息返回 */
     public function financialLastWeekReturn(){
-        $dbwithdraw = M('withdraw');
-        $dbcharge   = M('charge');
+        $dbCharge   = M('charge');
         $uid = $_SESSION['userid'];
 
         //获取上周周一的日期
@@ -151,69 +103,33 @@ class FinancialController extends HomeController {
         //获取上周周一到周日的充值记录
         $map['create_time'] = array(array('EGT',$timeStart[0]),array('ELT',$timeEnd[0]),'and');
         $map['pay_id'] = array('eq',$uid);
-        $refDbcharge[0] = $dbcharge->where($map)->Sum('money'); //本周一
+        $refDbCharge[0] = $dbCharge->where($map)->Sum('money'); //本周一
         $map['create_time'] = array(array('EGT',$timeStart[1]),array('ELT',$timeEnd[1]),'and');
         $map['pay_id'] = array('eq',$uid);
-        $refDbcharge[1] = $dbcharge->where($map)->Sum('money'); //本周二
+        $refDbCharge[1] = $dbCharge->where($map)->Sum('money'); //本周二
         $map['create_time'] = array(array('EGT',$timeStart[2]),array('ELT',$timeEnd[2]),'and');
         $map['pay_id'] = array('eq',$uid);
-        $refDbcharge[2] = $dbcharge->where($map)->Sum('money'); //本周三
+        $refDbCharge[2] = $dbCharge->where($map)->Sum('money'); //本周三
         $map['create_time'] = array(array('EGT',$timeStart[3]),array('ELT',$timeEnd[3]),'and');
         $map['pay_id'] = array('eq',$uid);
-        $refDbcharge[3] = $dbcharge->where($map)->Sum('money'); //本周四
+        $refDbCharge[3] = $dbCharge->where($map)->Sum('money'); //本周四
         $map['create_time'] = array(array('EGT',$timeStart[4]),array('ELT',$timeEnd[4]),'and');
         $map['pay_id'] = array('eq',$uid);
-        $refDbcharge[4] = $dbcharge->where($map)->Sum('money'); //本周五
+        $refDbCharge[4] = $dbCharge->where($map)->Sum('money'); //本周五
         $map['create_time'] = array(array('EGT',$timeStart[5]),array('ELT',$timeEnd[5]),'and');
         $map['pay_id'] = array('eq',$uid);
-        $refDbcharge[5] = $dbcharge->where($map)->Sum('money'); //本周六
+        $refDbCharge[5] = $dbCharge->where($map)->Sum('money'); //本周六
         $map['create_time'] = array(array('EGT',$timeStart[6]),array('ELT',$timeEnd[6]),'and');
         $map['pay_id'] = array('eq',$uid);
-        $refDbcharge[6] = $dbcharge->where($map)->Sum('money'); //本周日
+        $refDbCharge[6] = $dbCharge->where($map)->Sum('money'); //本周日
         //充值金额为NULL的转为0
         for($i=0 ; $i<7 ;$i++ ){
-            if(!$refDbcharge[$i]){
-                $refDbcharge[$i]=0;
+            if(!$refDbCharge[$i]){
+                $refDbCharge[$i] = 0;
             }
         }
-        //获取本周周一到周日的提现记录
-        $map['create_time'] = array(array('EGT',$timeStart[0]),array('ELT',$timeEnd[0]),'and');
-        $map['status'] = array('eq',2);
-        $map['uid'] = array('eq',$uid);
-        $refDbwithdraw[0] = $dbwithdraw->where($map)->Sum('money'); //本周一
-        $map['create_time'] = array(array('EGT',$timeStart[1]),array('ELT',$timeEnd[1]),'and');
-        $map['status'] = array('eq',2);
-        $map['uid'] = array('eq',$uid);
-        $refDbwithdraw[1] = $dbwithdraw->where($map)->Sum('money'); //本周二
-        $map['create_time'] = array(array('EGT',$timeStart[2]),array('ELT',$timeEnd[2]),'and');
-        $map['status'] = array('eq',2);
-        $map['uid'] = array('eq',$uid);
-        $refDbwithdraw[2] = $dbwithdraw->where($map)->Sum('money'); //本周三
-        $map['create_time'] = array(array('EGT',$timeStart[3]),array('ELT',$timeEnd[3]),'and');
-        $map['status'] = array('eq',2);
-        $map['uid'] = array('eq',$uid);
-        $refDbwithdraw[3] = $dbwithdraw->where($map)->Sum('money'); //本周四
-        $map['create_time'] = array(array('EGT',$timeStart[4]),array('ELT',$timeEnd[4]),'and');
-        $map['status'] = array('eq',2);
-        $map['uid'] = array('eq',$uid);
-        $refDbwithdraw[4] = $dbwithdraw->where($map)->Sum('money'); //本周五
-        $map['create_time'] = array(array('EGT',$timeStart[5]),array('ELT',$timeEnd[5]),'and');
-        $map['status'] = array('eq',2);
-        $map['uid'] = array('eq',$uid);
-        $refDbwithdraw[5] = $dbwithdraw->where($map)->Sum('money'); //本周六
-        $map['create_time'] = array(array('EGT',$timeStart[6]),array('ELT',$timeEnd[6]),'and');
-        $map['status'] = array('eq',2);
-        $map['uid'] = array('eq',$uid);
-        $refDbwithdraw[6] = $dbwithdraw->where($map)->Sum('money'); //本周日
-        //充值金额为NULL的转为0
-        for($i=0 ; $i<7 ;$i++ ){
-            if(!$refDbwithdraw[$i]){
-                $refDbwithdraw[$i]=0;
-            }
-        }
-
         $data = array(
-            array(
+            'categories'=>array(
                 '0' => $time[0], //第一下标必须是0
                 '1' => $time[1],
                 '2' => $time[2],
@@ -222,26 +138,17 @@ class FinancialController extends HomeController {
                 '5' => $time[5],
                 '6' => $time[6],
             ),//日期
-            array(
-                '0' => $refDbcharge[0], //第一下标必须是0
-                '1' => $refDbcharge[1],
-                '2' => $refDbcharge[2],
-                '3' => $refDbcharge[3],
-                '4' => $refDbcharge[4],
-                '5' => $refDbcharge[5],
-                '6' => $refDbcharge[6],
-            ),//充值
-            array(
-                '0' => $refDbwithdraw[0], //第一下标必须是0
-                '1' => $refDbwithdraw[1],
-                '2' => $refDbwithdraw[2],
-                '3' => $refDbwithdraw[3],
-                '4' => $refDbwithdraw[4],
-                '5' => $refDbwithdraw[5],
-                '6' => $refDbwithdraw[6],
-            ),//提现
+            'data'=>array(
+                '0' => $refDbCharge[0], //第一下标必须是0
+                '1' => $refDbCharge[1],
+                '2' => $refDbCharge[2],
+                '3' => $refDbCharge[3],
+                '4' => $refDbCharge[4],
+                '5' => $refDbCharge[5],
+                '6' => $refDbCharge[6],
+            )//充值
         );
-        echo json_encode($data);
+        $this->ajaxReturn($data,"JSON");
     }
 
 }

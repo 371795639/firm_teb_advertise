@@ -43,12 +43,14 @@ class FileController extends HomeController {
 	/* 下载文件 */
 	public function download($id = null){
 		if(empty($id) || !is_numeric($id)){
-			$this->error('参数错误！');
+//			$this->error('参数错误！');
+            echo "<script>alert('参数错误！');</script>";
 		}
 
 		$logic = D('Download', 'Logic');
 		if(!$logic->download($id)){
-			$this->error($logic->getError());
+//			$this->error($logic->getError());
+            echo "<script>alert('".$logic->getError()."');</script>";
 		}
 		
 	}

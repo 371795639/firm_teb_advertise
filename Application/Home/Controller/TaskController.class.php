@@ -130,9 +130,9 @@ class TaskController extends HomeController {
                 break;
         }
         if($resDone){
-            $this -> success('领取成功',U('Home/User/index'));  //TODO:跳转需要重新封装
+            echo "<script>alert('领取成功!');window.location.href='".U('Home/User/index')."';</script>";
         }else{
-            $this -> error('领取失败');
+            echo "<script>alert('领取失败!');</script>";
         }
     }
 

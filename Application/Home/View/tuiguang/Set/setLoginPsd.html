@@ -29,7 +29,7 @@
 				</div>
 				<div class="mui-input-row">
 					<label>确认密码</label>
-					<input id='password' type="password" class=" mui-input" placeholder="">
+					<input id='pwd' type="password" class=" mui-input" placeholder="">
 					<span><img src="/Public/Home/img/eye.png" id="img3" onclick="showPsd()"/></span>
 				</div>
 				<div class="mui-input-row" >
@@ -44,6 +44,73 @@
 		<script src="/Public/Home/js/mui.min.js"></script>
 		<script src="/Public/Home/js/jQuery/jquery-1.11.3.min.js"></script>
 		<script type="text/javascript">
+		mui.init();
+    		//表单验证；
+			$("#btn").attr("disabled","disabled")
+			var test = function(){
+				var oldPsd = $("#oldPassword").val();
+				var newPsd = $("#newPassword").val();
+				var psd = $("#pwd").val();
+				var testNum = $("#testNum").val();
+			//	console.log(oldPsd+newPsd+psd);
+				var isOk = oldPsd&&newPsd&&psd&&testNum;
+				btn( isOk );
+			}
+			
+			var btn = function(a){
+				if( a ){
+			     	$("#btn").removeAttr("disabled")
+			    }else{
+			     	$("#btn").attr("disabled","disabled")
+			    }
+			}
+			$('input').bind('keyup',function(){
+				//验证空值；
+				test();			
+			});
+			//验证两次密码是否一样
+			$("#pwd").blur(function(){
+				//验证两次输入密码；
+				testPsd();
+			});	 	
+			var testPsd = function(){
+				var val3 = $("#newPassword").val();
+				var val4 = $("#pwd").val();
+				if( val3==val4 ){
+					return null;
+				}else{
+					mui.toast("两次密码不一致！");
+					$("#newPassword").val("");
+					$("#pwd").val("");	
+					btn(0);
+				}
+			}
+			//显示密码功能；
+			var showOldPsd = function(){
+//				alert(1)
+				if( $("#oldPassword").attr("type") == "password" ){
+					$("#oldPassword").attr('type','text');
+				}
+				else{
+					$("#oldPassword").attr('type','password');
+				}
+			}
+			var showNewPsd = function(){
+				if( $("#newPassword").attr("type") == "password" ){
+					$("#newPassword").attr('type','text');
+				}
+				else{
+					$("#newPassword").attr('type','password');
+				}
+			}
+			var showPsd = function(){
+				if( $("#pwd").attr("type") == "password" ){
+					$("#pwd").attr('type','text');
+				}
+				else{
+					$("#pwd").attr('type','password');
+				}
+			}
             //获取验证码事件（时间在绑定调用处传入，）
             function showtime(t){
                 //TODO请求验证码

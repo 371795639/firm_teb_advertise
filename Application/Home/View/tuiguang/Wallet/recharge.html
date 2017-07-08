@@ -109,6 +109,7 @@
 					return true;
 				} else {
 					mui.toast("请填写正确的游戏id！");
+					$("#submit").attr("disabled","disabled").css("background","#ccc");
 					$("#gameId").val("");
 				}
 			}

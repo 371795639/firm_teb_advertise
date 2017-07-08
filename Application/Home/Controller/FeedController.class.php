@@ -48,7 +48,8 @@ class FeedController extends HomeController {
         $dbMsg = M('Message');
         $content = I('content');
         if(empty($content)){
-            $this -> error('意见反馈没内容，你逗我玩呢？');
+//            $this -> error('意见反馈没内容，你逗我玩呢？');
+            echo "<script>alert('意见反馈没内容，你逗我玩呢？');window.history.back(-1);</script>";
         }else{
             $data = array(
                 'uid'           => $_SESSION['userid'],
@@ -60,25 +61,15 @@ class FeedController extends HomeController {
             $resMsg = $dbMsg -> data($data) -> add();
         }
         if($resMsg){
-            $this -> success('反馈成功',U('User/index'));
+//            $this -> success('反馈成功',U('User/index'));
+            echo "<script>alert('反馈成功!');window.location.href='".U('User/index')."';</script>";
         }else{
-            $this -> error('反馈失败....');
+//            $this -> error('反馈失败....');
+            echo "<script>alert('反馈失败....');window.history.back(-1);</script>";
         }
 
     }
 
-
-
-
-
-
-
-
-
-
-
-
-    //功能简化 整篇重做
 
 
 

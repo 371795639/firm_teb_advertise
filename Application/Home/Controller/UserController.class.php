@@ -18,36 +18,47 @@ class UserController extends HomeController {
 
     /* 完善用户信息 */
     public function compeleInfo(){
-        if(IS_POST){
+        if(IS_POST) {
             //解决中文乱码
             header('Content-Type:text/html;charset=utf-8');
             $dbStaff = D('staff');
-            $userid  = $_SESSION['userid'];
+            $userid = $_SESSION['userid'];
             $refData = array(
-                'game_id'     => $_POST['gameId'] ,
-                'card_id'     => $_POST['cardNum'],
-                'address'     => $_POST['address'],
+                'game_id' => $_POST['gameId'],
+                'card_id' => $_POST['cardNum'],
+                'address' => $_POST['address'],
+                'status' => 2,
             );
-            //判断是否存在该推荐人以及该手机号是否匹配
-            $refStaffExist = $dbStaff->where(array('staff_real' => $_POST['staffName'] ,'mobile' => $_POST['refPhoneNum']))->find();
-            if($refStaffExist){
-                if($refStaffExist['id']==$userid){
-                    $this->error('推荐人不能是自己',U('User/compeleInfo'));
-                }
-                else{
-                    $refData['referee'] = $refStaffExist['id'];
-                    $ref = $dbStaff->where('id='.$userid)->save($refData);
-                    if($ref){
-                        $this->assign('waitSecond','3');
-                        $this->success('完善信息成功，正在跳转到个人页面', U('User/index'));exit();
+            if (empty($_POST['refPhoneNum'])) {
+                //用户上次注册时未完善信息，再次登陆的时候，将跳转到完善信息页面
+            } else {
+                $refStaffExist = $dbStaff->where(array('staff_real' => $_POST['staffName'], 'mobile' => $_POST['refPhoneNum']))->find();
+                if ($refStaffExist) {
+                    $cardId = $dbStaff->where(array('card_id' => $refData['card_id']))->select();
+                    if ($cardId) {
+                        echo "<script>alert('此身份证号已注册过，不能再注册哦!');</script>";
+                    } else {
+                        if ($refStaffExist['id'] == $userid) {
+                            echo "<script>alert('推荐人不能是自己!');</script>";
+                        } else {
+                            $gameId = $dbStaff->where(array('game_id' => $refData['game_id']))->select();
+                            if ($gameId) {
+                                echo "<script>alert('此游戏ID已被占用，请检查输入');</script>";
+                            } else {
+                                $refData['referee'] = $refStaffExist['id'];
+                                $ref = $dbStaff->where('id=' . $userid)->save($refData);
+                                if ($ref) {
+                                    $this->redirect('User/index');
+                                }
+                            }
+                        }
                     }
+                } else {
+                    echo "<script>alert('推荐人和手机号不匹配!');window.history.back(-1);</script>";
                 }
             }
-           else{
-                $this->error('推荐人和手机号不匹配！', U('User/compeleInfo'));
-           }
         }
-            $this->display();
+        $this->display('User/compeleInfo');
     }
 
     /* 主页面 */
@@ -61,6 +72,7 @@ class UserController extends HomeController {
         $resDoneCount   = $dbTaskDone -> get_this_week_all_task();
         $doingNo        = $dbTaskDone -> get_count($resDoneCount,'status',1);
         $this->assign('doingNo',$doingNo);
+        /*根据当前时间更换问候图片*/
         $time = date('H:i:s');
         if($time <= "12:00:00"){
             $pic = 1;
@@ -68,7 +80,6 @@ class UserController extends HomeController {
             $pic = 2;
         }
         $this->assign('pic',$pic);
-        /*显示剩余任务个数--结束*/
         $this->display();
     }
 
@@ -79,7 +90,7 @@ class UserController extends HomeController {
         $resStaff       = $dbStaff      -> get_staff_by_id($_SESSION['userid']);
         $resStaffInfo   = $dbStaffInfo  -> get_staff_by_uid($_SESSION['userid']);
         $class          = $resStaffInfo['class'];
-        if($resStaff['is_league'] = 0){
+        if($resStaff['is_league'] == 0){
             $re = '推广专员';
         }else{
             $res = '级加盟商';
