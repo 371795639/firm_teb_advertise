@@ -88,7 +88,10 @@
                                 </if>
                             </td>
                             <td>
-                                <a href="{:U('Main/taskWeeklyCancle',array('id'=>$vo['id'],'abc'=>'1'))}">取消发布</a>
+                                <if condition="$vo.status eq 3">
+                                    <a href="{:U('Main/taskWeeklyCancle',array('id'=>$vo['id'],'abc'=>'1'))}">取消发布</a>
+                                    <else/> -
+                                </if>
                             </td>
                         </tr>
                      </volist>

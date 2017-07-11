@@ -130,3 +130,42 @@ function time_formatsss($date,$format='H:i'){
     }
     return $re;
 }
+
+
+/**
+ * 根据$date获取上周一
+ * @param $date string  时间
+ * @return bool|string  当前时间的上周一
+ */
+function get_last_monday($date){
+    if(!empty($date)) {
+        $date = date('Y-m-d H:i:s');
+        $time = strtotime($date);
+        $week = date('N', $time);
+        if ($week == 1) {
+            $start_time = date('Y-m-d 02:00:00', strtotime('-1 monday', $time));
+        } else {
+            $start_time = date('Y-m-d 02:00:00', strtotime('-2 monday', $time));
+        }
+    }else{
+        $start_time = "";
+    }
+    return $start_time;
+}
+
+
+/**
+ * 根据$date获取上周末
+ * @param $date string  时间
+ * @return bool|string  当前时间的上周末
+ */
+function get_last_sunday($date){
+    if(empty($date)) {
+        $end_time = "";
+    }else{
+        $start_time = get_last_monday($date);
+        $ss         = strtotime($start_time);
+        $end_time   = date('Y-m-d 23:59:59', strtotime('Sunday', $ss));
+    }
+    return $end_time;
+}

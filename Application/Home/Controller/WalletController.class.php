@@ -10,7 +10,7 @@ use User\Api\UserApi;
 
 class WalletController extends HomeController{
 
-    /* 钱包 */
+    /** 钱包 */
     public function walletDetails(){
         header('Content-Type:text/html;charset=utf-8');
         $dbStaff  = D('staff');
@@ -42,12 +42,23 @@ class WalletController extends HomeController{
             }else{
                 $type = 2;
             }
-            //调用接口，判断返回值
-            //如果充值成功
             $order_id = make_orderId();//生成订单号
-            $re = M()->execute("call pro_recharge($user_id,$game_id,$game_coin,$order_id,$type,4)");
-            if($re == 1){
-                $data['code'] = 1;
+            //调用接口，判断返回值
+            $result_api = $this->takeApi($game_id,$game_coin,$order_id);
+            if($result_api['error'] == 0 && $result_api['data'] == "success"){
+                //如果充值成功
+                $update_data = M('staff')->where(array('id'=>$user_id))->setDec('consume_coin',$game_coin);
+                if($update_data){
+                    $re = M()->execute("call pro_recharge($user_id,$game_id,$game_coin,$order_id,$type,4)");
+                    if($re == 1){
+                        $data['code'] = 1;
+                    }
+                }else{
+                    error_log(date("[Y-m-d H:i:s]")." -[".$_SERVER['REQUEST_URI']."] :".$user_id."充值成功但账户未扣款，流水为写入\n", 3, "/tmp/php_sql_err.log");
+                }
+            }else{
+                $data['code'] = 2;
+                $data['info'] = urldecode($result_api['data']);
             }
             $this->ajaxReturn($data,"JSON");
         }
@@ -96,5 +107,28 @@ class WalletController extends HomeController{
         $this->assign('list',$list);
         $this->assign('money',$money);
         $this->display('cash');
+    }
+
+    /**调用充值接口**/
+    public function takeApi($uid,$money,$orderNo){
+        $api = A('index');
+        $api -> getApi();
+        /*取值*/
+        $url = "http://119.23.60.80/admin/napp";
+        $post_data = "api=pay&uid=".$uid."&money=".$money."&orderNo=".$orderNo."&payType=api";
+        $cookie_file = dirname(__FILE__).'/cookie.txt';
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_HEADER, 0);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        // post数据
+        curl_setopt($ch, CURLOPT_POST, 1);
+        // post的变量
+        curl_setopt($ch, CURLOPT_COOKIEFILE, $cookie_file); //使用上面获取的cookies
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
+        $response = curl_exec($ch);
+        curl_close($ch);
+        $api_data = json_decode($response);
+        $api_recharge = std_class_object_to_array($api_data);
+        return $api_recharge;
     }
 }

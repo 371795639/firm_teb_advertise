@@ -71,7 +71,7 @@ class TaskWeeklyModel extends Model{
      * @return array    $re            查找的数据
      */
     public function get_weekly_by_time(){
-        $date       = '2017-07-03 15:55:55';
+        $date       = '2017-07-08 15:55:55';
 //        $date       = date('Y-m-d H:i:s');
         $start_time = $this -> get_start_time($date);
         $end_time   = $this -> get_end_time($date);
@@ -102,7 +102,7 @@ class TaskWeeklyModel extends Model{
                 $taskWeekly[$k]['class']        = $resTask['class'];
                 $taskWeekly[$k]['detail']       = $resTask['detail'];
                 $taskWeekly[$k]['inneed']       = $resTask['inneed'];
-                $taskWeekly[$k]['is_game']      = $resTask['is_game'];
+                $taskWeekly[$k]['is_game']      = $resTask['isgame'];
                 $taskWeekly[$k]['tasker']       = $resTask['tasker'];
                 $taskWeekly[$k]['create_time']  = $resTask['create_time'];
             }
@@ -129,6 +129,7 @@ class TaskWeeklyModel extends Model{
             return false;
         }
     }
+
 
     /**
      * 根据任务类型，获取周任务总金额

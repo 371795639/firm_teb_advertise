@@ -146,7 +146,7 @@
 				if(a&&b){
 //					alert(123);
 					$.ajax({
-						url:"{U:('wallet/recharge')}",
+						url:"{:U('wallet/recharge')}",
 						type:'post',
 						dataType:'json',
 						data:{game_id:game_id,coin:coin},
@@ -158,11 +158,9 @@
 	                            },2000);
 							}
 							if(data['code'] == 2){
-	                            mui.toast("充值失败,充值账号不正确！")
+	                            mui.toast(data['info'])
 							}
-	                        if(data['code'] == 3){
-	                            mui.toast("充值失败,网络异常！")
-	                        }
+
 	                    }
 					});
 

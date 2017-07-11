@@ -22,4 +22,26 @@ class IndexController extends Controller {
         //重定向路由，指向登录页
         $this -> redirect('Login/login');
     }
+
+
+    /**接口授权**/
+    public function getApi(){
+        header('Content-Type: text/html; charset=utf-8');
+        /*授权*/
+        $url = "http://119.23.60.80/admin/napp";
+        $post_data = "api=auth&username=admin&passworld=admin123";
+        $cookie_file = dirname(__FILE__).'/cookie.txt';
+        //获取cookies并保存
+        $ch = curl_init();//初始化
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);//返回字符串，而非直接输出
+        // post数据
+        curl_setopt($ch, CURLOPT_POST, 1);
+        // post的变量
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
+        curl_setopt($ch, CURLOPT_COOKIEJAR, $cookie_file);//存储cookies
+        $output = curl_exec($ch);
+        curl_close($ch);
+        return $output;
+    }
 }

@@ -86,14 +86,18 @@ class TaskDoneModel extends Model{
 
     /**
      * 根据用户获取本周内所有已领取的任务
-     * @return mixed
+     * @param   $uid  integer    根据$uid获取本周任务；传入空，则返回所有
+     * @return  mixed
      */
-    public function get_this_week_all_task(){
-        $date = date('Y-m-d H:i:s');
+    public function get_this_week_all_task($uid){
+//        $date = date('Y-m-d H:i:s');
+        $date       = '2017-07-08 15:55:55';
         $start_time = $this -> get_start_time($date);
         $end_time   = $this -> get_end_time($date);
         $map['get_time']    = array(array('gt', $start_time), array('lt', $end_time));
-        $map['uid']         = $_SESSION['userid'];
+        if($uid){
+            $map['uid'] = $uid;
+        }
         $res = $this -> where($map) -> select();//有值就说明已经领取过了
         foreach($res as $k => $v){
             $task_id    = $res[$k]['task_id'];
@@ -109,11 +113,12 @@ class TaskDoneModel extends Model{
 
     /**
      * 在task_done表中根据get_time和uid获取任务类型
+     * @param   $uid  string  根据$uid获取本周任务,传入空，则返回所有
      * @param   $type integer 任务类型 1：日常任务 2：额外任务
      * @return  bool
      */
-    public function get_this_week_task($type){
-        $resDone = $this -> get_this_week_all_task();
+    public function get_this_week_task($uid,$type){
+        $resDone = $this -> get_this_week_all_task($uid);
         if($resDone){
             foreach($resDone as $k => $v){
                 $task_id = $resDone[$k]['task_id'];
@@ -175,10 +180,10 @@ class TaskDoneModel extends Model{
 
     /**
      * 获取数组中键值名相同的个数
-     * @param $arr  array   数组
-     * @param $key  string  键名
-     * @param $value        键值
-     * @return int
+     * @param $arr      array   数组
+     * @param $key      string  键名
+     * @param $value    string  键值
+     * @return int      integer 数量
      */
     public function get_count($arr,$key,$value){
         foreach ($arr as $k => $v) {
@@ -206,4 +211,75 @@ class TaskDoneModel extends Model{
         }
     }
 
+
+    /**
+     * 获取上周用户领取所有的任务
+     * @param $date     string  日期
+     * @return mixed    array   任务列表
+     */
+    public function get_last_week_done($date){
+        $monday = get_last_monday($date);
+        $sunday = get_last_sunday($date);
+        $map = array(
+            'get_time'  => array(array('gt',$monday),array('lt',$sunday)),
+            'task_id'   => array('neq',0),
+        );
+        $res = $this -> where($map) -> select();
+        foreach($res as $k => $v){
+            $task_id    = $res[$k]['task_id'];
+            $task_ids   = D('Task') -> get_task_by_id($task_id);
+            $res[$k]['type']    = $task_ids['type'];
+            $res[$k]['money']   = $task_ids['money'];
+            $res[$k]['inneed']  = $task_ids['inneed'];
+            $res[$k]['name']    = $task_ids['name'];
+        }
+        return $res;
+
+    }
+
+
+    /**
+     * 根据$date获取上周内已完成的日常任务列表/uid
+     * @param $date string  日期
+     * @param $what string  uid:返回去重的uid数组；select：返回$re
+     * @return mixed
+     */
+    public function get_time_in_last_week($date,$what){
+        $re = $this -> get_last_week_done($date);
+        //获取日常任务
+        foreach ($re as $key => $val) {
+            if ($val['type'] == 1) {
+                $res[$key] = $val;
+            }
+        }
+        /*Begin the core codes for outputting uids*/
+        foreach($res as $k){
+            $new['uid'] = $k['uid'];
+            $new['status'] = $k['status'];
+            $newIds[] = $new;
+        }
+        $arr_status = [];
+        foreach($newIds as $k){
+            $k['status'] ==2 && $arr_status[$k['uid']] += 1;
+        }
+        $uid_list = [];
+        foreach($arr_status as $uid => $qty){
+            $qty  >=5 && $uid_list[] = $uid;
+        }
+        /**End**/
+        if(empty($res)){
+            return false;
+        }else {
+            switch ($what) {
+                case 'uid':
+                    return $uid_list;
+                    break;
+                case 'select':
+                    return $res;
+                    break;
+                default:
+                    return '参数错误';
+            }
+        }
+    }
 }
