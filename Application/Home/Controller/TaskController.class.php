@@ -386,8 +386,8 @@ class TaskController extends HomeController {
         foreach($uids as $k => $v) {
             $id = $uids[$k];
 //            $class      = $dbStaff  -> get_staff_league($id);
-            $doneDaily  = $taskDone -> get_this_week_task($id,'1');             //日常任务
-            $doneExtra  = $taskDone -> get_this_week_task($id,'2');             //额外任务
+            $doneDaily  = $taskDone -> get_last_week_task($id,'1');             //上周的日常任务
+            $doneExtra  = $taskDone -> get_last_week_task($id,'2');             //上周的额外任务
             $parameter  = $dbParameter -> where("id = 3") -> find();
             if (empty($doneDaily)) {
                 $moneyDaily = 0;
@@ -423,7 +423,7 @@ class TaskController extends HomeController {
                 'income'    => $oldData['income'] + ($totalMoney * $discount),
                 'money'     => $oldData['money'] + $totalMoney * (1 - $discount),
             );
-            $dbStaff -> save_staff_by_id($id, $dataStaff);
+//            $dbStaff -> save_staff_by_id($id, $dataStaff);
             //流水表 flow
             $dataFlow = array(
                 'uid'           => $id,
@@ -432,7 +432,7 @@ class TaskController extends HomeController {
                 'order_id'      => 0,
                 'create_time'   => date('Y-m-d H:i:s'),
             );
-            $dbFlow -> add($dataFlow);
+//            $dbFlow -> add($dataFlow);
             //奖励表 reward
             $dataRewardDaily = array(
                 'uid'           => $id,
@@ -444,7 +444,7 @@ class TaskController extends HomeController {
                 'create_time'   => date('Y-m-d H:i:s'),
                 'remarks'       => "完成上周任务，奖励总金额 $totalMoney 元",
             );
-            $dbReward -> add($dataRewardDaily);
+//            $dbReward -> add($dataRewardDaily);
             $dataRewardExtra = array(
                 'uid'           => $id,
                 'type'          => 2,       //额外任务奖励
@@ -455,7 +455,7 @@ class TaskController extends HomeController {
                 'create_time'   => date('Y-m-d H:i:s'),
                 'remarks'       => "完成上周任务，奖励总金额 $totalMoney 元",
             );
-            $dbReward -> add($dataRewardExtra);
+//            $dbReward -> add($dataRewardExtra);
             //通知表 notice
             $dataNotice = array(
                 'uid'           => $id,
@@ -465,7 +465,7 @@ class TaskController extends HomeController {
                 'notice_title'  => '恭喜您已完成上周任务',
                 'notice_content'=> "获得上周任务总金额 $totalMoney 元",
             );
-            $dbNotice -> add($dataNotice);
+//            $dbNotice -> add($dataNotice);
         }
     }
 

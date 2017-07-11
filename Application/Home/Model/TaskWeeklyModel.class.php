@@ -71,8 +71,8 @@ class TaskWeeklyModel extends Model{
      * @return array    $re            查找的数据
      */
     public function get_weekly_by_time(){
-        $date       = '2017-07-08 15:55:55';
-//        $date       = date('Y-m-d H:i:s');
+//        $date       = '2017-07-08 15:55:55';
+        $date       = date('Y-m-d H:i:s');
         $start_time = $this -> get_start_time($date);
         $end_time   = $this -> get_end_time($date);
         $re = $this -> where(array('start_time'=>$start_time,'end_time'=>$end_time)) -> select();

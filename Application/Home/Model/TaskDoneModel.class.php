@@ -90,8 +90,8 @@ class TaskDoneModel extends Model{
      * @return  mixed
      */
     public function get_this_week_all_task($uid){
-//        $date = date('Y-m-d H:i:s');
-        $date       = '2017-07-08 15:55:55';
+        $date = date('Y-m-d H:i:s');
+//        $date       = '2017-07-08 15:55:55';
         $start_time = $this -> get_start_time($date);
         $end_time   = $this -> get_end_time($date);
         $map['get_time']    = array(array('gt', $start_time), array('lt', $end_time));
@@ -236,6 +236,37 @@ class TaskDoneModel extends Model{
         return $res;
 
     }
+
+
+    /**
+     * 在task_done表中根据get_time和uid获取任务类型
+     * @param   $uid  string  根据$uid获取本周任务,传入空，则返回所有
+     * @param   $type integer 任务类型 1：日常任务 2：额外任务
+     * @return  bool
+     */
+    public function get_last_week_task($uid,$type){
+        $resDone = $this -> get_last_week_done($uid);
+        if($resDone){
+            foreach($resDone as $k => $v){
+                $task_id = $resDone[$k]['task_id'];
+                $resTask = D('Task') -> get_task_by_id($task_id);
+                $resDone[$k]['detail'] = $resTask['detail'];
+            }
+            if(empty($type)){
+                return $resDone;
+            }else {
+                foreach ($resDone as $key => $val) {
+                    if ($val['type'] == $type) {
+                        $result[$key] = $val;
+                    }
+                }
+                return $result;
+            }
+        }else{
+            return false;
+        }
+    }
+
 
 
     /**
