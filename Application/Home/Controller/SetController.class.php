@@ -16,7 +16,7 @@ class SetController extends HomeController{
         $user_id   = $_SESSION['userid'];
         $resStaff = $dbStaff->where('id='.$user_id)->find();
         $this->assign('staff',$resStaff);
-        $this->display('set');
+        $this->display('Set/set');
     }
 
     /**修改登录密码**/
@@ -45,6 +45,6 @@ class SetController extends HomeController{
             $this->ajaxReturn($data,"JSON");
         }
         $this->assign('mobile',$mobile);
-        $this->display('setLoginPsd');
+        $this->display('Set/setLoginPsd');
     }
 }

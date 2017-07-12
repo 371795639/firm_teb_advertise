@@ -80,7 +80,7 @@ class UserController extends HomeController {
             $pic = 2;
         }
         $this->assign('pic',$pic);
-        $this->display();
+        $this->display('User/index');
     }
 
 	/* 我的页面 */
@@ -108,7 +108,7 @@ class UserController extends HomeController {
         }
         $this->assign('re',$re);
         $this->assign('resStaff',$resStaff);
-	    $this->display();
+	    $this->display('User/my');
 	}
 
     /* 奖励中心 */
@@ -130,7 +130,7 @@ class UserController extends HomeController {
         $this->assign('bonusReward',$bonusReward);
         $this->assign('taskReward',$taskReward);
         $this->assign('spreadReward',$spreadReward);
-        $this->display();
+        $this->display('User/encourage');
     }
 
     /* 财务管理 */
@@ -162,7 +162,7 @@ class UserController extends HomeController {
         $this->assign('hisMonthWithdraw',$hisMonthWithdraw);
         $this->assign('preMonthCharge',$preMonthCharge );
         $this->assign('hisMonthCharge',$hisMonthCharge );
-        $this->display('rechargeWithdrawCash');
+        $this->display('User/rechargeWithdrawCash');
     }
 
     /* 推广管理 */
@@ -176,6 +176,6 @@ class UserController extends HomeController {
         $lists['count'] = count($lists);
         $this->assign('list',$list);
         $this->assign('lists',$lists);
-        $this->display('spreadManage');
+        $this->display('User/spreadManage');
     }
 }

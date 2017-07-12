@@ -40,7 +40,7 @@ class FeedController extends HomeController {
         $this -> assign('resMsgReNew',$resMsgReNew);
         $this -> assign('show',$show);
         $this -> assign('resMsg',$resMsg);
-        $this -> display();
+        $this -> display('Feed/index');
     }
 
     /**意见反馈**/

@@ -16,7 +16,7 @@ class NoticeController extends HomeController {
         $this -> assign('taskCount',$taskCount);
         $this -> assign('eventCount',$eventCount);
         $this -> assign('moneyCount',$moneyCount);
-        $this -> display();
+        $this -> display('Notice/index');
     }
 
 
@@ -26,7 +26,7 @@ class NoticeController extends HomeController {
         $sysNotice  = $dbNotice -> get_notice_by_type_time_format('1',0,'1');
         $dbNotice   -> set_is_read('1',0,'1');
         $this -> assign('sysNotice',$sysNotice);
-        $this -> display();
+        $this -> display('Notice/sysNotice');
     }
 
 
@@ -36,7 +36,7 @@ class NoticeController extends HomeController {
         $taskNotice = $dbNotice -> get_notice_by_type_time_format('4',0,'1');
         $dbNotice   -> set_is_read('4',0,'1');
         $this -> assign('taskNotice',$taskNotice);
-        $this -> display();
+        $this -> display('Notice/taskNotice');
     }
 
 
@@ -46,7 +46,7 @@ class NoticeController extends HomeController {
         $eventNotice= $dbNotice -> get_notice_by_type_time_format('2',0,'1');
         $dbNotice   -> set_is_read('2',0,'1');
         $this -> assign('eventNotice',$eventNotice);
-        $this -> display();
+        $this -> display('Notice/eventNotice');
     }
 
 
@@ -56,7 +56,7 @@ class NoticeController extends HomeController {
         $moneyNotice= $dbNotice -> get_notice_by_type_time_format('3',$_SESSION['userid'],'2');
         $dbNotice   -> set_is_read('3',$_SESSION['userid'],'2');
         $this -> assign('moneyNotice',$moneyNotice);
-        $this -> display();
+        $this -> display('Notice/moneyNotice');
     }
 
 

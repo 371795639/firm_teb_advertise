@@ -44,7 +44,7 @@ class LoginController extends \Think\Controller {
                 echo "<script>alert('该手机号不存在!');</script>";
             }
         }
-        $this->display();
+        $this->display('Login/login');
     }
 
 
@@ -66,8 +66,8 @@ class LoginController extends \Think\Controller {
                 unset($_SESSION['verifyNum']['content']);
             }
             //判断手机验证码
-//            if ($_SESSION['verifyNum']['content'] == $_POST['verifyNum']) {
-            if ($_POST['verifyNum'] == 1) {
+            if ($_SESSION['verifyNum']['content'] == $_POST['verifyNum']) {
+//            if ($_POST['verifyNum'] == 1) {
                 if($_POST['password1'] !== $_POST['password2']){
                     echo "<script>alert('输入的两次密码不一致，再检查下!');</script>";
                 }
@@ -118,15 +118,15 @@ class LoginController extends \Think\Controller {
                 $_SESSION['user_id'] = $ref['id'];
                 //拼接url
                 $url = 'http://www.51card.cn/gateway/weixinpay/wap-weixinpay.asp?customerid=' . $customerid . '&sdcustomno=' . $sdcustomno . '&orderAmount=' . $orderAmount . '&cardno=' . $cardno . '&noticeurl=' . $noticeurl . '&backurl=' . $backurl . '&sign=' . $sign . '&mark=' . $mark;
+                error_log(date("[Y-m-d H:i:s]")." -[".$_SERVER['REQUEST_URI']."] :".$url."\n", 3, "/tmp/tuiguang.log");
                 //跳转url
                 Header("HTTP/1.1 303 See Other");
                 Header("Location: $url");
-            }
-            else{
+            }else{
                 echo "<script>alert('验证码错误!');</script>";
             }
         }
-        $this->display();
+        $this->display('Login/register');
     }
 
 
@@ -151,32 +151,31 @@ class LoginController extends \Think\Controller {
             $yzsign     =   strtoupper($signRef);
             //验证resign
             $yzresign   =   strtoupper(md5('sign='.$signRef.'&customerid='.$customerid.'&ordermoney='.$ordermoney.'&sd51no='.$sd51no.'&state='.$state.'&key='.$key));
-//            error_log(date("[Y-m-d H:i:s]")." -[".$_SERVER['REQUEST_URI']."] :".$_REQUEST."\n", 3, "./1.log");
+            error_log(date("[Y-m-d H:i:s]")." -[".$_SERVER['REQUEST_URI']."] :".$_REQUEST."\n", 3, "/tmp/tuiguang.log");
             //实例化flow流水表 staff表 reg_charge表
             $dbFlow  = M('flow');
             $dbStaff = M('staff');
             $dbregCharge = M('reg_charge');
             //验证sign resign
-//            if(($yzsign == $sign)&&($yzresign == $resign)){
+            if(($yzsign == $sign)&&($yzresign == $resign)){
                 //回调参数获得该用户id
-                // $uid = $mark;
-                $uid = $_SESSION['user_id'];
+                 $uid = $mark;
+//                $uid = $_SESSION['user_id'];
                 if($state == 1){//充值成功
-                    // if($ordermoney>=0.01){
-                    //金额支付大于等于1000
-                    $refStaff = array(
-                        'pay_status' => 3,
-                    );
-                    //更新staff表支付状态为付款成功
-                    $refStaff = $dbStaff->where(array('id'=>$uid))->save($refStaff);
-                    // }
-                    // else{//支付金额不足1000
-                    //     $refStaff = array(
-                    //         'pay_status' => 2,
-                    //     );
-                    //     //更新staff表支付状态为付款失败
-                    //     $refStaff = $dbStaff->where('id='.$uid)->save($refStaff);
-                    // }
+                     if($ordermoney>=0.01){
+                        //金额支付大于等于1000
+                        $refStaff = array(
+                            'pay_status' => 3,
+                        );
+                        //更新staff表支付状态为付款成功
+                        $refStaff = $dbStaff->where(array('id'=>$uid))->save($refStaff);
+                     }else{//支付金额不足1000
+                         $refStaff = array(
+                             'pay_status' => 2,
+                         );
+                         //更新staff表支付状态为付款失败
+                         $refStaff = $dbStaff->where('id='.$uid)->save($refStaff);
+                     }
                     //流水表记录
                     $refFlow = array(
                         'uid'   => $uid,
@@ -207,10 +206,9 @@ class LoginController extends \Think\Controller {
                     //返回1给网关
                     echo '<result>1</result>';
                 }
+            }else{//验证失败
 
-//            }else{//验证失败
-//
-//            }
+            }
         }
     }
 
@@ -218,7 +216,6 @@ class LoginController extends \Think\Controller {
     /* 注册成功 */
     public function registerSucc()
     {
-        /*
         //查Staff表
         //判断请求
         $dbStaff = M('staff');
@@ -245,9 +242,8 @@ class LoginController extends \Think\Controller {
 //               }
                 break;
         }
-        */
-        $this->wxcallback();
-        $this->display('registerSucc');
+//        $this->wxcallback();
+        $this->display('Login/registerSucc');
     }
 
 
@@ -278,7 +274,7 @@ class LoginController extends \Think\Controller {
             }
 
         }
-        $this->display();
+        $this->display('Login/getNewPsd');
     }
 
 
@@ -315,7 +311,7 @@ class LoginController extends \Think\Controller {
 
     /**协议**/
     public function decla(){
-        $this -> display();
+        $this -> display('Login/decla');
     }
 
 }

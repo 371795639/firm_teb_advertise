@@ -18,7 +18,7 @@ class FinancialController extends HomeController {
 
     /* 报表 */
     public function financialStatements(){
-        $this->display();
+        $this->display('Financial/financialStatements');
     }
 
     /* 报表本周信息返回 */

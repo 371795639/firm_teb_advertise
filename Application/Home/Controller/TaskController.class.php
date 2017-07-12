@@ -24,7 +24,7 @@ class TaskController extends HomeController {
         $this -> assign('resDoneOne',$resDoneOne);
         $this -> assign('resDoneTwo',$resDoneTwo);
         $this -> assign('resDoneStart',$resDoneStart);
-        $this -> display();
+        $this -> display('Task/index');
     }
 
 
@@ -73,7 +73,7 @@ class TaskController extends HomeController {
         $this -> assign('moneyTwo',$moneyTwo);
         $this -> assign('weeklyTypeOne',$weeklyTypeOne);
         $this -> assign('weeklyTypeTwo',$weeklyTypeTwo);
-        $this -> display();
+        $this -> display('Task/taskOffice');
     }
 
 

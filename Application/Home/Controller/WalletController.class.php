@@ -103,7 +103,7 @@ class WalletController extends HomeController{
                 }
             }
             $this->ajaxReturn($data,"JSON");
-    }
+        }
         $this->assign('list',$list);
         $this->assign('money',$money);
         $this->display('cash');
