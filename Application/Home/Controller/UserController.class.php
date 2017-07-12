@@ -69,7 +69,7 @@ class UserController extends HomeController {
         $this->assign('resStaff',$resStaff);
         /*显示剩余任务个数--开始*/
         $dbTaskDone     = D('TaskDone');
-        $resDoneCount   = $dbTaskDone -> get_this_week_all_task($_SESSION['userid']);
+        $resDoneCount   = $dbTaskDone -> get_this_week_all_task($_SESSION['userid'],'');
         $doingNo        = $dbTaskDone -> get_count($resDoneCount,'status',1);
         $this->assign('doingNo',$doingNo);
         /*根据当前时间更换问候图片*/

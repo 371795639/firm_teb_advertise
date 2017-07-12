@@ -8,12 +8,12 @@ class TaskController extends HomeController {
     /**我的任务**/
     public function index(){
         $dbTaskDone     = D('TaskDone');
-        $resDoneOne     = $dbTaskDone -> get_this_week_task($_SESSION['userid'],'1');
-        $resDoneTwo     = $dbTaskDone -> get_this_week_task($_SESSION['userid'],'2');
+        $resDoneOne     = $dbTaskDone -> get_this_week_task($_SESSION['userid'],'','1');
+        $resDoneTwo     = $dbTaskDone -> get_this_week_task($_SESSION['userid'],'','2');
         $date           = date('Y-m-d H:i:s');
         $resDoneStart   = $dbTaskDone -> get_start_time($date);
         $resDoneEnd     = $dbTaskDone -> get_end_time($date);
-        $resDoneCount   = $dbTaskDone -> get_this_week_all_task($_SESSION['userid']);
+        $resDoneCount   = $dbTaskDone -> get_this_week_all_task($_SESSION['userid'],'');
         $doneNo         = $dbTaskDone -> get_count($resDoneCount,'status',2);
         $doingNo        = $dbTaskDone -> get_count($resDoneCount,'status',1);
         $noUseNo        = $dbTaskDone -> get_count($resDoneCount,'status',3);
@@ -42,7 +42,7 @@ class TaskController extends HomeController {
             $moneyOne       = $dbTaskWeekly -> get_weekly_money('1',$class);//获取本周日常任务总金额
             $moneyTwo       = $dbTaskWeekly -> get_weekly_money('2','');//获取本周额外任务总金额
         }
-        $taskDaily          = $dbTaskDone   -> get_this_week_task($_SESSION['userid'],'1');//获取用户已领取的日常任务列表
+        $taskDaily          = $dbTaskDone   -> get_this_week_task($_SESSION['userid'],'','1');//获取用户已领取的日常任务列表
         foreach($weeklyTypeOne as $k => $v){
             $task_id = $weeklyTypeOne[$k]['task_id'];
             $resDone = $dbTaskDone -> get_done_by_uid('task_id',$task_id,'find');
@@ -81,7 +81,7 @@ class TaskController extends HomeController {
     public function taskOfficeDetail($method=null){
         $dbTaskDone     = D('TaskDone');
         $dbTaskWeekly   = D('TaskWeekly');
-        $taskSet        = $dbTaskDone -> get_this_week_task($_SESSION['userid'],'1');
+        $taskSet        = $dbTaskDone -> get_this_week_task($_SESSION['userid'],'','1');
         $class          = D('Staff')  -> get_staff_league($_SESSION['userid']);//获取当前等陆用户的加盟商等级
         switch($method){
             case 'daily':
@@ -121,7 +121,7 @@ class TaskController extends HomeController {
                 if(in_array('1',$status)){
                     //日常任务的状态值有1，说明日常任务没有都完成，不能领取额外任务
                 }else {
-                    $weeklyDone = $dbTaskDone -> get_this_week_all_task($_SESSION['userid']);
+                    $weeklyDone = $dbTaskDone -> get_this_week_all_task($_SESSION['userid'],'');
                     $resDone    = $dbTaskDone -> i_array_column($weeklyDone, 'task_id');
                     $task_id    = I('task_id');
                     if (in_array($task_id, $resDone)) {
@@ -162,36 +162,13 @@ class TaskController extends HomeController {
         $dbTaskWeekly   = D('TaskWeekly');
         $userShip       = D('UserShip');
         $userCharge     = D('UserCharge');
-        /*
-        $doneDaily      = $taskDone -> get_this_week_task('','1');                     //表中这周所有的日常任务
-        $doneExtra      = $taskDone -> get_this_week_task('','2');                     //表中这周所有的额外任务
-        $date = array(
-            'status'    => 2,
-            'done_time' => date('Y-m-d 05:20:00'),
-        );
-        foreach($doneDaily as $kk => $vv) {
-            $uids[] = $doneDaily[$kk]['uid'];   //获取本周已领取任务所有的用户ID
-        }
-        $uidd    = array_unique($uids);         //ID去重
-        foreach($uidd as $key => $val){
-            $uid = $uidd[$key];
-            $class          = $staff    -> get_staff_league($uid);      //获取加盟商等级：0是推广专员
-            if($class == 0){
-                $refereeCount   = 0;
-                $left           = null;
-                $dailytaskReward= 0;
-            }else {
-                $refereeCount   = $staff        -> count_staff_by_referee($uid); //获取分享推广专员总人数
-                $left           = $staff        -> get_staff_by_id($uid);        //获取当前用户的信息
-                $dailytaskReward= $dbTaskWeekly -> get_weekly_money('1', $class);//获取本周日常任务总金额
-            }
-        */
+        $dbGameCount    = D('GameCount');
         $class          = $staff    -> get_staff_league($_SESSION['userid']);       //获取当前等陆用户的加盟商等级
-        $doneDaily      = $taskDone -> get_this_week_task($_SESSION['userid'],'1'); //日常任务
-        $doneExtra      = $taskDone -> get_this_week_task($_SESSION['userid'],'2'); //额外任务
+        $doneDaily      = $taskDone -> get_this_week_task($_SESSION['userid'],'','1'); //日常任务
+        $doneExtra      = $taskDone -> get_this_week_task($_SESSION['userid'],'','2'); //额外任务
         $refereeCount   = $staff    -> count_staff_by_referee($_SESSION['userid']); //获取分享推广专员总人数
         $left           = $staff    -> get_staff_by_id($_SESSION['userid']);        //获取当前用户的信息
-        $date = array(
+        $date           = array(
             'status'    => 2,
             'done_time' => date('Y-m-d 5:20:00'),
         );
@@ -265,9 +242,8 @@ class TaskController extends HomeController {
                 }
             }
             //3：判断完成3次游戏任务（日常任务）  $dailyTaskThreeStatus
-            $gameId = $left['game_id'];
-            $re = $this -> get_game_api($gameId);
-            $gameCounts = $re['data'][0]['playCount'];
+            $GameCount  = $dbGameCount -> get_game($_SESSION['userid'],'find');
+            $gameCounts = $GameCount['playCount'];
             foreach ($doneDaily as $k => $v) {
                 if ($doneDaily[$k]['name']  == '游戏任务') {
                     $dailyTaskThreeInneed   = $doneDaily[$k]['inneed'];
@@ -280,6 +256,7 @@ class TaskController extends HomeController {
                     $taskDone -> save_done('id', $dailyTaskThreeId, $date);
                 }
             }
+
             //额外任务模块
             $status = array(
                 '0' => $dailyTaskOneStatus,
@@ -415,7 +392,6 @@ class TaskController extends HomeController {
             }else{
                 $totalMoney = $moneyDaily + $moneyExtra;
             }
-//            p($totalMoney);
             //staff表 =>income = $totalMoney * $discount;money = $totalMoney * (1 - $discount);
             $oldData = $dbStaff -> get_staff_by_id($id);
             $discount = $parameter['value'] / 100;
@@ -423,7 +399,7 @@ class TaskController extends HomeController {
                 'income'    => $oldData['income'] + ($totalMoney * $discount),
                 'money'     => $oldData['money'] + $totalMoney * (1 - $discount),
             );
-//            $dbStaff -> save_staff_by_id($id, $dataStaff);
+            $dbStaff -> save_staff_by_id($id, $dataStaff);
             //流水表 flow
             $dataFlow = array(
                 'uid'           => $id,
@@ -432,7 +408,7 @@ class TaskController extends HomeController {
                 'order_id'      => 0,
                 'create_time'   => date('Y-m-d H:i:s'),
             );
-//            $dbFlow -> add($dataFlow);
+            $dbFlow -> add($dataFlow);
             //奖励表 reward
             $dataRewardDaily = array(
                 'uid'           => $id,
@@ -444,7 +420,7 @@ class TaskController extends HomeController {
                 'create_time'   => date('Y-m-d H:i:s'),
                 'remarks'       => "完成上周任务，奖励总金额 $totalMoney 元",
             );
-//            $dbReward -> add($dataRewardDaily);
+            $dbReward -> add($dataRewardDaily);
             $dataRewardExtra = array(
                 'uid'           => $id,
                 'type'          => 2,       //额外任务奖励
@@ -455,7 +431,7 @@ class TaskController extends HomeController {
                 'create_time'   => date('Y-m-d H:i:s'),
                 'remarks'       => "完成上周任务，奖励总金额 $totalMoney 元",
             );
-//            $dbReward -> add($dataRewardExtra);
+            $dbReward -> add($dataRewardExtra);
             //通知表 notice
             $dataNotice = array(
                 'uid'           => $id,
@@ -465,7 +441,7 @@ class TaskController extends HomeController {
                 'notice_title'  => '恭喜您已完成上周任务',
                 'notice_content'=> "获得上周任务总金额 $totalMoney 元",
             );
-//            $dbNotice -> add($dataNotice);
+            $dbNotice -> add($dataNotice);
         }
     }
 
@@ -494,6 +470,46 @@ class TaskController extends HomeController {
         $apiData = json_decode($response);
         $apiGameTask = std_class_object_to_array($apiData);
         return $apiGameTask;
+    }
+
+
+    /**日定时器获取playCount**/
+    public function gameGet(){
+        //首先获取done表中本周内已领取任务的所有用户uid，根据uid找出game_id，然后根据game_id调用接口返回playCount
+        $dbStaff        = D('Staff');
+        $dbTaskDone     = D('TaskDone');
+        $dbGameCount    = D('GameCount');
+        $uidGroup       = $dbTaskDone -> get_this_week_all_task('','uid');
+        if(!empty($uidGroup)) {
+            foreach ($uidGroup as $k => $v) {
+                $uid        = $uidGroup[$k]['uid'];
+                $staffs     = $dbStaff -> get_staff_by_id($uid);
+                $gamesId    = $staffs['game_id'];
+                $gamesIds[] = $staffs['game_id'];
+                $GameCountRe= $dbGameCount-> get_game($uid,'find');
+                if (empty($GameCountRe)) {
+                    $dateGame   = array(
+                        'uid'   => $uid,
+                        'gameId'=> $gamesId,
+                        'time'  => date('Y-m-d H:i:s'),
+                    );
+                    $dbGameCount->add($dateGame);
+                }
+            }
+            $gamesIds   = implode(',', $gamesIds);
+            $gameResult = $this -> get_game_api($gamesIds);
+            if($gameResult['error'] == 0){
+                $gamesResult= $gameResult['data'];
+                foreach ($gamesResult as $k => $v) {
+                    $uid    = $gamesResult[$k]['uid'];
+                    $count  = $gamesResult[$k]['playCount'];
+                    $datas['playCount'] = $count;
+                    $dbGameCount -> save_game('gameId',$uid,$datas);
+                }
+            }else{
+                return $gameResult;
+            }
+        }
     }
 
 }

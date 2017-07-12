@@ -49,7 +49,7 @@ class TaskDoneModel extends Model{
 
     /**
      * 获取$data时间所在周一
-     * @param $date
+     * @param $date     string    当前时间
      * @return bool|string
      */
     public function get_start_time($date){
@@ -70,7 +70,7 @@ class TaskDoneModel extends Model{
 
     /**
      * 获取$data时间所在周末
-     * @param $date time    当前时间
+     * @param $date     string    当前时间
      * @return bool|string
      */
     public function get_end_time($date){
@@ -86,19 +86,24 @@ class TaskDoneModel extends Model{
 
     /**
      * 根据用户获取本周内所有已领取的任务
-     * @param   $uid  integer    根据$uid获取本周任务；传入空，则返回所有
+     * @param   $group  string      根据字段进行分组
+     * @param   $uid    integer     根据$uid获取本周任务；传入空，则返回所有
      * @return  mixed
      */
-    public function get_this_week_all_task($uid){
-        $date = date('Y-m-d H:i:s');
-//        $date       = '2017-07-08 15:55:55';
+    public function get_this_week_all_task($uid,$group){
+//        $date = date('Y-m-d H:i:s');
+        $date       = '2017-07-08 15:55:55';
         $start_time = $this -> get_start_time($date);
         $end_time   = $this -> get_end_time($date);
         $map['get_time']    = array(array('gt', $start_time), array('lt', $end_time));
         if($uid){
             $map['uid'] = $uid;
         }
-        $res = $this -> where($map) -> select();//有值就说明已经领取过了
+        if(empty($group)){
+            $res = $this -> where($map) -> select();//有值就说明已经领取过了
+        }else{
+            $res = $this -> where($map) -> group($group) -> select();//有值就说明已经领取过了
+        }
         foreach($res as $k => $v){
             $task_id    = $res[$k]['task_id'];
             $task_ids   = D('Task') -> get_task_by_id($task_id);
@@ -113,12 +118,13 @@ class TaskDoneModel extends Model{
 
     /**
      * 在task_done表中根据get_time和uid获取任务类型
-     * @param   $uid  string  根据$uid获取本周任务,传入空，则返回所有
-     * @param   $type integer 任务类型 1：日常任务 2：额外任务
+     * @param   $uid    string      根据$uid获取本周任务,传入空，则返回所有
+     * @param   $group  string      根据字段进行分组
+     * @param   $type   integer     任务类型 1：日常任务 2：额外任务
      * @return  bool
      */
-    public function get_this_week_task($uid,$type){
-        $resDone = $this -> get_this_week_all_task($uid);
+    public function get_this_week_task($uid,$group,$type){
+        $resDone = $this -> get_this_week_all_task($uid,$group);
         if($resDone){
             foreach($resDone as $k => $v){
                 $task_id = $resDone[$k]['task_id'];
