@@ -151,7 +151,6 @@ class TaskController extends HomeController {
 
     /**
      * 说明
-     * 首先判断$dailyTask的值，若$dailyTask为0，说明该用户未领取日常任务，之后程序不执行；
      * 日常任务判断：$dailyTaskOneStatus、$dailyTaskTwoStatus、$dailyTaskThreeStatus、$dailyTaskFourStatus、$dailyTaskFiveStatus的值，为2完成任务，为1未完成任务
      * 额外任务：如果$status中不含有1且$doneExtra不为空，执行额外任务逻辑代码，否则说明日常任务未全部完成或者全部完成日常任务但是未领取额外任务。
      * 额外任务判断：$extraTaskOne、$extraTaskTwo值存在，则说明已领取，$extraTaskOneReward、$extraTaskTwoReward是对应额外任务的额外奖励
@@ -378,70 +377,78 @@ class TaskController extends HomeController {
                     'task_id'   => 0,
                     'get_time'  => array(array('gt', $monday), array('lt', $sunday)),
                 );
-                $moneyDetail = $dbTaskDone -> where($where) -> find();
-                $moneyDetails = explode(',',$moneyDetail['reward']);
-                $moneyDaily = $moneyDetails[0];
+                $moneyDetail    = $dbTaskDone -> where($where) -> find();
+                $moneyDetails   = explode(',',$moneyDetail['reward']);
+                $moneyDaily     = $moneyDetails[0];
                 if (empty($doneExtra)) {
                     $moneyExtra = 0;
                 }else{
                     $moneyExtra = $moneyDetails[1] + $moneyDetails[2];
                 }
             }
-            if ($moneyDaily == 0) {
-                $totalMoney = 0;
+            if($moneyDaily == 0) {
+                $dateNotice = array(
+                    'uid'           => $id,
+                    'kind'          => '2',
+                    'poster'        => 'system',
+                    'notice_type_id'=> '3',
+                    'notice_title'  => '上周任务未完成',
+                    'notice_content'=> "您上周任务未完成，这周要加油喽。",
+                );
+                $dbNotice -> add($dateNotice);
             }else{
                 $totalMoney = $moneyDaily + $moneyExtra;
+                //staff表 =>income = $totalMoney * $discount;money = $totalMoney * (1 - $discount);
+                $oldData = $dbStaff -> get_staff_by_id($id);
+                $discount = $parameter['value'] / 100;
+                $dataStaff = array(
+                    'income'    => $oldData['income'] + ($totalMoney * $discount),
+                    'money'     => $oldData['money'] + $totalMoney * (1 - $discount),
+                );
+                $dbStaff -> save_staff_by_id($id, $dataStaff);
+                //流水表 flow
+                $dataFlow = array(
+                    'uid'           => $id,
+                    'type'          => 1,
+                    'money'         => $totalMoney,
+                    'order_id'      => 0,
+                    'create_time'   => date('Y-m-d H:i:s'),
+                );
+                $dbFlow -> add($dataFlow);
+                //奖励表 reward
+                $dataRewardDaily = array(
+                    'uid'           => $id,
+                    'type'          => 1,       //日常任务奖励
+                    'base_money'    => $moneyDaily,
+                    'extra_money'   => 0,
+                    'game_coin'     => 0,
+                    'order_id'      => 0,
+                    'create_time'   => date('Y-m-d H:i:s'),
+                    'remarks'       => "完成上周任务，奖励总金额 $totalMoney 元",
+                );
+                $dbReward -> add($dataRewardDaily);
+                $dataRewardExtra = array(
+                    'uid'           => $id,
+                    'type'          => 2,       //额外任务奖励
+                    'base_money'    => 0,
+                    'extra_money'   => $moneyExtra,
+                    'game_coin'     => 0,
+                    'order_id'      => 0,
+                    'create_time'   => date('Y-m-d H:i:s'),
+                    'remarks'       => "完成上周任务，奖励总金额 $totalMoney 元",
+                );
+                $dbReward -> add($dataRewardExtra);
+                //通知表 notice
+                $dataNotice = array(
+                    'uid'           => $id,
+                    'kind'          => '2',
+                    'poster'        => 'system',
+                    'notice_type_id'=> '3',
+                    'notice_title'  => '恭喜您已完成上周任务',
+                    'notice_content'=> "获得上周任务总金额 $totalMoney 元",
+                );
+                $dbNotice -> add($dataNotice);
             }
-            //staff表 =>income = $totalMoney * $discount;money = $totalMoney * (1 - $discount);
-            $oldData = $dbStaff -> get_staff_by_id($id);
-            $discount = $parameter['value'] / 100;
-            $dataStaff = array(
-                'income'    => $oldData['income'] + ($totalMoney * $discount),
-                'money'     => $oldData['money'] + $totalMoney * (1 - $discount),
-            );
-            $dbStaff -> save_staff_by_id($id, $dataStaff);
-            //流水表 flow
-            $dataFlow = array(
-                'uid'           => $id,
-                'type'          => 1,
-                'money'         => $totalMoney,
-                'order_id'      => 0,
-                'create_time'   => date('Y-m-d H:i:s'),
-            );
-            $dbFlow -> add($dataFlow);
-            //奖励表 reward
-            $dataRewardDaily = array(
-                'uid'           => $id,
-                'type'          => 1,       //日常任务奖励
-                'base_money'    => $moneyDaily,
-                'extra_money'   => 0,
-                'game_coin'     => 0,
-                'order_id'      => 0,
-                'create_time'   => date('Y-m-d H:i:s'),
-                'remarks'       => "完成上周任务，奖励总金额 $totalMoney 元",
-            );
-            $dbReward -> add($dataRewardDaily);
-            $dataRewardExtra = array(
-                'uid'           => $id,
-                'type'          => 2,       //额外任务奖励
-                'base_money'    => 0,
-                'extra_money'   => $moneyExtra,
-                'game_coin'     => 0,
-                'order_id'      => 0,
-                'create_time'   => date('Y-m-d H:i:s'),
-                'remarks'       => "完成上周任务，奖励总金额 $totalMoney 元",
-            );
-            $dbReward -> add($dataRewardExtra);
-            //通知表 notice
-            $dataNotice = array(
-                'uid'           => $id,
-                'kind'          => '2',
-                'poster'        => 'system',
-                'notice_type_id'=> '3',
-                'notice_title'  => '恭喜您已完成上周任务',
-                'notice_content'=> "获得上周任务总金额 $totalMoney 元",
-            );
-            $dbNotice -> add($dataNotice);
         }
     }
 
