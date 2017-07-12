@@ -26,11 +26,16 @@ class LoginController extends \Think\Controller {
             $_SESSION['userid'] = $regStaff['id'];    //用户id
             if($regStaff){ //验证手机号
                 if($regStaff['staff_pwd']== md5($password)){ //验证密码
-                    if($regStaff['pay_status'] == 3){//该用户处于缴费失败状态
+                    if($regStaff['pay_status'] == 3){//该用户处于缴费成功状态
                         if ($regStaff['status'] == 1) {//验证该用户处于可用状态
                             $this -> redirect('User/index');
                         }elseif($regStaff['status'] == 3){
-                            $this -> redirect('User/compeleInfo');
+                            if($regStaff['is_league'] == 1){//是加盟商
+                                $this -> redirect('User/compeleInfo',array('type'=>'league'));
+                            }else{
+                                $this -> redirect('User/compeleInfo');
+                            }
+
                         }else{
                             echo "<script>alert('用户被禁用，请联系管理员!');</script>";
                         }
