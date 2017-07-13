@@ -19,7 +19,7 @@ class BankController extends HomeController{
             }
         }
         $this->assign('list',$list);
-        $this->display('Bank/myCard');
+        $this->display('bank/myCard');
     }
 
     /**绑定银行卡**/
@@ -54,6 +54,6 @@ class BankController extends HomeController{
             }
             $this->ajaxReturn($data,"JSON");
         }
-        $this->display('Bank/bindCard');
+        $this->display('bank/bindCard');
     }
 }

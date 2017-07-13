@@ -35,7 +35,6 @@ class LoginController extends \Think\Controller {
                             }else{
                                 $this -> redirect('User/compeleInfo');
                             }
-
                         }else{
                             echo "<script>alert('用户被禁用，请联系管理员!');</script>";
                         }
@@ -71,8 +70,8 @@ class LoginController extends \Think\Controller {
                 unset($_SESSION['verifyNum']['content']);
             }
             //判断手机验证码
-            if ($_SESSION['verifyNum']['content'] == $_POST['verifyNum']) {
-//            if ($_POST['verifyNum'] == 1) {
+//            if ($_SESSION['verifyNum']['content'] == $_POST['verifyNum']) {
+            if ($_POST['verifyNum'] == 1) {
                 if($_POST['password1'] !== $_POST['password2']){
                     echo "<script>alert('输入的两次密码不一致，再检查下!');</script>";
                 }
@@ -101,7 +100,7 @@ class LoginController extends \Think\Controller {
                     }
                     if($phoneRepeat['pay_status'] !== 3){
                         $this->wxcallback();
-                        die;
+//                        die;
                     }
                 }
                 //查表获得该用户id

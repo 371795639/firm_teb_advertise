@@ -66,7 +66,7 @@
 	</head>
 	<body class="gradient">	
 		<header class="mui-bar mui-bar-nav gradient">
-			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left "></a>
+            <a class="mui-icon mui-icon-left-nav mui-pull-left" href="{:U('Home/User/index')}"></a>
 			<h1 class="mui-title">任务大厅</h1>
 		</header>
 		<div class="mui-content gradient">
@@ -93,7 +93,8 @@
                         <volist name="weeklyTypeOne" id="vo">
                             <if condition="$vo.type eq 1">
                                 <li class="mui-table-view-cell">{$vo.detail}
-                                    <span class="right col-ye money">{$vo.money}<img src="/Public/Home/img/money.png"/>
+                                    <span class="right col-ye money">
+                                        <!--{$vo.money}<img src="/Public/Home/img/money.png"/>-->
                                         <span>
                                            <if condition="$vo.nstatus eq 1"><a class="geting state">进行中</a>
                                                <elseif condition="$vo.nstatus eq 2" /><a class=" geted state">已完成</a>
@@ -121,8 +122,9 @@
 	                	额外任务
 	                </span>
 	                <span class="small-mind">
-	                	【完成日常任务以后才能领取】
-	                </span>  	
+	                	<!--【完成日常任务以后才能领取】-->
+	                	【额外任务功能暂未开放，敬请期待】
+	                </span>
                 </p>
                 <notempty name="weeklyTypeTwo">
                     <p class="small">
