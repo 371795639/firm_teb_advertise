@@ -152,12 +152,12 @@ class UserController extends HomeController {
         $currMinTime = date('Y-m-01 00:00:00',time());          //获取当前月份最小时间
         //本月提现
         $condition['uid'] = array('eq',$uid );                  //等于uid且大于等于当前月份最小时间
-        $condition['status'] = array('eq',2 );                  //已提现
+//        $condition['status'] = array('eq',2 );                  //已提现
         $condition['create_time'] = array('EGT',$currMinTime);
         $preMonthWithdraw = $dbwithdraw->where($condition)->order('create_time desc')->select();
         //历史提现
         $condition['uid'] = array('eq',$uid );                  //等于uid且小于当前月份最小时间
-        $condition['status'] = array('eq',2 );                  //已提现
+//        $condition['status'] = array('eq',2 );                  //已提现
         $condition['create_time'] = array('LT',$currMinTime);
         $hisMonthWithdraw = $dbwithdraw->where($condition)->order('create_time desc')->select();
         //本月充值

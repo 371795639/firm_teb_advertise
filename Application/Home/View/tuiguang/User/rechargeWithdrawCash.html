@@ -39,15 +39,27 @@
 						</span>
 						<ul>
 							<volist name="refWidthdraw" id="vo">
+							<if condition="$vo.status eq 1">
 							<li>
 								<div class="left ">
-									<span class="text-overflow">提现</span>
+									<span class="text-overflow">提现【未到账】</span>
+									<span class="time">{$vo.create_time}</span>
+								</div>
+								<div class="right col-ye">
+									-{$vo.money}
+								</div>
+							</li>
+							<else />
+							<li>
+								<div class="left ">
+									<span class="text-overflow">提现【已到账】</span>
 									<span class="time">{$vo.create_time}</span>
 								</div>
 							 	<div class="right col-ye">
 									-{$vo.money}
 								</div>
 							</li>
+							</if>
 							</volist>
 						</ul>
 					</div>

@@ -51,10 +51,20 @@ class WalletController extends HomeController{
                 if($update_data){
                     $re = M()->execute("call pro_recharge($user_id,$game_id,$game_coin,$order_id,$type,4)");
                     if($re == 1){
+                        $dateNotice = array(
+                            'uid'           => $user_id,
+                            'kind'          => '2',
+                            'poster'        => 'system',
+                            'notice_type_id'=> '3',
+                            'notice_title'  => '充值消息提醒',
+                            'notice_content'=> "您于".date('Y-m-d H:i:s',time())."为账号ID:".$game_id."成功充值".$game_coin."元",
+                        );
+                        M('notice') -> add($dateNotice);
+
                         $data['code'] = 1;
                     }
                 }else{
-                    error_log(date("[Y-m-d H:i:s]")." -[".$_SERVER['REQUEST_URI']."] :".$user_id."充值成功但账户未扣款，流水为写入\n", 3, "/tmp/php_sql_err.log");
+                    error_log(date("[Y-m-d H:i:s]")." -[".$_SERVER['REQUEST_URI']."] :".$user_id."充值成功但账户未扣款，流水为写入\n", 3, "/data/tuiguang/logs/charge.log");
                 }
             }else{
                 $data['code'] = 2;
@@ -97,6 +107,15 @@ class WalletController extends HomeController{
                 $bank_holder = '"'.$bank_message['holder_name'].'"';
                 $re = M()->execute("call pro_withdraw($user_id,$money,$fee,$fact_money,$bank_name,$subbranch,$bank_card,$bank_holder,$order_id,5)");
                 if($re == 1){
+                    $dateNotice = array(
+                        'uid'           => $user_id,
+                        'kind'          => '2',
+                        'poster'        => 'system',
+                        'notice_type_id'=> '3',
+                        'notice_title'  => '提现消息提醒',
+                        'notice_content'=> "您于".date('Y-m-d H:i:s',time())."提现".$money."元，请多关注财务管理中您的提现状态！",
+                    );
+                    M('notice') -> add($dateNotice);
                     $data['code'] = 1;
                 }else{
                     $data['code'] = 2;
