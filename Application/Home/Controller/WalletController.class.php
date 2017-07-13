@@ -26,7 +26,7 @@ class WalletController extends HomeController{
             $resStaff['week'] = 0;
         }
         $this->assign('staff',$resStaff);
-        $this->display('walletDetails');
+        $this->display('Wallet/walletDetails');
     }
 
     /**游戏币充值**/
@@ -63,7 +63,7 @@ class WalletController extends HomeController{
             $this->ajaxReturn($data,"JSON");
         }
         $this->assign('consume_coin',$consume_coin['consume_coin']);
-        $this->display('recharge');
+        $this->display('Wallet/recharge');
     }
 
     /**提现**/
@@ -106,7 +106,7 @@ class WalletController extends HomeController{
         }
         $this->assign('list',$list);
         $this->assign('money',$money);
-        $this->display('cash');
+        $this->display('Wallet/cash');
     }
 
     /**调用充值接口**/

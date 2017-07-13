@@ -55,11 +55,11 @@ class TaskController extends HomeController {
         }
         if($taskDaily){
             $daily = 1 ; //已领取
+            foreach($taskDaily as $k => $v){
+                $status[] = $taskDaily[$k]['status'];
+            }
         }else{
             $daily = 2 ; //未领取
-        }
-        foreach($taskDaily as $k => $v){
-            $status[] = $taskDaily[$k]['status'];
         }
         if(empty($taskDaily) || in_array('1',$status)){
             $extra = 1; //不可领取;
@@ -104,8 +104,8 @@ class TaskController extends HomeController {
                     //插入结算数据
                     $date = array(
                         'uid'       => $_SESSION['userid'],
-                        'status'    => 2,
-                        'reward'    => 0,0,0,
+                        'status'    => 8,
+                        'reward'    => '0,0,0',
                         'task_id'   => 0,
                         'get_time'  => date('Y-m-d H:i:s'),
                         'done_time' => '',  //不可用null，否则无法插入数据
@@ -358,6 +358,9 @@ class TaskController extends HomeController {
 //        $dbTaskWeekly   = D('TaskWeekly');
         $date           = ('Y-m-d H:i:s');
         $uids           = $dbTaskDone -> get_time_in_last_week($date,'uid');    //获取已完成上周日常任务的uid
+        $date           = date('Y-m-d H:i:s');
+        $monday         = get_last_monday($date);
+        $sunday         = get_last_sunday($date);
         //根据uid中加盟商的等级，获取日常任务的总金额
         foreach($uids as $k => $v) {
             $id = $uids[$k];
@@ -369,12 +372,10 @@ class TaskController extends HomeController {
                 $moneyDaily = 0;
             }else{
 //                $dailMoney = $dbTaskWeekly -> get_weekly_money('1', $class);      //日常任务总金额
-                $date   = date('Y-m-d H:i:s');
-                $monday = get_last_monday($date);
-                $sunday = get_last_sunday($date);
                 $where  = array(
                     'uid'       => $id,
                     'task_id'   => 0,
+                    'status'    => 8,
                     'get_time'  => array(array('gt', $monday), array('lt', $sunday)),
                 );
                 $moneyDetail    = $dbTaskDone -> where($where) -> find();

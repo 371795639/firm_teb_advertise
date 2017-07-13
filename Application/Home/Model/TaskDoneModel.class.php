@@ -91,8 +91,8 @@ class TaskDoneModel extends Model{
      * @return  mixed
      */
     public function get_this_week_all_task($uid,$group){
-//        $date = date('Y-m-d H:i:s');
-        $date       = '2017-07-08 15:55:55';
+        $date = date('Y-m-d H:i:s');
+//        $date       = '2017-07-08 15:55:55';
         $start_time = $this -> get_start_time($date);
         $end_time   = $this -> get_end_time($date);
         $map['get_time']    = array(array('gt', $start_time), array('lt', $end_time));
