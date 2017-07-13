@@ -154,7 +154,7 @@ class LoginController extends \Think\Controller {
             //验证sign
             $yzsign     =   strtoupper($signRef);
             //验证resign
-            $yzresign   =   strtoupper(md5('sign='.$signRef.'&customerid='.$customerid.'&ordermoney='.$ordermoney.'&sd51no='.$sd51no.'&state='.$state.'&key='.$key));
+            $yzresign   =   strtoupper(md5('sign='.$sign.'&customerid='.$customerid.'&ordermoney='.$ordermoney.'&sd51no='.$sd51no.'&state='.$state.'&key='.$key));
             error_log(date("[Y-m-d H:i:s]")." -[".$_SERVER['REQUEST_URI']."] :".$_REQUEST."\n", 3, "/tmp/tuiguang.log");
             //实例化flow流水表 staff表 reg_charge表
             $dbFlow  = M('flow');
