@@ -4,3 +4,4 @@
 /.svn/
 /Application/Common/Conf/config.php
 /Application/User/Conf/config.php
+/Application/Home/Controller/cookie.txt
