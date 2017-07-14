@@ -228,11 +228,11 @@ class LoginController extends \Think\Controller {
         {
             //等待付款状态
             case 1:
-                $this->error('等待付款状态,3秒后重新跳转到本页面', U('Login/registerSucc'));
+                echo "<script>alert('等待付款状态,3秒后重新跳转到本页面！');window.location.href='".U('Login/registerSucc')."';</script>";
                 break;
             //付款失败状态
             case 2:
-                $this->error('付款失败状态，请重新注册！',U('Login/register') );
+                echo "<script>alert('付款失败状态，请重新注册！');window.location.href='".U('Login/register')."';</script>";
                 break;
             //付款成功状态
             case 3:
@@ -240,13 +240,9 @@ class LoginController extends \Think\Controller {
                     'status' => 3,
                 );
                 //更新staff表用户的status状态为1
-                $refStaff = $dbStaff->where('id='.$_SESSION['userid'])->save($refStaff);
-//               if($refStaff){
-//                   $this->display();
-//               }
+                $dbStaff->where('id='.$_SESSION['userid'])->save($refStaff);
                 break;
         }
-//        $this->wxcallback();
         $this->display('Login/registerSucc');
     }
 
@@ -259,28 +255,28 @@ class LoginController extends \Think\Controller {
             $verifyNum = $_POST['verifyNum'];
             $password1 = $_POST['password1'];
             $password2 = $_POST['password2'];
-
+            $dbStaff = M('staff');
             if( $_SESSION['verifyNum']['content'] == $verifyNum ){     //判断验证码
-                $dbStaff = M('staff');                                 //实例化表
-                if( $dbStaff->where('mobile='.$phoneNum)->find() ){    //验证该用户是否存在
-                    $RegStaff['staff_pwd'] = md5($password1);          //存储密码
-                    if($dbStaff->where('mobile='.$phoneNum)->save($RegStaff)){
-                        //清空session指定字段值
-                        unset($_SESSION['verifyNum']);
-                        $this -> redirect('Login/login');
-                    }
+                if($password1 !== $password2){
+                    echo "<script>alert('输入的两次密码不一致!');</script>";
                 }else{
-                    echo "<script>alert('该用户不存在!');</script>";
-
+                    if( $dbStaff->where('mobile='.$phoneNum)->find() ){    //验证该用户是否存在
+                        $RegStaff['staff_pwd'] = md5($password1);          //存储密码
+                        if($dbStaff->where('mobile='.$phoneNum)->save($RegStaff)){
+                            //清空session指定字段值
+                            unset($_SESSION['verifyNum']);
+                            $this -> redirect('Login/login');
+                        }
+                    }else{
+                        echo "<script>alert('该用户不存在!');</script>";
+                    }
                 }
             }else{
                 echo "<script>alert('验证码错误!');</script>";
             }
-
         }
         $this->display('Login/getNewPsd');
     }
-
 
     /* 短信宝验证 */
     public function msgVerify(){

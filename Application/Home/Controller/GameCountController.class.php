@@ -14,7 +14,8 @@ class GameCountController{
 		$api -> getApi();
 		$url = "http://119.23.60.80/admin/napp";
 		$post_data = "api=playlist&userlist=".$uid;
-		$cookie_file = dirname(__FILE__).'/cookie.txt';
+//		$cookie_file = '/data/tuiguang/cookie/cookie.txt';      //线上
+        $cookie_file = dirname(__FILE__).'/cookie.txt';         //线下
 		$ch = curl_init($url);
 		curl_setopt($ch, CURLOPT_HEADER, 0);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
