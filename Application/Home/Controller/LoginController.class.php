@@ -163,8 +163,7 @@ class LoginController extends \Think\Controller {
             //验证sign resign
             if(($yzsign == $sign)&&($yzresign == $resign)){
                 //回调参数获得该用户id
-                 $uid = $mark;
-//                $uid = $_SESSION['user_id'];
+                $uid = $mark;
                 if($state == 1){//充值成功
                      if($ordermoney>=0.01){
                         //金额支付大于等于1000
@@ -184,13 +183,13 @@ class LoginController extends \Think\Controller {
                     $refFlow = array(
                         'uid'   => $uid,
                         'type'  => 7,
-                        'money' => 15,
+                        'money' => $ordermoney,
                         'order_id' => $sdcustomno,
                     );
                     //注册资金记录
                     $refregCharge = array(
                         'pay_id'   => $uid,
-                        'money'    => 15,
+                        'money'    => $ordermoney,
                         'order_id' => $sdcustomno,
                     );
                     //写入流水表,注册资金记录
@@ -241,6 +240,16 @@ class LoginController extends \Think\Controller {
                 );
                 //更新staff表用户的status状态为1
                 $dbStaff->where('id='.$_SESSION['userid'])->save($refStaff);
+                //给用户发送注册成功消息
+                $dataNotice = array(
+                    'uid'           => $_SESSION['userid'],
+                    'kind'          => '2',
+                    'poster'        => 'system',
+                    'notice_type_id'=> '3',
+                    'notice_title'  => '注册成功',
+                    'notice_content'=> "恭喜您已完成注册，1000游戏币已存入您的账户。",
+                );
+                M('Notice') -> add($dataNotice);
                 break;
         }
         $this->display('Login/registerSucc');

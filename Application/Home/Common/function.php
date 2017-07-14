@@ -139,7 +139,6 @@ function time_formatsss($date,$format='H:i'){
  */
 function get_last_monday($date){
     if(!empty($date)) {
-        $date = date('Y-m-d H:i:s');
         $time = strtotime($date);
         $week = date('N', $time);
         if ($week == 1) {
@@ -168,4 +167,21 @@ function get_last_sunday($date){
         $end_time   = date('Y-m-d 23:59:59', strtotime('Sunday', $ss));
     }
     return $end_time;
+}
+
+
+/**两数组中去除重复的元素
+ * @param $arr1
+ * @param $arr2
+ */
+function i_array_unique($arr1,$arr2){
+    foreach ($arr1 as $k=>$v) {
+        foreach($arr2 as $kk=>$vv){
+            if($v == $vv){
+                unset($arr1[$k]);//删除$a数组同值元素
+                unset($arr2[$kk]);//删除$b数组同值元素
+            }
+        }
+    }
+    return $arr1;
 }

@@ -220,17 +220,23 @@ class TaskDoneModel extends Model{
 
     /**
      * 获取上周用户领取所有的任务
+     * @param  $uid     integer 根据$uid获取本周任务,传入空，则返回所有
      * @param $date     string  日期
      * @return mixed    array   任务列表
      */
-    public function get_last_week_done($date){
+    public function get_last_week_done($date,$uid){
         $monday = get_last_monday($date);
         $sunday = get_last_sunday($date);
         $map = array(
             'get_time'  => array(array('gt',$monday),array('lt',$sunday)),
             'task_id'   => array('neq',0),
         );
-        $res = $this -> where($map) -> select();
+        if($uid){
+            $map['uid'] = $uid;
+            $res = $this -> where($map) -> select();
+        }else{
+            $res = $this -> where($map) -> select();
+        }
         foreach($res as $k => $v){
             $task_id    = $res[$k]['task_id'];
             $task_ids   = D('Task') -> get_task_by_id($task_id);
@@ -246,12 +252,13 @@ class TaskDoneModel extends Model{
 
     /**
      * 在task_done表中根据get_time和uid获取任务类型
-     * @param   $uid  string  根据$uid获取本周任务,传入空，则返回所有
+     * @param   $uid  integer 根据$uid获取本周任务,传入空，则返回所有
+     * @param   $date string  日期
      * @param   $type integer 任务类型 1：日常任务 2：额外任务
      * @return  bool
      */
-    public function get_last_week_task($uid,$type){
-        $resDone = $this -> get_last_week_done($uid);
+    public function get_last_week_task($date,$uid,$type){
+        $resDone = $this -> get_last_week_done($date,$uid);
         if($resDone){
             foreach($resDone as $k => $v){
                 $task_id = $resDone[$k]['task_id'];
@@ -278,11 +285,12 @@ class TaskDoneModel extends Model{
     /**
      * 根据$date获取上周内已完成的日常任务列表/uid
      * @param $date string  日期
+     * @param $uids  integer 根据$uid获取本周任务,传入空，则返回所有
      * @param $what string  uid:返回去重的uid数组；select：返回$re
      * @return mixed
      */
-    public function get_time_in_last_week($date,$what){
-        $re = $this -> get_last_week_done($date);
+    public function get_time_in_last_week($date,$uids,$what){
+        $re = $this -> get_last_week_done($date,$uids);
         //获取日常任务
         foreach ($re as $key => $val) {
             if ($val['type'] == 1) {
@@ -297,7 +305,7 @@ class TaskDoneModel extends Model{
         }
         $arr_status = [];
         foreach($newIds as $k){
-            $k['status'] ==2 && $arr_status[$k['uid']] += 1;
+            $k['status'] == 2 && $arr_status[$k['uid']] += 1;
         }
         $uid_list = [];
         foreach($arr_status as $uid => $qty){
@@ -318,5 +326,50 @@ class TaskDoneModel extends Model{
                     return '参数错误';
             }
         }
+    }
+
+    /**
+     * 获取上周用户领取所有的任务
+     * @param $uid      integer 根据$uid获取本周任务,传入空，则返回所有
+     * @param $date     string  日期
+     * @param $group    string  分组字段
+     * @param $what     string  uid:返回去重的uid数组；select：返回$re
+     * @return mixed    array   任务列表
+     */
+    public function get_last_week_done_group($date,$uid,$group,$what){
+        $monday = get_last_monday($date);
+        $sunday = get_last_sunday($date);
+        $map = array(
+            'get_time'  => array(array('gt',$monday),array('lt',$sunday)),
+            'task_id'   => array('neq',0),
+        );
+        if($uid && empty($group)){
+            $map['uid'] = $uid;
+            $res = $this -> where($map) -> select();
+        }else{
+            $res = $this -> where($map) -> group($group) -> select();
+        }
+        foreach($res as $k => $v){
+            $task_id    = $res[$k]['task_id'];
+            $task_ids   = D('Task') -> get_task_by_id($task_id);
+            $res[$k]['type']    = $task_ids['type'];
+            $res[$k]['money']   = $task_ids['money'];
+            $res[$k]['inneed']  = $task_ids['inneed'];
+            $res[$k]['name']    = $task_ids['name'];
+        }
+        switch($what){
+            case 'select':
+                return $res;
+            break;
+            case 'uids':
+                foreach($res as $k => $v){
+                    $uidAll[]   = $res[$k]['uid'];
+                }
+                return $uidAll;
+            break;
+            default :
+                return '参数错误';
+        }
+
     }
 }

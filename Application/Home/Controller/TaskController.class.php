@@ -165,7 +165,7 @@ class TaskController extends HomeController {
         $class          = $staff    -> get_staff_league($_SESSION['userid']);       //获取当前等陆用户的加盟商等级
         $doneDaily      = $taskDone -> get_this_week_task($_SESSION['userid'],'','1'); //日常任务
         $doneExtra      = $taskDone -> get_this_week_task($_SESSION['userid'],'','2'); //额外任务
-        $refereeCount   = $staff    -> count_staff_by_referee($_SESSION['userid']); //获取分享推广专员总人数
+//        $refereeCount   = $staff    -> count_staff_by_referee($_SESSION['userid']); //获取分享推广专员总人数
         $left           = $staff    -> get_staff_by_id($_SESSION['userid']);        //获取当前用户的信息
         $date           = array(
             'status'    => 2,
@@ -182,16 +182,9 @@ class TaskController extends HomeController {
                     $dailyTaskFiveId        = $doneDaily[$k]['id'];
                 }
             }
-            if ($dailyTaskFiveStatus == 1) {
-                $recommend_num = $refereeCount;
-                $recommend_left_num = $refereeCount - $left['recommend_num'] - $dailyTaskFiveInneed + $left['recommend_left_num'];
-                if ($recommend_left_num >= 0) { //任务完成
-                    $data = array(
-                        'recommend_num'     => $refereeCount,
-                        'recommend_left_num'=> $recommend_left_num,
-                    );
-                    $staff      -> save_staff_by_id($_SESSION['userid'], $data); //必须是当这周任务完成后，才插入数据
-                    $taskDone   -> save_done('id', $dailyTaskFiveId, $date); //任务已过期怎么写？
+            if($dailyTaskFiveStatus == 1){ //未完成任务状态
+                if($left['recommend_num'] >= $dailyTaskFiveInneed){  //完成任务
+                    $taskDone   -> save_done('id', $dailyTaskFiveId, $date);
                 }
             }
             //1：判断分享玩家任务（日常任务和额外任务） $dailyTaskOneStatus  $extraTaskOneReward

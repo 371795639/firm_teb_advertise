@@ -13,23 +13,43 @@ class WeeklySettleController{
         $taskDone       = D('TaskDone');
         $dbTaskDone     = D('TaskDone');
         $dbParameter    = M('Parameter');
-//        $dbTaskWeekly   = D('TaskWeekly');
-        $date           = ('Y-m-d H:i:s');
-        $uids           = $dbTaskDone -> get_time_in_last_week($date,'uid');    //获取已完成上周日常任务的uid
-        $date           = date('Y-m-d H:i:s');
+        $date           = '2017-07-18 00:00:00';
+//        $date           = date('Y-m-d H:i:s');
         $monday         = get_last_monday($date);
         $sunday         = get_last_sunday($date);
-        //根据uid中加盟商的等级，获取日常任务的总金额
+        $uids           = $dbTaskDone -> get_time_in_last_week($date,'','uid');     //获取已完成上周日常任务的uids
+        $taskDones      = $dbTaskDone -> get_time_in_last_week($date,'','select');  //
+        $uidAll         = $dbTaskDone -> get_last_week_done_group($date,'','uid','uids');  //
+        $uidUnset       = i_array_unique($uidAll,$uids);
+        foreach($uidUnset as $k => $v){
+            $uidUnset   = $uidUnset[$k];
+            $unsetNotice= array(
+                'uid'           => $uidUnset,
+                'kind'          => '2',
+                'poster'        => 'system',
+                'notice_type_id'=> '3',
+                'notice_title'  => '上周任务未完成',
+                'notice_content'=> "您上周任务未完成，这周要加油喽。",
+            );
+            $dbNotice -> add($unsetNotice);
+        }
+        foreach($taskDones as $k => $v){
+            if($taskDones[$k]['name'] == '分享推广专员') {
+                $taskInneed             = $taskDones[$k]['inneed'];
+                $staffInfo              = $dbStaff->get_staff_by_id($taskDones[$k]['uid']);
+                $num                    = $staffInfo['recommend_num'];
+                $newNum['recommend_num']= $num - $taskInneed;
+                $dbStaff -> save_staff_by_id($taskDones[$k]['uid'], $newNum);
+            }
+        }
         foreach($uids as $k => $v) {
             $id = $uids[$k];
-//            $class      = $dbStaff  -> get_staff_league($id);
-            $doneDaily  = $taskDone -> get_last_week_task($id,'1');             //上周的日常任务
-            $doneExtra  = $taskDone -> get_last_week_task($id,'2');             //上周的额外任务
+            $doneDaily  = $taskDone -> get_last_week_task($date,$id,'1');             //上周的日常任务
+            $doneExtra  = $taskDone -> get_last_week_task($date,$id,'2');             //上周的额外任务
             $parameter  = $dbParameter -> where("id = 3") -> find();
             if (empty($doneDaily)) {
                 $moneyDaily = 0;
             }else{
-//                $dailMoney = $dbTaskWeekly -> get_weekly_money('1', $class);      //日常任务总金额
                 $where  = array(
                     'uid'       => $id,
                     'task_id'   => 0,

@@ -32,32 +32,32 @@ class UserController extends HomeController {
                     $data['code'] = 2;
                 }
                 $this->ajaxReturn($data,"JSON");
-            } else {
+            }else{
                 $refData = array(
-                    'game_id' => $_POST['gameId'],
-                    'card_id' => $_POST['cardNum'],
-                    'address' => $_POST['address'],
-                    'status' => 1,  //1：正常；2：禁用；3：未完善信息
+                    'game_id'   => $_POST['gameId'],
+                    'card_id'   => $_POST['cardNum'],
+                    'address'   => $_POST['address'],
+                    'status'    => 1,  //1：正常；2：禁用；3：未完善信息
                 );
-                if (empty($_POST['refPhoneNum'])) {
+                if(empty($_POST['refPhoneNum'])){
                     //用户上次注册时未完善信息，再次登陆的时候，将跳转到完善信息页面
-                } else {
+                }else{
                     $refStaffExist = $dbStaff->where(array('staff_real' => $_POST['staffName'], 'mobile' => $_POST['refPhoneNum']))->find();
-                    if ($refStaffExist) {
+                    if($refStaffExist){
                         $cardId = $dbStaff->where(array('card_id' => $refData['card_id']))->select();
-                        if ($cardId) {
+                        if($cardId){
                             echo "<script>alert('此身份证号已注册过，不能再注册哦!');</script>";
-                        } else {
-                            if ($refStaffExist['id'] == $userid) {
+                        }else{
+                            if ($refStaffExist['id'] == $userid){
                                 echo "<script>alert('推荐人不能是自己!');</script>";
-                            } else {
+                            }else{
                                 $gameId = $dbStaff->where(array('game_id' => $refData['game_id']))->select();
-                                if ($gameId) {
+                                if ($gameId){
                                     echo "<script>alert('此游戏ID已被占用，请检查输入');</script>";
-                                } else {
+                                }else{
                                     $refData['referee'] = $refStaffExist['id'];
                                     $ref = $dbStaff->where('id=' . $userid)->save($refData);
-                                    if ($ref) {
+                                    if($ref){
                                         $this->redirect('User/index');
                                     }
                                 }
@@ -68,6 +68,14 @@ class UserController extends HomeController {
                     }
                 }
             }
+        }
+        //完善信息后，充值的1000元转成游戏币
+        $staffMsg = M('Staff') -> where(array('id' => $_SESSION['userid'])) -> find();
+        if($staffMsg['status'] == 1 && $staffMsg['pay_status'] == 3){
+            $datas['consume_coin'] = $staffMsg['consume_coin'] + 1000;
+            M('Staff') -> where(array('id' => $_SESSION['userid'])) -> save($datas);
+        }else{
+            echo "<script>alert('系统错误!');window.history.back(-1);</script>";
         }
         $this->display('User/compeleInfo');
     }
