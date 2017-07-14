@@ -13,14 +13,15 @@ class WeeklySettleController{
         $taskDone       = D('TaskDone');
         $dbTaskDone     = D('TaskDone');
         $dbParameter    = M('Parameter');
-        $date           = '2017-07-18 00:00:00';
-//        $date           = date('Y-m-d H:i:s');
+//        $date           = '2017-07-18 00:00:00';
+        $date           = date('Y-m-d H:i:s');
         $monday         = get_last_monday($date);
         $sunday         = get_last_sunday($date);
-        $uids           = $dbTaskDone -> get_time_in_last_week($date,'','uid');     //获取已完成上周日常任务的uids
-        $taskDones      = $dbTaskDone -> get_time_in_last_week($date,'','select');  //
-        $uidAll         = $dbTaskDone -> get_last_week_done_group($date,'','uid','uids');  //
+        $uids           = $dbTaskDone -> get_time_in_last_week($date,'','uid');             //获取已完成上周日常任务的所有uid
+        $taskDones      = $dbTaskDone -> get_time_in_last_week($date,'','select');          //获取已完成上周日常任务列表
+        $uidAll         = $dbTaskDone -> get_last_week_done_group($date,'','uid','uids');   //获取领取上周日常任务的所有uid
         $uidUnset       = i_array_unique($uidAll,$uids);
+        //给未完成任务的用户发送任务未完成消息
         foreach($uidUnset as $k => $v){
             $uidUnset   = $uidUnset[$k];
             $unsetNotice= array(
@@ -33,6 +34,7 @@ class WeeklySettleController{
             );
             $dbNotice -> add($unsetNotice);
         }
+        //分享推广专员任务：修改recommend_num字段的值
         foreach($taskDones as $k => $v){
             if($taskDones[$k]['name'] == '分享推广专员') {
                 $taskInneed             = $taskDones[$k]['inneed'];
