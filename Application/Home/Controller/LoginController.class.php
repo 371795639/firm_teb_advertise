@@ -235,11 +235,11 @@ class LoginController extends \Think\Controller {
                 break;
             //付款成功状态
             case 3:
-                $refStaff = array(
+                $dataStaff = array(
                     'status' => 3,
                 );
-                //更新staff表用户的status状态为1
-                $dbStaff->where('id='.$_SESSION['userid'])->save($refStaff);
+                $dataStaff['consume_coin'] = $refStaff['consume_coin'] + 1000;
+                $dbStaff->where('id='.$_SESSION['userid'])->save($dataStaff);
                 //给用户发送注册成功消息
                 $dataNotice = array(
                     'uid'           => $_SESSION['userid'],

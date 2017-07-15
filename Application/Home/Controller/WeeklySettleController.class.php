@@ -34,7 +34,7 @@ class WeeklySettleController{
             );
             $dbNotice -> add($unsetNotice);
         }
-        //分享推广专员任务：修改recommend_num字段的值
+        //对于已完成任务的用户：修改recommend_num值=总值-指标，保留此字段值，用于下次任务
         foreach($taskDones as $k => $v){
             if($taskDones[$k]['name'] == '分享推广专员') {
                 $taskInneed             = $taskDones[$k]['inneed'];

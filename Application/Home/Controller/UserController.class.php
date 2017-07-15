@@ -55,27 +55,23 @@ class UserController extends HomeController {
                                 if ($gameId){
                                     echo "<script>alert('此游戏ID已被占用，请检查输入');</script>";
                                 }else{
+                                    //更新用户信息
                                     $refData['referee'] = $refStaffExist['id'];
                                     $ref = $dbStaff->where('id=' . $userid)->save($refData);
-                                    if($ref){
+                                    //给推荐人recommend_num+1
+                                    $refDateRecommend['recommend_num'] = $refStaffExist['recommend_num'] + 1;
+                                    $refAdd = $dbStaff ->  save_staff_by_id($refStaffExist['id'],$refDateRecommend);
+                                    if($ref && $refAdd){
                                         $this->redirect('User/index');
                                     }
                                 }
                             }
                         }
-                    } else {
+                    }else{
                         echo "<script>alert('推荐人和手机号不匹配!');window.history.back(-1);</script>";
                     }
                 }
             }
-        }
-        //完善信息后，充值的1000元转成游戏币
-        $staffMsg = M('Staff') -> where(array('id' => $_SESSION['userid'])) -> find();
-        if($staffMsg['status'] == 1 && $staffMsg['pay_status'] == 3){
-            $datas['consume_coin'] = $staffMsg['consume_coin'] + 1000;
-            M('Staff') -> where(array('id' => $_SESSION['userid'])) -> save($datas);
-        }else{
-            echo "<script>alert('系统错误!');window.history.back(-1);</script>";
         }
         $this->display('User/compeleInfo');
     }
