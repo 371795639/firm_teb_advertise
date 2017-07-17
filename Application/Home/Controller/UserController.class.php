@@ -67,19 +67,11 @@ class UserController extends HomeController {
                                 }
                             }
                         }
-                    } else {
+                    }else{
                         echo "<script>alert('推荐人和手机号不匹配!');window.history.back(-1);</script>";
                     }
                 }
             }
-        }
-        //完善信息后，充值的1000元转成游戏币
-        $staffMsg = M('Staff') -> where(array('id' => $_SESSION['userid'])) -> find();
-        if($staffMsg['status'] == 1 && $staffMsg['pay_status'] == 3){
-            $datas['consume_coin'] = $staffMsg['consume_coin'] + 1000;
-            M('Staff') -> where(array('id' => $_SESSION['userid'])) -> save($datas);
-        }else{
-            echo "<script>alert('系统错误!');window.history.back(-1);</script>";
         }
         $this->display('User/compeleInfo');
     }
