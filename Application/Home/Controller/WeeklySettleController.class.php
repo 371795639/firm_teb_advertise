@@ -6,9 +6,7 @@ class WeeklySettleController{
 
     /**任务结算**/
     public function taskSettle(){
-        $dbFlow         = M('Flow');
         $dbStaff        = D('Staff');
-        $dbReward       = M('Reward');
         $dbNotice       = M('Notice');
         $taskDone       = D('TaskDone');
         $dbTaskDone     = D('TaskDone');
@@ -88,8 +86,10 @@ class WeeklySettleController{
                     'income'    => $oldData['income'] + ($totalMoney * $discount),
                     'money'     => $oldData['money'] + $totalMoney * (1 - $discount),
                 );
-                $dbStaff -> save_staff_by_id($id, $dataStaff);
-                //流水表 flow
+                $staffArr[]   = array(
+                    'id'    => $id,
+                    'data'  => $dataStaff,
+                );
                 $dataFlow   = array(
                     'uid'           => $id,
                     'type'          => 1,
@@ -97,7 +97,10 @@ class WeeklySettleController{
                     'order_id'      => 0,
                     'create_time'   => date('Y-m-d H:i:s'),
                 );
-                $dbFlow -> add($dataFlow);
+                $flowArr[]    = array(
+                    'id'    => $id,
+                    'data'  => $dataFlow,
+                );
                 //奖励表 reward
                 $dataRewardDaily = array(
                     'uid'           => $id,
@@ -108,7 +111,10 @@ class WeeklySettleController{
                     'create_time'   => date('Y-m-d H:i:s'),
                     'remarks'       => "完成上周日常任务，奖励总金额 $moneyDaily 元",
                 );
-                $dbReward -> add($dataRewardDaily);
+                $rewardDailyArr[]   = array(
+                    'id'    => $id,
+                    'data'  => $dataRewardDaily,
+                );
                 /*
                 $dataRewardExtra = array(
                     'uid'           => $id,
@@ -121,7 +127,6 @@ class WeeklySettleController{
                 );
                 $dbReward -> add($dataRewardExtra);
                 */
-                //通知表 notice
                 $dataNotice = array(
                     'uid'           => $id,
                     'kind'          => '2',
@@ -130,8 +135,12 @@ class WeeklySettleController{
                     'notice_title'  => '恭喜您已完成上周任务',
                     'notice_content'=> "获得上周任务总金额 $totalMoney 元",
                 );
-                $dbNotice -> add($dataNotice);
+                $noticeArr[]    = array(
+                    'id'    => $id,
+                    'data'  => $dataNotice,
+                );
             }
         }
+        payReward($staffArr,$rewardDailyArr,$flowArr,$noticeArr);
     }
 }
