@@ -989,8 +989,7 @@ function make_orderId(){
     $mictime = $mic[1];
     $midtime = explode ( " ", $mictime);
     $reftime = $midtime[0];                                  //取微秒
-    $time    = date("YmdHis",time());                        //取年月日时分                                                     //取年月日时分秒
-
+    $time    = date("YmdHis",time());                        //取年月日时分
     $sdcustomno  = $time.$reftime.rand(10,99);               //订单在商户系统中的流水号 商户信息+日期+随机数
     return $sdcustomno;
 }
@@ -1157,4 +1156,149 @@ function std_class_object_to_array($stdclassobject){
     }
     return $array;
 }
+
+/**
+ * 支付各项奖励事务处理
+ * @param $rewardMsg
+ * @param $userMsg
+ * @param $flowMsg
+ * @param $noticeMsg
+ */
+function payReward($userMsg,$rewardMsg,$flowMsg,$noticeMsg){
+    $staff = M('staff');
+    $reward = M('reward');
+    $flow = M('flow');
+    $notice = M('notice');
+    $staff->startTrans();//启用事务
+    //修改账户信息
+    foreach ($userMsg as $val){
+        $staff_update = $staff->where(array('id'=>$val['id']))->save($val['data']);
+        if(!$staff_update){
+            $error_staff[] = $val['id'];
+        }
+    }
+    //添加奖励发放记录
+    foreach ($rewardMsg as $value){
+        $reward_update = $reward->add($value['data']);
+        if(!$reward_update){
+            $error_reward[] = $value['id'];
+        }
+    }
+    //添加流水记录
+    foreach ($flowMsg as $item){
+        $flow_update = $flow->add($item['data']);
+        if(!$flow_update){
+            $error_flow[] = $item['id'];
+        }
+    }
+    //添加消息
+    foreach ($noticeMsg as $vals){
+        $notice_update = $notice->add($vals['data']);
+        if(!$notice_update){
+            $error_notice[] = $vals['id'];
+        }
+    }
+    if(empty($error_staff) && empty($error_reward) && empty($error_flow) && empty($error_notice)){
+        $staff->commit();//成功则提交
+    }else{
+        $staff->rollback();//不成功，则回滚
+    }
+}
+
+/**
+ * 提现事务处理
+ * @param $cashMsg
+ * @param $userMsg
+ * @param $flowMsg
+ * @param $noticeMsg
+ */
+function getCash($cashMsg,$userMsg,$flowMsg,$noticeMsg){
+    $staff = M('staff');
+    $withdraw = M('withdraw');
+    $flow = M('flow');
+    $notice = M('notice');
+    $staff->startTrans();//启用事务
+    //修改账户信息
+    foreach ($userMsg as $val){
+        $staff_update = $staff->where(array('id'=>$val['id']))->save($val['data']);
+        if(!$staff_update){
+            $error_staff[] = $val['id'];
+        }
+    }
+    //添加提现记录
+    foreach ($cashMsg as $value){
+        $reward_update = $withdraw->add($value['data']);
+        if(!$reward_update){
+            $error_reward[] = $value['id'];
+        }
+    }
+    //添加流水记录
+    foreach ($flowMsg as $item){
+        $flow_update = $flow->add($item['data']);
+        if(!$flow_update){
+            $error_flow[] = $item['id'];
+        }
+    }
+    //添加消息
+    foreach ($noticeMsg as $vals){
+        $notice_update = $notice->add($vals['data']);
+        if(!$notice_update){
+            $error_notice[] = $vals['id'];
+        }
+    }
+    if(empty($error_staff) && empty($error_reward) && empty($error_flow) && empty($error_notice)){
+        $staff->commit();//成功则提交
+    }else{
+        $staff->rollback();//不成功，则回滚
+    }
+}
+
+/**
+ * 充值事务处理
+ * @param $rechargeMsg
+ * @param $userMsg
+ * @param $flowMsg
+ * @param $noticeMsg
+ */
+function makeRecharge($rechargeMsg,$userMsg,$flowMsg,$noticeMsg){
+    $staff = M('staff');
+    $recharge = M('recharge');
+    $flow = M('flow');
+    $notice = M('notice');
+    $staff->startTrans();//启用事务
+    //修改账户信息
+    foreach ($userMsg as $val){
+        $staff_update = $staff->where(array('id'=>$val['id']))->save($val['data']);
+        if(!$staff_update){
+            $error_staff[] = $val['id'];
+        }
+    }
+    //添加充值记录
+    foreach ($rechargeMsg as $value){
+        $reward_update = $recharge->add($value['data']);
+        if(!$reward_update){
+            $error_reward[] = $value['id'];
+        }
+    }
+    //添加流水记录
+    foreach ($flowMsg as $item){
+        $flow_update = $flow->add($item['data']);
+        if(!$flow_update){
+            $error_flow[] = $item['id'];
+        }
+    }
+    //添加消息
+    foreach ($noticeMsg as $vals){
+        $notice_update = $notice->add($vals['data']);
+        if(!$notice_update){
+            $error_notice[] = $vals['id'];
+        }
+    }
+    if(empty($error_staff) && empty($error_reward) && empty($error_flow) && empty($error_notice)){
+        $staff->commit();//成功则提交
+    }else{
+        $staff->rollback();//不成功，则回滚
+    }
+}
+
 

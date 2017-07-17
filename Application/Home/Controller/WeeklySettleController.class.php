@@ -79,16 +79,16 @@ class WeeklySettleController{
                 $dbNotice -> add($dateNotice);
             }else{
                 $totalMoney = $moneyDaily + $moneyExtra;
-                //staff表 =>income = $totalMoney * $discount;money = $totalMoney * (1 - $discount);
-                $oldData = $dbStaff -> get_staff_by_id($id);
-                $discount = $parameter['value'] / 100;
-                $dataStaff = array(
+                //staff表发放奖励 =>income = $totalMoney * $discount;money = $totalMoney * (1 - $discount);
+                $oldData    = $dbStaff -> get_staff_by_id($id);
+                $discount   = $parameter['value'] / 100;
+                $dataStaff  = array(
                     'income'    => $oldData['income'] + ($totalMoney * $discount),
                     'money'     => $oldData['money'] + $totalMoney * (1 - $discount),
                 );
                 $dbStaff -> save_staff_by_id($id, $dataStaff);
                 //流水表 flow
-                $dataFlow = array(
+                $dataFlow   = array(
                     'uid'           => $id,
                     'type'          => 1,
                     'money'         => $totalMoney,
@@ -100,8 +100,7 @@ class WeeklySettleController{
                 $dataRewardDaily = array(
                     'uid'           => $id,
                     'type'          => 1,       //日常任务奖励
-                    'base_money'    => $moneyDaily,
-                    'extra_money'   => 0,
+                    'money'         => $moneyDaily,
                     'game_coin'     => 0,
                     'order_id'      => 0,
                     'create_time'   => date('Y-m-d H:i:s'),
@@ -111,8 +110,7 @@ class WeeklySettleController{
                 $dataRewardExtra = array(
                     'uid'           => $id,
                     'type'          => 2,       //额外任务奖励
-                    'base_money'    => 0,
-                    'extra_money'   => $moneyExtra,
+                    'money'         => $moneyExtra,
                     'game_coin'     => 0,
                     'order_id'      => 0,
                     'create_time'   => date('Y-m-d H:i:s'),
