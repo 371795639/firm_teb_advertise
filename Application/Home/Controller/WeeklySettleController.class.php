@@ -23,9 +23,9 @@ class WeeklySettleController{
         $uidUnset       = i_array_unique($uidAll,$uids);
         //给未完成任务的用户发送任务未完成消息
         foreach($uidUnset as $k => $v){
-            $uidUnset   = $uidUnset[$k];
-            $unsetNotice= array(
-                'uid'           => $uidUnset,
+            $uidUnsets      = $uidUnset[$k];
+            $unsetNotice    = array(
+                'uid'           => $uidUnsets,
                 'kind'          => '2',
                 'poster'        => 'system',
                 'notice_type_id'=> '3',

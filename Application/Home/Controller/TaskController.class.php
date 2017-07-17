@@ -32,17 +32,17 @@ class TaskController extends HomeController {
     public function taskOffice(){
         $dbTaskWeekly       = D('TaskWeekly');
         $dbTaskDone         = D('TaskDone');
-        $class              = D('Staff')    -> get_staff_league($_SESSION['userid']);//获取当前等陆用户的加盟商等级
-        if($class == 0){//不是加盟商
+        $class              = D('Staff')    -> get_staff_league($_SESSION['userid']);   //获取当前等陆用户的加盟商等级
+        if($class == 0){        //推广专员无任务
             $weeklyTypeOne  = null;
             $weeklyTypeTwo  = null;
         }else {
-            $weeklyTypeOne  = $dbTaskWeekly -> get_weekly_type('1', $class);//获取本周日常任务
-            $weeklyTypeTwo  = $dbTaskWeekly -> get_weekly_type('2','');//获取本周额外任务
-            $moneyOne       = $dbTaskWeekly -> get_weekly_money('1',$class);//获取本周日常任务总金额
-            $moneyTwo       = $dbTaskWeekly -> get_weekly_money('2','');//获取本周额外任务总金额
+            $weeklyTypeOne  = $dbTaskWeekly -> get_weekly_type('1', $class);    //获取本周日常任务
+            $weeklyTypeTwo  = $dbTaskWeekly -> get_weekly_type('2','');         //获取本周额外任务
+            $moneyOne       = $dbTaskWeekly -> get_weekly_money('1',$class);    //获取本周日常任务总金额
+            $moneyTwo       = $dbTaskWeekly -> get_weekly_money('2','');        //获取本周额外任务总金额
         }
-        $taskDaily          = $dbTaskDone   -> get_this_week_task($_SESSION['userid'],'','1');//获取用户已领取的日常任务列表
+        $taskDaily          = $dbTaskDone   -> get_this_week_task($_SESSION['userid'],'','1');  //获取用户已领取的日常任务列表
         foreach($weeklyTypeOne as $k => $v){
             $task_id = $weeklyTypeOne[$k]['task_id'];
             $resDone = $dbTaskDone -> get_done_by_uid('task_id',$task_id,'find');
@@ -83,7 +83,7 @@ class TaskController extends HomeController {
         $dbTaskDone     = D('TaskDone');
         $dbTaskWeekly   = D('TaskWeekly');
         $taskSet        = $dbTaskDone -> get_this_week_task($_SESSION['userid'],'','1');
-        $class          = D('Staff')  -> get_staff_league($_SESSION['userid']);//获取当前等陆用户的加盟商等级
+        $class          = D('Staff')  -> get_staff_league($_SESSION['userid']);     //获取当前等陆用户的加盟商等级
         switch($method){
             case 'daily':
                 if($taskSet){
@@ -162,11 +162,11 @@ class TaskController extends HomeController {
         $userShip       = D('UserShip');
         $userCharge     = D('UserCharge');
         $dbGameCount    = D('GameCount');
-        $class          = $staff    -> get_staff_league($_SESSION['userid']);       //获取当前等陆用户的加盟商等级
-        $doneDaily      = $taskDone -> get_this_week_task($_SESSION['userid'],'','1'); //日常任务
-        $doneExtra      = $taskDone -> get_this_week_task($_SESSION['userid'],'','2'); //额外任务
-//        $refereeCount   = $staff    -> count_staff_by_referee($_SESSION['userid']); //获取分享推广专员总人数
-        $left           = $staff    -> get_staff_by_id($_SESSION['userid']);        //获取当前用户的信息
+        $class          = $staff    -> get_staff_league($_SESSION['userid']);           //获取当前等陆用户的加盟商等级
+        $doneDaily      = $taskDone -> get_this_week_task($_SESSION['userid'],'','1');  //日常任务
+        $doneExtra      = $taskDone -> get_this_week_task($_SESSION['userid'],'','2');  //额外任务
+//        $refereeCount   = $staff    -> count_staff_by_referee($_SESSION['userid']);   //获取分享推广专员总人数
+        $left           = $staff    -> get_staff_by_id($_SESSION['userid']);            //获取当前用户的信息
         $date           = array(
             'status'    => 2,
             'done_time' => date('Y-m-d 5:20:00'),
@@ -202,11 +202,11 @@ class TaskController extends HomeController {
                 }
             }
             //2：判断首充人数任务（日常任务） $dailyTaskTwoStatus
-            $users = $userShip ->  get_user_by_superior($_SESSION['userid'],'select');   //所有推荐人是此用户的玩家，时间限制在充值时进行限制
+            $users = $userShip ->  get_user_by_superior($_SESSION['userid'],'select');      //所有推荐人是此用户的玩家，时间限制在充值时进行限制
             foreach ($users as $k => $v) {
                 $game_id[] = $users[$k]['game_id'];
             }
-            $chargeFirstNumber = $userCharge -> get_user_charge($game_id,'1','count'); //本周内首充人数
+            $chargeFirstNumber = $userCharge -> get_user_charge($game_id,'1','count');      //本周内首充人数
             foreach ($doneDaily as $k => $v) {
                 if ($doneDaily[$k]['name']  == '首充人数') {
                     $dailyTaskTwoInneed     = $doneDaily[$k]['inneed'];
@@ -220,7 +220,7 @@ class TaskController extends HomeController {
                 }
             }
             //4：判断充值业绩任务（日常任务） $dailyTaskFourStatus
-            $chargeMoney = $userCharge -> get_user_charge($game_id,'2','money');   //本周内充值金额
+            $chargeMoney = $userCharge -> get_user_charge($game_id,'2','money');        //本周内充值金额
             foreach ($doneDaily as $k => $v) {
                 if ($doneDaily[$k]['name']  == '充值业绩') {
                     $dailyTaskFourInneed    = $doneDaily[$k]['inneed'];
