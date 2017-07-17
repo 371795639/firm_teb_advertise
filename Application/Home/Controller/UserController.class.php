@@ -94,6 +94,9 @@ class UserController extends HomeController {
         }else{
             $pic = 2;
         }
+        /**检测日常任务是否完成**/
+        $task = A('Task');
+        $task -> taskWhat();
         $this->assign('pic',$pic);
         $this->display('User/index');
     }

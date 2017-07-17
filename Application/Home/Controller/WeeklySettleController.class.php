@@ -37,17 +37,19 @@ class WeeklySettleController{
         //对于已完成任务的用户：修改recommend_num值=总值-指标，保留此字段值，用于下次任务
         foreach($taskDones as $k => $v){
             if($taskDones[$k]['name'] == '分享推广专员') {
-                $taskInneed             = $taskDones[$k]['inneed'];
-                $staffInfo              = $dbStaff->get_staff_by_id($taskDones[$k]['uid']);
-                $num                    = $staffInfo['recommend_num'];
-                $newNum['recommend_num']= $num - $taskInneed;
-                $dbStaff -> save_staff_by_id($taskDones[$k]['uid'], $newNum);
+                $taskInneed = $taskDones[$k]['inneed'];
+                $staffInfo  = $dbStaff->get_staff_by_id($taskDones[$k]['uid']);
+                $num        = $staffInfo['recommend_num'];
+                $newNum     = $num - $taskInneed;
+                $newsNum    = $newNum <= 0 ? 0 : $newNum;
+                $newsNums['recommend_num'] = $newsNum;      //测试时，为防止数据被减为负值。
+                $dbStaff -> save_staff_by_id($taskDones[$k]['uid'], $newsNums);
             }
         }
         foreach($uids as $k => $v) {
             $id = $uids[$k];
-            $doneDaily  = $taskDone -> get_last_week_task($date,$id,'1');             //上周的日常任务
-            $doneExtra  = $taskDone -> get_last_week_task($date,$id,'2');             //上周的额外任务
+            $doneDaily  = $taskDone -> get_last_week_task($date,$id,'1');   //上周的日常任务
+            $doneExtra  = $taskDone -> get_last_week_task($date,$id,'2');   //上周的额外任务
             $parameter  = $dbParameter -> where("id = 3") -> find();
             if (empty($doneDaily)) {
                 $moneyDaily = 0;
@@ -104,9 +106,10 @@ class WeeklySettleController{
                     'game_coin'     => 0,
                     'order_id'      => 0,
                     'create_time'   => date('Y-m-d H:i:s'),
-                    'remarks'       => "完成上周任务，奖励总金额 $totalMoney 元",
+                    'remarks'       => "完成上周日常任务，奖励总金额 $moneyDaily 元",
                 );
                 $dbReward -> add($dataRewardDaily);
+                /*
                 $dataRewardExtra = array(
                     'uid'           => $id,
                     'type'          => 2,       //额外任务奖励
@@ -114,9 +117,10 @@ class WeeklySettleController{
                     'game_coin'     => 0,
                     'order_id'      => 0,
                     'create_time'   => date('Y-m-d H:i:s'),
-                    'remarks'       => "完成上周任务，奖励总金额 $totalMoney 元",
+                    'remarks'       => "完成上周额外任务，奖励总金额 $moneyExtra 元",
                 );
                 $dbReward -> add($dataRewardExtra);
+                */
                 //通知表 notice
                 $dataNotice = array(
                     'uid'           => $id,
