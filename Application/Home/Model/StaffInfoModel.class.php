@@ -49,4 +49,48 @@ class StaffInfoModel extends Model{
         }
     }
 
+
+    /**根据完成任务次数返回信用值
+     * @param $num  integer 完成游戏次数
+     * @return int  integer 信用值
+     */
+    public function get_credit($num){
+        $num = intval($num);
+        $num = $num >= 4 ? 4 : $num;
+        $num = $num <= -5 ? -5 : $num;
+        switch($num){
+            case -5:
+                $credit = 10;
+                break;
+            case -4:
+                $credit = 35;
+                break;
+            case -3:
+                $credit = 65;
+                break;
+            case -2:
+                $credit = 85;
+                break;
+            case -1:
+                $credit = 95;
+                break;
+            case 0:
+                $credit = 100;
+                break;
+            case 1:
+                $credit = 105;
+                break;
+            case 2:
+                $credit = 115;
+                break;
+            case 3:
+                $credit = 135;
+                break;
+            case 4:
+                $credit = 150;
+                break;
+        }
+        return $credit;
+    }
+
 }

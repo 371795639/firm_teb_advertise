@@ -11,6 +11,7 @@ class WeeklySettleController{
         $taskDone       = D('TaskDone');
         $dbTaskDone     = D('TaskDone');
         $dbParameter    = M('Parameter');
+        $dbStaffInfo    = D('StaffInfo');
 //        $date           = '2017-07-18 00:00:00';
         $date           = date('Y-m-d H:i:s');
         $monday         = get_last_monday($date);
@@ -19,9 +20,9 @@ class WeeklySettleController{
         $taskDones      = $dbTaskDone -> get_time_in_last_week($date,'','select');          //获取已完成上周日常任务列表
         $uidAll         = $dbTaskDone -> get_last_week_done_group($date,'','uid','uids');   //获取领取上周日常任务的所有用户ID
         $uidUnset       = i_array_unique($uidAll,$uids);                                    //未完成上周日常任务的所有用户ID
-        error_log(date("[Y-m-d H:i:s]").'完成日常任务的用户ID:'.print_r($uids,1),3,"/data/tuiguang/logs/taskSettle.log");
-        error_log(date("[Y-m-d H:i:s]").'领取任务的用户ID:'.print_r($uidAll,1),3,"/data/tuiguang/logs/taskSettle.log");
-        error_log(date("[Y-m-d H:i:s]").'未完成任务的用户ID:'.print_r($uidUnset,1),3,"/data/tuiguang/logs/taskSettle.log");
+        error_log(date("[Y-m-d H:i:s]").'上周完成日常任务的用户ID:'.print_r($uids,1),3,"/data/tuiguang/logs/taskSettle.log");
+        error_log(date("[Y-m-d H:i:s]").'上周领取任务的用户ID:'.print_r($uidAll,1),3,"/data/tuiguang/logs/taskSettle.log");
+        error_log(date("[Y-m-d H:i:s]").'上周未完成任务的用户ID:'.print_r($uidUnset,1),3,"/data/tuiguang/logs/taskSettle.log");
         foreach($uidUnset as $k => $v){
             $uidUnsets      = $uidUnset[$k];
             //给未完成任务的用户发送一条信息
@@ -35,16 +36,21 @@ class WeeklySettleController{
             );
             $dbNotice -> add($unsetNotice);
             //未完成任务的用户扣除信用分
-            $dbStaffInfo    = D('StaffInfo');
             $infoCredit     = $dbStaffInfo -> get_staff_by_uid($uidUnsets);
-            $infoData['credit_value'] = $infoCredit['credit_value'] - 10;
-            $dbStaffInfo -> save_staff_by_uid($uidUnsets,$infoData);
+            $infoCreditNum  = $infoCredit['credit_num'] - 1;
+            $infoCreditNum  = $infoCreditNum <= -5 ? -5 : $infoCreditNum;
+            $infoCreditValue= $dbStaffInfo -> get_credit($infoCreditNum);
+            $infoCred       = array(
+                'credit_value'  => $infoCreditValue,
+                'credit_num'    => $infoCreditNum,
+            );
+            $dbStaffInfo -> save_staff_by_uid($uidUnsets,$infoCred);
         }
         //对于已完成任务的用户：修改recommend_num值=总值-指标，保留此字段值，用于下次任务
         foreach($taskDones as $k => $v){
             if($taskDones[$k]['name'] == '分享推广专员') {
                 $taskInneed = $taskDones[$k]['inneed'];
-                $staffInfo  = $dbStaff->get_staff_by_id($taskDones[$k]['uid']);
+                $staffInfo  = $dbStaff -> get_staff_by_id($taskDones[$k]['uid']);
                 $num        = $staffInfo['recommend_num'];
                 $newNum     = $num - $taskInneed;
                 $newsNum    = $newNum <= 0 ? 0 : $newNum;
@@ -53,10 +59,21 @@ class WeeklySettleController{
             }
         }
         foreach($uids as $k => $v) {
-            $id = $uids[$k];
-            $doneDaily  = $taskDone -> get_last_week_task($date,$id,'1');   //上周的日常任务
-            $doneExtra  = $taskDone -> get_last_week_task($date,$id,'2');   //上周的额外任务
-            $parameter  = $dbParameter -> where("id = 3") -> find();
+            $id             = $uids[$k];
+            $doneDaily      = $taskDone -> get_last_week_task($date,$id,'1');   //上周的日常任务
+            $doneExtra      = $taskDone -> get_last_week_task($date,$id,'2');   //上周的额外任务
+            $parameter      = $dbParameter -> where("id = 3") -> find();
+            //给完成任务的用户增加信用分
+            $infoCredit     = $dbStaffInfo -> get_staff_by_uid($id);
+            $infoCreditNum  = $infoCredit['credit_num'] + 1;
+            $infoCreditNum  = $infoCreditNum >= 4 ? 4 : $infoCreditNum;
+            $infoCreditValue= $dbStaffInfo -> get_credit($infoCreditNum);
+            $infoCred       = array(
+                'credit_value'  => $infoCreditValue,
+                'credit_num'    => $infoCreditNum,
+            );
+            $dbStaffInfo -> save_staff_by_uid($id,$infoCred);
+            //统计额外任务总金额
             if (empty($doneDaily)) {
                 $moneyDaily = 0;
             }else{
@@ -92,13 +109,14 @@ class WeeklySettleController{
                 $oldData    = $dbStaff -> get_staff_by_id($id);
                 $discount   = $parameter['value'] / 100;
                 $dataStaff  = array(
-                    'income'    => $oldData['income'] + ($totalMoney * $discount),
-                    'money'     => $oldData['money'] + $totalMoney * (1 - $discount),
+                    'income'=> $oldData['income'] + ($totalMoney * $discount),
+                    'money' => $oldData['money'] + $totalMoney * (1 - $discount),
                 );
-                $staffArr[]   = array(
+                $staffArr[] = array(
                     'id'    => $id,
                     'data'  => $dataStaff,
                 );
+                //流水表 flow
                 $dataFlow   = array(
                     'uid'           => $id,
                     'type'          => 1,
@@ -106,11 +124,11 @@ class WeeklySettleController{
                     'order_id'      => 0,
                     'create_time'   => date('Y-m-d H:i:s'),
                 );
-                $flowArr[]    = array(
+                $flowArr[]  = array(
                     'id'    => $id,
                     'data'  => $dataFlow,
                 );
-                //奖励表 reward
+                //奖励表 reward  日常任务奖励
                 $dataRewardDaily = array(
                     'uid'           => $id,
                     'type'          => 1,       //日常任务奖励
@@ -125,6 +143,7 @@ class WeeklySettleController{
                     'data'  => $dataRewardDaily,
                 );
                 /*
+                //奖励表 reward  额外任务奖励
                 $dataRewardExtra = array(
                     'uid'           => $id,
                     'type'          => 2,       //额外任务奖励
@@ -136,6 +155,7 @@ class WeeklySettleController{
                 );
                 $dbReward -> add($dataRewardExtra);
                 */
+                //通知表 notice
                 $dataNotice = array(
                     'uid'           => $id,
                     'kind'          => '2',
@@ -144,7 +164,7 @@ class WeeklySettleController{
                     'notice_title'  => '恭喜您已完成上周任务',
                     'notice_content'=> "获得上周任务总金额 $totalMoney 元",
                 );
-                $noticeArr[]    = array(
+                $noticeArr[]= array(
                     'id'    => $id,
                     'data'  => $dataNotice,
                 );

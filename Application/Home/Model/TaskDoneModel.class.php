@@ -84,6 +84,7 @@ class TaskDoneModel extends Model{
         return $end_time;
     }
 
+
     /**
      * 根据用户获取本周内所有已领取的任务
      * @param   $group  string      根据字段进行分组
@@ -184,6 +185,7 @@ class TaskDoneModel extends Model{
         }
     }
 
+
     /**
      * 获取数组中键值名相同的个数
      * @param $arr      array   数组
@@ -281,7 +283,6 @@ class TaskDoneModel extends Model{
     }
 
 
-
     /**
      * 根据$date获取上周内已完成的日常任务列表/uid
      * @param $date string  日期
@@ -328,6 +329,7 @@ class TaskDoneModel extends Model{
         }
     }
 
+
     /**
      * 获取上周用户领取所有的任务
      * @param $uid      integer 根据$uid获取本周任务,传入空，则返回所有
@@ -370,6 +372,5 @@ class TaskDoneModel extends Model{
             default :
                 return '参数错误';
         }
-
     }
 }

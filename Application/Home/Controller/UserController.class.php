@@ -97,6 +97,10 @@ class UserController extends HomeController {
         /**检测日常任务是否完成**/
         $task = A('Task');
         $task -> taskWhat();
+        /**信用值**/
+        $credit = D('StaffInfo') -> get_staff_by_uid($userid);
+        $creditValue = $credit['credit_value'];
+        $this->assign('creditValue',$creditValue);
         $this->assign('pic',$pic);
         $this->display('User/index');
     }
