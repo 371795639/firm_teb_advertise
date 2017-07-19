@@ -78,11 +78,9 @@
                 	<span class="top-title">
                 		日常任务
                 	</span>
-                    <if condition="$weeklyTypeOne neq null">
-                        <if condition="$class neq 0">
-                            <if condition="$daily eq 1"><span class="right geted">已领取</span>
-                                <else/><a id="btn1"  href="{:U('Home/Task/taskOfficeDetail',array('method'=>'daily'))}"><span class="right get" >待领取</span></a>
-                            </if>
+                    <if condition="($weeklyTypeOne neq null) AND ($class neq 0)">
+                        <if condition="$daily eq 1"><span class="right geted">已领取</span>
+                            <else/> <a id="btn1" href="{:U('Home/Task/taskOfficeDetail',array('method'=>'daily'))}"><span class="right get" >待领取</span></a>
                         </if>
                     </if>
                 </p>
