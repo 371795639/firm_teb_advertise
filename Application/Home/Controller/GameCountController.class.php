@@ -39,7 +39,7 @@ class GameCountController{
 		$dbStaff        = D('Staff');
 		$dbTaskDone     = D('TaskDone');
 		$dbGameCount    = D('GameCount');
-		$uidGroup       = $dbTaskDone -> get_this_week_all_task('','uid');
+		$uidGroup       = $dbTaskDone -> get_this_week_all_task('','uid');			//本周内领取日常任务的任务列表
 		if(!empty($uidGroup)) {
 			foreach ($uidGroup as $k => $v) {
 				$uid        = $uidGroup[$k]['uid'];
@@ -57,6 +57,7 @@ class GameCountController{
 				}
 			}
 			$gamesIds   = implode(',', $gamesIds);
+            error_log(date("[Y-m-d H:i:s]").'调用接口时传过去的所有用户游戏ID:'.print_r($gamesIds,1),3,"/data/tuiguang/logs/gameCount.log");
 			$gameResult = $this -> get_game_api($gamesIds);
 			if($gameResult['error'] == 0){
 				$gamesResult= $gameResult['data'];

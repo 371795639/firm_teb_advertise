@@ -15,13 +15,16 @@ class WeeklySettleController{
         $date           = date('Y-m-d H:i:s');
         $monday         = get_last_monday($date);
         $sunday         = get_last_sunday($date);
-        $uids           = $dbTaskDone -> get_time_in_last_week($date,'','uid');             //获取已完成上周日常任务的所有uid
+        $uids           = $dbTaskDone -> get_time_in_last_week($date,'','uid');             //获取已完成上周日常任务的所有用户ID
         $taskDones      = $dbTaskDone -> get_time_in_last_week($date,'','select');          //获取已完成上周日常任务列表
-        $uidAll         = $dbTaskDone -> get_last_week_done_group($date,'','uid','uids');   //获取领取上周日常任务的所有uid
-        $uidUnset       = i_array_unique($uidAll,$uids);
-        //给未完成任务的用户发送任务未完成消息
+        $uidAll         = $dbTaskDone -> get_last_week_done_group($date,'','uid','uids');   //获取领取上周日常任务的所有用户ID
+        $uidUnset       = i_array_unique($uidAll,$uids);                                    //未完成上周日常任务的所有用户ID
+        error_log(date("[Y-m-d H:i:s]").'完成日常任务的用户ID:'.print_r($uids,1),3,"/data/tuiguang/logs/taskSettle.log");
+        error_log(date("[Y-m-d H:i:s]").'领取任务的用户ID:'.print_r($uidAll,1),3,"/data/tuiguang/logs/taskSettle.log");
+        error_log(date("[Y-m-d H:i:s]").'未完成任务的用户ID:'.print_r($uidUnset,1),3,"/data/tuiguang/logs/taskSettle.log");
         foreach($uidUnset as $k => $v){
             $uidUnsets      = $uidUnset[$k];
+            //给未完成任务的用户发送一条信息
             $unsetNotice    = array(
                 'uid'           => $uidUnsets,
                 'kind'          => '2',
@@ -31,6 +34,11 @@ class WeeklySettleController{
                 'notice_content'=> "您上周任务未完成，这周要加油喽。",
             );
             $dbNotice -> add($unsetNotice);
+            //未完成任务的用户扣除信用分
+            $dbStaffInfo    = D('StaffInfo');
+            $infoCredit     = $dbStaffInfo -> get_staff_by_uid($uidUnsets);
+            $infoData['credit_value'] = $infoCredit['credit_value'] - 10;
+            $dbStaffInfo -> save_staff_by_uid($uidUnsets,$infoData);
         }
         //对于已完成任务的用户：修改recommend_num值=总值-指标，保留此字段值，用于下次任务
         foreach($taskDones as $k => $v){
@@ -40,7 +48,7 @@ class WeeklySettleController{
                 $num        = $staffInfo['recommend_num'];
                 $newNum     = $num - $taskInneed;
                 $newsNum    = $newNum <= 0 ? 0 : $newNum;
-                $newsNums['recommend_num'] = $newsNum;      //测试时，为防止数据被减为负值。
+                $newsNums['recommend_num'] = $newsNum;      //TODO: 测试时，为防止数据被减为负值。
                 $dbStaff -> save_staff_by_id($taskDones[$k]['uid'], $newsNums);
             }
         }
@@ -68,6 +76,7 @@ class WeeklySettleController{
                 }
             }
             if($moneyDaily == 0) {
+                //TODO: 测试时：修改日常任务状态为完成状态，但是金额为零，给这些用户发送一条消息；线上不会出现这条消息，只做测试用。
                 $dateNotice = array(
                     'uid'           => $id,
                     'kind'          => '2',

@@ -49,4 +49,20 @@ class TaskModel extends Model{
         }
     }
 
+
+    /**根据条件搜索任务列表
+     * @param $map  array   搜索条件
+     * @return bool|mixed
+     */
+    public function get_task_by_map($map){
+        if($map){
+            $re = $this -> where($map) -> select();
+        }
+        if(empty($map)){
+            return false;
+        }else{
+            return $re;
+        }
+    }
+
 }

@@ -135,7 +135,7 @@ class UserController extends HomeController {
         $userid    = $_SESSION['userid'];
         //类型 1：日常任务奖励、2：额外任务奖励、3：推荐奖励、4：充值提成；5中心推荐奖励；6中心业绩奖励;7:分销奖励；8：分红
         //游戏分红
-        $bonusReward = $dbReward->where(array('uid' => $userid , 'type' => 8))->order('create_time desc')->select();
+//        $bonusReward = $dbReward->where(array('uid' => $userid , 'type' => 8))->order('create_time desc')->select();
         //任务奖励
         $taskReward = $dbReward->where(array('uid' => $userid , 'type' => array('in','1,2')))->order('create_time desc')->select();
         //推荐奖励
@@ -145,7 +145,7 @@ class UserController extends HomeController {
         );
         $spreadReward = $dbReward->where($map)->order('create_time desc')->select();
         //输出模板
-        $this->assign('bonusReward',$bonusReward);
+//        $this->assign('bonusReward',$bonusReward);
         $this->assign('taskReward',$taskReward);
         $this->assign('spreadReward',$spreadReward);
         $this->display('User/encourage');

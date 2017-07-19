@@ -170,6 +170,44 @@ function get_last_sunday($date){
 }
 
 
+/**
+ * 根据$date获取上上周一
+ * @param $date string  时间
+ * @return bool|string  当前时间的上周一
+ */
+function get_last_last_monday($date){
+    if(!empty($date)) {
+        $time = strtotime($date);
+        $week = date('N', $time);
+        if ($week == 1) {
+            $start_time = date('Y-m-d 02:00:00', strtotime('-2 monday', $time));
+        } else {
+            $start_time = date('Y-m-d 02:00:00', strtotime('-3 monday', $time));
+        }
+    }else{
+        $start_time = "";
+    }
+    return $start_time;
+}
+
+
+/**
+ * 根据$date获取上上周末
+ * @param $date string  时间
+ * @return bool|string  当前时间的上周末
+ */
+function get_last_last_sunday($date){
+    if(empty($date)) {
+        $end_time = "";
+    }else{
+        $start_time = get_last_last_monday($date);
+        $ss         = strtotime($start_time);
+        $end_time   = date('Y-m-d 23:59:59', strtotime('Sunday', $ss));
+    }
+    return $end_time;
+}
+
+
 /**两数组中去除重复的元素
  * @param $arr1
  * @param $arr2
