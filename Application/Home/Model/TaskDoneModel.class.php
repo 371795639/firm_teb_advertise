@@ -332,7 +332,7 @@ class TaskDoneModel extends Model{
         }
         $uid_list = [];
         foreach($arr_status as $uid => $qty){
-            $qty  >=5 && $uid_list[] = $uid;  //TODO：$qty>= 的值 为日常任务总数
+            $qty  >=4 && $uid_list[] = $uid;  //TODO：$qty>= 的值 为日常任务总数
         }
         /**End**/
         if(empty($res)){

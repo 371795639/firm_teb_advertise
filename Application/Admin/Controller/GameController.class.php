@@ -36,8 +36,8 @@ class GameController extends Controller{
         $yearstoday_end = strtotime(date('Y-m-d 23:59:59',strtotime('-1 day')));
         $this->auth_curl();
         $url = "http://119.23.60.80/admin/napp";
-  //      $post_data = "api=userlist&tstart=0&tend=1499788800";
-        $post_data = "api=rechargelist&tstart=".$yearstoday."&tend=".$yearstoday_end;
+   //     $post_data = "api=userlist&tstart=1499788800&tend=1499875199";
+        $post_data = "api=userlist&tstart=".$yearstoday."&tend=".$yearstoday_end;
         $cookie_file = '/data/tuiguang/cookie/cookie.txt';
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_HEADER, 0);
@@ -163,8 +163,8 @@ class GameController extends Controller{
         $yearstoday = strtotime(date('Y-m-d',strtotime('-1 day')));
         $yearstoday_end = strtotime(date('Y-m-d 23:59:59',strtotime('-1 day')));
         $url = "http://119.23.60.80/admin/napp";
-        $post_data = "api=rechargelist&tstart=1499788800&tend=1499875199";
-     //   $post_data = "api=rechargelist&tstart=".$yearstoday."&tend=".$yearstoday_end;
+    //    $post_data = "api=rechargelist&tstart=1499788800&tend=1499875199";
+        $post_data = "api=rechargelist&tstart=".$yearstoday."&tend=".$yearstoday_end;
         $cookie_file = '/data/tuiguang/cookie/cookie.txt';
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_HEADER, 0);
@@ -237,7 +237,8 @@ class GameController extends Controller{
             error_log(print_r($msg),1,"/data/tuiguang/logs/rechar.log");
             //循环发放奖励
             foreach ($msg as $values){
-                if(!empty($values['referee'])){
+	    if($msg['recharge'] != 0){
+	    	if(!empty($values['referee'])){
                     $last = M('staff')->field('money,consume_coin,income')->where(array('id'=>$values['referee']))->find();
                     $post_data['last']['id'] = $values['referee'];
                     $post_data['last']['money'] = $last['money'];
@@ -253,6 +254,8 @@ class GameController extends Controller{
                 $post_data['my']['service_number'] = $values['service_number'];
                 error_log(print_r($post_data),1,"/data/tuiguang/logs/tests.log");
                 recharge($post_data,$values['recharge']);
+	    }
+                
             }
         }
     }
