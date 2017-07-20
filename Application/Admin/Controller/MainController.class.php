@@ -496,6 +496,7 @@ class MainController extends AdminController {
     public function taskDone(){
         $dbTask     = D('Task');
         $dbTaskDone = D("TaskDone");
+        $map['task_id'] = array('gt',0);
         $uid = I('uid');
         if($uid) {
             $map['id|uid|task_id'] = $uid;

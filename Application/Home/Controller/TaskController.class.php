@@ -233,6 +233,7 @@ class TaskController extends HomeController {
                     $taskDone -> save_done('id', $dailyTaskFourId, $date);
                 }
             }
+            /*
             //3：判断完成3次游戏任务（日常任务）  $dailyTaskThreeStatus
             $GameCount  = $dbGameCount -> get_game($_SESSION['userid'],'find');
             $gameCounts = $GameCount['playCount'];
@@ -248,12 +249,12 @@ class TaskController extends HomeController {
                     $taskDone -> save_done('id', $dailyTaskThreeId, $date);
                 }
             }
-
+            */
             //额外任务模块
             $status = array(
                 '0' => $dailyTaskOneStatus,
                 '1' => $dailyTaskTwoStatus,
-                '2' => $dailyTaskThreeStatus,
+//                '2' => $dailyTaskThreeStatus,
                 '3' => $dailyTaskFourStatus,
                 '4' => $dailyTaskFiveStatus,
             );
@@ -323,7 +324,7 @@ class TaskController extends HomeController {
                 $extraTaskTwoReward = 0;
             }
         }//日常任务的状态修改和额外任务的统计结束
-        /**将日常任务总金额、额外任务一金额、额外任务二金额写入taskDone表中**/
+        //将日常任务总金额、额外任务一金额、额外任务二金额写入taskDone表中
         $dateTime   = date('Y-m-d H:i:s');
         $start      = $taskDone -> get_start_time($dateTime);
         $end        = $taskDone -> get_end_time($dateTime);
@@ -334,7 +335,5 @@ class TaskController extends HomeController {
         );
         $dataDone['reward'] = $dailytaskReward.','.$extraTaskOneReward.",".$extraTaskTwoReward;
         $taskDone -> where($where) -> save($dataDone);
-//        $totalReward = $dailytaskReward + $extarRewardTotal;
-//        return $totalReward;
     }
 }

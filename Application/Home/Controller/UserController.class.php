@@ -25,34 +25,34 @@ class UserController extends HomeController {
             $userid = $_SESSION['userid'];
             if ($_POST['type'] == 'league') {
                 $game_id = $_POST['game_id'];
-                $res = $dbStaff->where(array('id'=>$userid))->save(array('game_id'=>$game_id));
+                $res = $dbStaff->where(array('id'=>$userid))->save(array('game_id'=>$game_id,'status'=>1));
                 if($res){
                     $data['code'] = 1;
                 }else{
                     $data['code'] = 2;
                 }
                 $this->ajaxReturn($data,"JSON");
-            }else{
+            } else {
                 $refData = array(
-                    'game_id'   => $_POST['gameId'],
-                    'card_id'   => $_POST['cardNum'],
-                    'address'   => $_POST['address'],
-                    'status'    => 1,  //1：正常；2：禁用；3：未完善信息
+                    'game_id' => $_POST['gameId'],
+                    'card_id' => $_POST['cardNum'],
+                    'address' => $_POST['address'],
+                    'status' => 1,  //1：正常；2：禁用；3：未完善信息
                 );
-                if(empty($_POST['refPhoneNum'])){
+                if (empty($_POST['refPhoneNum'])) {
                     //用户上次注册时未完善信息，再次登陆的时候，将跳转到完善信息页面
-                }else{
+                } else {
                     $refStaffExist = $dbStaff->where(array('staff_real' => $_POST['staffName'], 'mobile' => $_POST['refPhoneNum']))->find();
-                    if($refStaffExist){
+                    if ($refStaffExist) {
                         $cardId = $dbStaff->where(array('card_id' => $refData['card_id']))->select();
-                        if($cardId){
+                        if ($cardId) {
                             echo "<script>alert('此身份证号已注册过，不能再注册哦!');</script>";
-                        }else{
-                            if ($refStaffExist['id'] == $userid){
+                        } else {
+                            if ($refStaffExist['id'] == $userid) {
                                 echo "<script>alert('推荐人不能是自己!');</script>";
-                            }else{
+                            } else {
                                 $gameId = $dbStaff->where(array('game_id' => $refData['game_id']))->select();
-                                if ($gameId){
+                                if ($gameId) {
                                     echo "<script>alert('此游戏ID已被占用，请检查输入');</script>";
                                 }else{
                                     //更新用户信息
@@ -62,6 +62,7 @@ class UserController extends HomeController {
                                     $refDateRecommend['recommend_num'] = $refStaffExist['recommend_num'] + 1;
                                     $refAdd = $dbStaff ->  save_staff_by_id($refStaffExist['id'],$refDateRecommend);
                                     if($ref && $refAdd){
+                                        recommend($refStaffExist['id']);
                                         $this->redirect('User/index');
                                     }
                                 }
@@ -137,9 +138,17 @@ class UserController extends HomeController {
     public function encourage(){
         $dbReward  = M('reward');
         $userid    = $_SESSION['userid'];
-        //类型 1：日常任务奖励、2：额外任务奖励、3：推荐奖励、4：充值提成；5中心推荐奖励；6中心业绩奖励;7:分销奖励；8：分红
-        //游戏分红
-//        $bonusReward = $dbReward->where(array('uid' => $userid , 'type' => 8))->order('create_time desc')->select();
+        //类型 1：日常任务奖励(包含分红)、2：额外任务奖励、3：推荐奖励、4：充值提成；5中心推荐奖励；6中心业绩奖励;7:分销奖励；
+        $date       = date('Y-m-d H:i:s');
+        $dbDone     = D('TaskDone');
+        $monday     = $dbDone -> get_start_time($date);
+        $sunday     = $dbDone -> get_end_time($date);
+        $map = array(
+            'uid'           => $userid,
+            'create_time'   => array(array('gt',$monday),array('lt',$sunday)),
+            'type'          => array('in','1,2,3,4,5,6,7'),
+        );
+        $weekReward = $dbReward->where($map)->sum('money');
         //任务奖励
         $taskReward = $dbReward->where(array('uid' => $userid , 'type' => array('in','1,2')))->order('create_time desc')->select();
         //推荐奖励
@@ -149,7 +158,7 @@ class UserController extends HomeController {
         );
         $spreadReward = $dbReward->where($map)->order('create_time desc')->select();
         //输出模板
-//        $this->assign('bonusReward',$bonusReward);
+        $this->assign('weekReward',$weekReward);
         $this->assign('taskReward',$taskReward);
         $this->assign('spreadReward',$spreadReward);
         $this->display('User/encourage');

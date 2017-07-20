@@ -179,9 +179,9 @@ class TaskDoneModel extends Model{
      */
     public function i_array_column($input, $columnKey, $indexKey=null){
         if(!function_exists('array_column')){
-            $columnKeyIsNumber  = (is_numeric($columnKey))  ?true :false;
-            $indexKeyIsNull     = (is_null($indexKey))      ?true :false;
-            $indexKeyIsNumber   = (is_numeric($indexKey))   ?true :false;
+            $columnKeyIsNumber  = (is_numeric($columnKey))  ? true : false;
+            $indexKeyIsNull     = (is_null($indexKey))      ? true : false;
+            $indexKeyIsNumber   = (is_numeric($indexKey))   ? true : false;
             $result             = array();
             foreach((array)$input as $key=>$row){
                 if($columnKeyIsNumber){
@@ -253,7 +253,7 @@ class TaskDoneModel extends Model{
         $sunday = get_last_sunday($date);
         $map = array(
             'get_time'  => array(array('gt',$monday),array('lt',$sunday)),
-            'task_id'   => array('neq',0),
+            'task_id'   => array('gt',0),
         );
         if($uid){
             $map['uid'] = $uid;
@@ -308,7 +308,7 @@ class TaskDoneModel extends Model{
     /**
      * 根据$date获取上周内已完成的日常任务列表/uid
      * @param $date string  日期
-     * @param $uids  integer 根据$uid获取本周任务,传入空，则返回所有
+     * @param $uids integer 根据$uid获取本周任务,传入空，则返回所有
      * @param $what string  uid:返回去重的uid数组；select：返回$re
      * @return mixed
      */
@@ -332,7 +332,7 @@ class TaskDoneModel extends Model{
         }
         $uid_list = [];
         foreach($arr_status as $uid => $qty){
-            $qty  >=5 && $uid_list[] = $uid;
+            $qty  >=5 && $uid_list[] = $uid;  //TODO：$qty>= 的值 为日常任务总数
         }
         /**End**/
         if(empty($res)){
@@ -394,5 +394,19 @@ class TaskDoneModel extends Model{
             default :
                 return '参数错误';
         }
+    }
+
+
+    public function get_task_inneed($date,$uid,$names){
+        $re = $this -> get_last_week_done($date,$uid);
+        foreach ($re as $key => $val) {
+            if ($val['name'] == $names) {
+                $res[$key] = $val;
+            }
+        }
+        foreach($res as $k => $v){
+            return $res[$k]['inneed'];
+        }
+
     }
 }

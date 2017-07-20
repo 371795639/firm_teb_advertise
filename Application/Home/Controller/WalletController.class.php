@@ -47,24 +47,42 @@ class WalletController extends HomeController{
             $result_api = $this->takeApi($game_id,$game_coin,$order_id);
             if($result_api['error'] == 0 && $result_api['data'] == "success"){
                 //如果充值成功
+                $charge = M('charge');
+                $flow = M('flow');
+                $notice = M('notice');
+                $staff->startTrans();//启用事务
                 $update_data = M('staff')->where(array('id'=>$user_id))->setDec('consume_coin',$game_coin);
-                if($update_data){
-                    $re = M()->execute("call pro_recharge($user_id,$game_id,$game_coin,$order_id,$type,4)");
-                    if($re == 1){
-                        $dateNotice = array(
-                            'uid'           => $user_id,
-                            'kind'          => '2',
-                            'poster'        => 'system',
-                            'notice_type_id'=> '3',
-                            'notice_title'  => '充值消息提醒',
-                            'notice_content'=> "您于".date('Y-m-d H:i:s',time())."为账号ID:".$game_id."成功充值".$game_coin."元",
-                        );
-                        M('notice') -> add($dateNotice);
-
-                        $data['code'] = 1;
-                    }
+                $flowData = array(
+                    'uid'=>$user_id,
+                    'type'=>4,
+                    'money'=>$game_coin,
+                    'order_id'=>$order_id,
+                );
+                $flow_add = $flow->add($flowData);
+                $chargeData = array(
+                    'pay_id'=>$user_id,
+                    'game_id'=>$game_id,
+                    'money'=>$game_coin,
+                    'money'=>$game_coin,
+                    'type'=>$type,
+                    'order_id'=>$order_id,
+                );
+                $charge_add = $charge->add($chargeData);
+                $dateNotice = array(
+                    'uid'           => $user_id,
+                    'kind'          => '2',
+                    'poster'        => 'system',
+                    'notice_type_id'=> '3',
+                    'notice_title'  => '充值消息提醒',
+                    'notice_content'=> "您于".date('Y-m-d H:i:s',time())."为账号ID:".$game_id."成功充值".$game_coin."元",
+                );
+                $notice_add = $notice -> add($dateNotice);
+                if($update_data && $flow_add && $charge_add && $notice_add){
+                    $data['code'] = 1;
+                    $staff->commit();//成功则提交
                 }else{
-                    error_log(date("[Y-m-d H:i:s]")." -[".$_SERVER['REQUEST_URI']."] :".$user_id."充值成功但账户未扣款，流水为写入\n", 3, "/data/tuiguang/logs/charge.log");
+                    error_log(date("[Y-m-d H:i:s]")." -[".$_SERVER['REQUEST_URI']."] :".$user_id."已充值成功但是本地数据未更新\n", 3, "/playCharge_err.log");
+                    $staff->rollback();//不成功，则回滚
                 }
             }else{
                 $data['code'] = 2;
@@ -82,7 +100,6 @@ class WalletController extends HomeController{
         $user_id   = $_SESSION['userid'];
         $money = $staff->where(array('id'=>$user_id))->getField('money');
         $bank = M('user_bank');
-        $user_id   = $_SESSION['userid'];
         $list = $bank->where(array('user_id'=>$user_id))->select();
         if(!empty($list)){
             foreach ($list as $key=>$value){
@@ -91,31 +108,53 @@ class WalletController extends HomeController{
         }
         if(IS_POST){
             //首先判断今天是否已经提过现
-            $times = date('Y-m-d',time());
-            $is_withdraw = M('withdraw')->where(array('uid'=>$user_id,'create_time'=>array('like', '%' . (string)$times . '%')))->find();
+            $start_time = date("Y-m-d 00:00:00",time());
+            $end_time = date("Y-m-d 23:59:59",time());
+            $map['create_time'] = array(array('egt',$start_time),array('elt',$end_time));
+            $map['uid'] = $user_id;
+            $is_withdraw = M('withdraw')->where($map)->find();
             if(!empty($is_withdraw)){
                 $data['code'] = 3;
             }else{
                 $bank_card = I('card');
                 $bank_message = M('user_bank')->where(array('user_id'=>$user_id,'bank_card'=>$bank_card))->find();
+                $post_money = I('money');
                 $fee = M('parameter')->where(array('name'=>'提现税率'))->getField('value');
                 $order_id = make_orderId();//生成订单号
-                $money = I('money');
-                $fact_money = $money * (100-$fee)/100;
+                $cashMsg = array('id'=>$user_id,'money'=>$post_money);
+                $fee_money = $post_money * $fee/100;
+                $fact_money = $post_money - $fee_money;
                 $bank_name = '"'.$bank_message['bank_name'].'"';
                 $subbranch = '"'.$bank_message['subbranch'].'"';
                 $bank_holder = '"'.$bank_message['holder_name'].'"';
-                $re = M()->execute("call pro_withdraw($user_id,$money,$fee,$fact_money,$bank_name,$subbranch,$bank_card,$bank_holder,$order_id,5)");
-                if($re == 1){
-                    $dateNotice = array(
-                        'uid'           => $user_id,
-                        'kind'          => '2',
-                        'poster'        => 'system',
-                        'notice_type_id'=> '3',
-                        'notice_title'  => '提现消息提醒',
-                        'notice_content'=> "您于".date('Y-m-d H:i:s',time())."提现".$money."元，请多关注财务管理中您的提现状态！",
-                    );
-                    M('notice') -> add($dateNotice);
+                $userMsg = array(
+                    'uid'=>$user_id,
+                    'money'=>$post_money,
+                    'fact_money'=>$fact_money,
+                    'bank_name'=>$bank_name,
+                    'subbranch'=>$subbranch,
+                    'card'=>$bank_card,
+                    'bank_holder'=>$bank_holder,
+                    'order_id'=>$order_id,
+                );
+                $flowMsg = array(
+                    'uid'=>$user_id,
+                    'type'=>5,
+                    'money'=>$post_money,
+                    'order'=>$order_id
+                );
+                $time = date('Y-m-d H:i:s');
+                $content = "您于".$time."提现".$post_money.",手续费".$fee_money."请在财务管理中查看提现状态！";
+                $noticeMsg = array(
+                    'uid'           => $user_id,
+                    'kind'          => '2',
+                    'poster'        => 'system',
+                    'notice_type_id'=> '3',
+                    'notice_title'  => '提现消息',
+                    'notice_content'=> $content,
+                );
+                $result_cash = getCash($cashMsg,$userMsg,$flowMsg,$noticeMsg);
+                if($result_cash == "success"){
                     $data['code'] = 1;
                 }else{
                     $data['code'] = 2;

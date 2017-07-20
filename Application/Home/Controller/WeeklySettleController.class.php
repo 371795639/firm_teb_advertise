@@ -7,15 +7,11 @@ class WeeklySettleController{
     /**任务结算**/
     public function taskSettle(){
         $dbStaff        = D('Staff');
-        $dbNotice       = M('Notice');
         $taskDone       = D('TaskDone');
         $dbTaskDone     = D('TaskDone');
         $dbParameter    = M('Parameter');
         $dbStaffInfo    = D('StaffInfo');
-//        $date           = '2017-07-18 00:00:00';
         $date           = date('Y-m-d H:i:s');
-        $monday         = get_last_monday($date);
-        $sunday         = get_last_sunday($date);
         $uids           = $dbTaskDone -> get_time_in_last_week($date,'','uid');             //获取已完成上周日常任务的所有用户ID
         $taskDones      = $dbTaskDone -> get_time_in_last_week($date,'','select');          //获取已完成上周日常任务列表
         $uidAll         = $dbTaskDone -> get_last_week_done_group($date,'','uid','uids');   //获取领取上周日常任务的所有用户ID
@@ -25,16 +21,6 @@ class WeeklySettleController{
         error_log(date("[Y-m-d H:i:s]").'上周未完成任务的用户ID:'.print_r($uidUnset,1),3,"/data/tuiguang/logs/taskSettle.log");
         foreach($uidUnset as $k => $v){
             $uidUnsets      = $uidUnset[$k];
-            //给未完成任务的用户发送一条信息
-            $unsetNotice    = array(
-                'uid'           => $uidUnsets,
-                'kind'          => '2',
-                'poster'        => 'system',
-                'notice_type_id'=> '3',
-                'notice_title'  => '上周任务未完成',
-                'notice_content'=> "您上周任务未完成，这周要加油喽。",
-            );
-            $dbNotice -> add($unsetNotice);
             //未完成任务的用户扣除信用分
             $infoCredit     = $dbStaffInfo -> get_staff_by_uid($uidUnsets);
             $infoCreditNum  = $infoCredit['credit_num'] - 1;
@@ -45,8 +31,62 @@ class WeeklySettleController{
                 'credit_num'    => $infoCreditNum,
             );
             $dbStaffInfo -> save_staff_by_uid($uidUnsets,$infoCred);
+            //任务未完成只发分红奖励
+            $oldData        = $dbStaff -> get_staff_by_id($uidUnsets);
+            $parameter      = $dbParameter -> where("id = 3") -> find();
+            $parameterBase  = $dbParameter -> where("id = 5") -> find();
+            $totalMoney     = bonus_personal($uidUnsets,'1',$parameterBase['value']);
+            $discount       = $parameter['value'] / 100;
+            $dataStaff  = array(
+                'consume_coin'  => $oldData['consume_coin'] + ($totalMoney * $discount),
+                'money'         => $oldData['money'] + $totalMoney * (1 - $discount),
+                'income'        => $oldData['income'] + $totalMoney,
+            );
+            $staffArr[] = array(
+                'id'    => $uidUnsets,
+                'data'  => $dataStaff,
+            );
+            //流水表 flow
+            $dataFlow   = array(
+                'uid'           => $uidUnsets,
+                'type'          => 1,
+                'money'         => $totalMoney,
+                'order_id'      => 0,
+                'create_time'   => date('Y-m-d H:i:s'),
+            );
+            $flowArr[]  = array(
+                'id'    => $uidUnsets,
+                'data'  => $dataFlow,
+            );
+            //奖励表 reward  日常任务奖励
+            $dataRewardDaily = array(
+                'uid'           => $uidUnsets,
+                'type'          => 1,       //日常任务奖励
+                'money'         => $totalMoney,
+                'game_coin'     => 0,
+                'order_id'      => 0,
+                'create_time'   => date('Y-m-d H:i:s'),
+                'remarks'       => "未完成上周日常任务，获得分红奖励 $totalMoney 元",
+            );
+            $rewardDailyArr[]   = array(
+                'id'    => $uidUnsets,
+                'data'  => $dataRewardDaily,
+            );
+            //通知表 notice
+            $dataNotice = array(
+                'uid'           => $uidUnsets,
+                'kind'          => '2',
+                'poster'        => 'system',
+                'notice_type_id'=> '3',
+                'notice_title'  => '未完成上周任务',
+                'notice_content'=> "未完成上周日常任务，获得分红奖励 $totalMoney 元",
+            );
+            $noticeArr[]= array(
+                'id'    => $uidUnsets,
+                'data'  => $dataNotice,
+            );
         }
-        //对于已完成任务的用户：修改recommend_num值=总值-指标，保留此字段值，用于下次任务
+        //对于已完成分享推广专员任务的用户：修改recommend_num值=总值-指标，保留此字段值，用于下次任务
         foreach($taskDones as $k => $v){
             if($taskDones[$k]['name'] == '分享推广专员') {
                 $taskInneed = $taskDones[$k]['inneed'];
@@ -58,11 +98,11 @@ class WeeklySettleController{
                 $dbStaff -> save_staff_by_id($taskDones[$k]['uid'], $newsNums);
             }
         }
+        //给完成任务的用户发奖励，写通知
         foreach($uids as $k => $v) {
             $id             = $uids[$k];
-            $doneDaily      = $taskDone -> get_last_week_task($date,$id,'1');   //上周的日常任务
-            $doneExtra      = $taskDone -> get_last_week_task($date,$id,'2');   //上周的额外任务
             $parameter      = $dbParameter -> where("id = 3") -> find();
+            $parameterBase  = $dbParameter -> where("id = 5") -> find();
             //给完成任务的用户增加信用分
             $infoCredit     = $dbStaffInfo -> get_staff_by_uid($id);
             $infoCreditNum  = $infoCredit['credit_num'] + 1;
@@ -72,103 +112,68 @@ class WeeklySettleController{
                 'credit_value'  => $infoCreditValue,
                 'credit_num'    => $infoCreditNum,
             );
-            $dbStaffInfo -> save_staff_by_uid($id,$infoCred);
-            //统计额外任务总金额
-            if (empty($doneDaily)) {
-                $moneyDaily = 0;
-            }else{
-                $where  = array(
-                    'uid'       => $id,
-                    'task_id'   => 0,
-                    'status'    => 8,
-                    'get_time'  => array(array('gt', $monday), array('lt', $sunday)),
-                );
-                $moneyDetail    = $dbTaskDone -> where($where) -> find();
-                $moneyDetails   = explode(',',$moneyDetail['reward']);
-                $moneyDaily     = $moneyDetails[0];
-                if (empty($doneExtra)) {
-                    $moneyExtra = 0;
-                }else{
-                    $moneyExtra = $moneyDetails[1] + $moneyDetails[2];
-                }
-            }
-            if($moneyDaily == 0) {
-                //TODO: 测试时：修改日常任务状态为完成状态，但是金额为零，给这些用户发送一条消息；线上不会出现这条消息，只做测试用。
-                $dateNotice = array(
-                    'uid'           => $id,
-                    'kind'          => '2',
-                    'poster'        => 'system',
-                    'notice_type_id'=> '3',
-                    'notice_title'  => '上周任务未完成',
-                    'notice_content'=> "您上周任务未完成，这周要加油喽。",
-                );
-                $dbNotice -> add($dateNotice);
-            }else{
-                $totalMoney = $moneyDaily + $moneyExtra;
-                //staff表发放奖励 =>income = $totalMoney * $discount;money = $totalMoney * (1 - $discount);
-                $oldData    = $dbStaff -> get_staff_by_id($id);
-                $discount   = $parameter['value'] / 100;
-                $dataStaff  = array(
-                    'income'=> $oldData['income'] + ($totalMoney * $discount),
-                    'money' => $oldData['money'] + $totalMoney * (1 - $discount),
-                );
-                $staffArr[] = array(
-                    'id'    => $id,
-                    'data'  => $dataStaff,
-                );
-                //流水表 flow
-                $dataFlow   = array(
-                    'uid'           => $id,
-                    'type'          => 1,
-                    'money'         => $totalMoney,
-                    'order_id'      => 0,
-                    'create_time'   => date('Y-m-d H:i:s'),
-                );
-                $flowArr[]  = array(
-                    'id'    => $id,
-                    'data'  => $dataFlow,
-                );
-                //奖励表 reward  日常任务奖励
-                $dataRewardDaily = array(
-                    'uid'           => $id,
-                    'type'          => 1,       //日常任务奖励
-                    'money'         => $moneyDaily,
-                    'game_coin'     => 0,
-                    'order_id'      => 0,
-                    'create_time'   => date('Y-m-d H:i:s'),
-                    'remarks'       => "完成上周日常任务，奖励总金额 $moneyDaily 元",
-                );
-                $rewardDailyArr[]   = array(
-                    'id'    => $id,
-                    'data'  => $dataRewardDaily,
-                );
-                /*
-                //奖励表 reward  额外任务奖励
-                $dataRewardExtra = array(
-                    'uid'           => $id,
-                    'type'          => 2,       //额外任务奖励
-                    'money'         => $moneyExtra,
-                    'game_coin'     => 0,
-                    'order_id'      => 0,
-                    'create_time'   => date('Y-m-d H:i:s'),
-                    'remarks'       => "完成上周额外任务，奖励总金额 $moneyExtra 元",
-                );
-                $dbReward -> add($dataRewardExtra);
-                */
-                //通知表 notice
-                $dataNotice = array(
-                    'uid'           => $id,
-                    'kind'          => '2',
-                    'poster'        => 'system',
-                    'notice_type_id'=> '3',
-                    'notice_title'  => '恭喜您已完成上周任务',
-                    'notice_content'=> "获得上周任务总金额 $totalMoney 元",
-                );
-                $noticeArr[]= array(
-                    'id'    => $id,
-                    'data'  => $dataNotice,
-                );
-            }
+            $dbStaffInfo-> save_staff_by_uid($id,$infoCred);
+            $rec_num    = $dbStaff -> count_staff_by_referee($id);
+            $dbTaskDone -> get_last_week_done($date,$id);
+            $recharge   = $dbTaskDone -> get_task_inneed($date,'769','充值业绩');
+            $oldData    = $dbStaff -> get_staff_by_id($id);
+            $service_number = $oldData['service_number'];
+            $share_id   = $oldData['referee'];
+            //计算任务总金额
+            $totlMoney  = taskMoney($id,$rec_num,$recharge,$service_number,$share_id);
+            //计算分红奖励
+            $baseMoney  = bonus_personal($id,'1',$parameterBase['value']);
+            $totalMoney = $totlMoney + $baseMoney;
+            //staff表发放奖励 =>income = $totalMoney * $discount;money = $totalMoney * (1 - $discount);
+            $discount   = $parameter['value'] / 100;
+            $dataStaff  = array(
+                'consume_coin'  => $oldData['consume_coin'] + ($totalMoney * $discount),
+                'money'         => $oldData['money'] + $totalMoney * (1 - $discount),
+                'income'        => $oldData['income'] + $totalMoney,
+            );
+            $staffArr[] = array(
+                'id'    => $id,
+                'data'  => $dataStaff,
+            );
+            //流水表 flow
+            $dataFlow   = array(
+                'uid'           => $id,
+                'type'          => 1,
+                'money'         => $totalMoney,
+                'order_id'      => 0,
+                'create_time'   => date('Y-m-d H:i:s'),
+            );
+            $flowArr[]  = array(
+                'id'    => $id,
+                'data'  => $dataFlow,
+            );
+            //奖励表 reward  日常任务奖励
+            $dataRewardDaily    = array(
+                'uid'           => $id,
+                'type'          => 1,       //日常任务奖励
+                'money'         => $totalMoney,
+                'game_coin'     => 0,
+                'order_id'      => 0,
+                'create_time'   => date('Y-m-d H:i:s'),
+                'remarks'       => "完成上周日常任务，奖励总金额 $totalMoney 元",
+            );
+            $rewardDailyArr[]   = array(
+                'id'    => $id,
+                'data'  => $dataRewardDaily,
+            );
+            //通知表 notice
+            $dataNotice = array(
+                'uid'           => $id,
+                'kind'          => '2',
+                'poster'        => 'system',
+                'notice_type_id'=> '3',
+                'notice_title'  => '恭喜您已完成上周任务',
+                'notice_content'=> "获得上周任务总金额 $totalMoney 元",
+            );
+            $noticeArr[]= array(
+                'id'    => $id,
+                'data'  => $dataNotice,
+            );
         }
         payReward($staffArr,$rewardDailyArr,$flowArr,$noticeArr);
     }

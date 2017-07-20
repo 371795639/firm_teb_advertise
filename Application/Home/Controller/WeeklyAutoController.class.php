@@ -50,6 +50,7 @@ class WeeklyAutoController{
                         $dataLastLast['class']      = $resLastLastTask[$k]['class'];
                         $dataLastLast['isgame']     = $resLastLastTask[$k]['isgame'];
                         $dataLastLast['inneed']     = $resLastLastTask[$k]['inneed'];
+                        $dataLastLast['money']      = $resLastLastTask[$k]['money'];
                         $dataLastLast['create_time']= $lastMon;
                         $dataLastLast['tasker']     = 'auto';
                         $dataLastLast['status']     = 1;
@@ -61,7 +62,7 @@ class WeeklyAutoController{
                         'create_time'   => array(array('egt', $lastMon), array('lt', $lastSun)),
                         'stutus'        => 1,
                     );
-                    $resLastTask = $dbtask->get_task_by_map($mapLastTask);
+                    $resLastTask = $dbtask -> get_task_by_map($mapLastTask);
                     foreach ($resLastTask as $k => $v) {
                         $dataLastWeek['task_id']    = $resLastTask[$k]['id'];
                         $dataLastWeek['name']       = $resLastTask[$k]['name'];

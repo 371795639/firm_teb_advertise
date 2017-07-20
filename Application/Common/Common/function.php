@@ -982,6 +982,7 @@ function ps($model){
 }
 
 /**
+ * 生成订单号
  * @return string
  */
 function make_orderId(){
@@ -989,63 +990,23 @@ function make_orderId(){
     $mictime = $mic[1];
     $midtime = explode ( " ", $mictime);
     $reftime = $midtime[0];                                  //取微秒
-    $time    = date("YmdHis",time());                        //取年月日时分
+    $time    = date("YmdHis",time());                        //取年月日时分                                                     //取年月日时分秒
+
     $sdcustomno  = $time.$reftime.rand(10,99);               //订单在商户系统中的流水号 商户信息+日期+随机数
     return $sdcustomno;
 }
 
 /**
- * 推广专员充值奖励结算
- * @param $recharge 充值总额
- * @param $uid
- * @param $type 充值奖励类型 1.充值业绩奖励 2.分销奖励
- * @param $last_income 下一代推广专员的收入
- * @return bool
- */
-function recharge_award($uid,$type,$recharge,$last_income){
-    //首先查询出各个参数比例
-    $parameter = M('parameter')->field('value')->select();
-    if($type == 1){//充值业绩奖励
-        //推荐玩家充值奖励 玩家充值总额*20%【可变】
-        $recommend_award = $recharge * $parameter[0]['value']/100;
-        $fact_money = $recommend_award * $parameter[3]['value']/100;
-        $game_money = $recommend_award * $parameter[2]['value']/100;
-        //写入相应的流水和更新账户信息
-        $order_id = make_orderId();//生成订单号
-        $re = M()->execute("call pro_base_cash($uid,$fact_money,$game_money,7,$recommend_award,$order_id,4)");
-        if($re == 1){
-            return true;
-        }else{
-            return false;
-        }
-    }
-    if($type == 2){//分销奖励
-        //推荐推广专员充值收入奖励 下一代收入*50%，70%转化成余额，30%转化为游戏币；
-        $recommend_income = $last_income * $parameter[1]['value']/100;
-        //结算后打入账户
-        $fact_money = $recommend_income * $parameter[3]['value']/100;
-        $game_money = $recommend_income * $parameter[2]['value']/100;
-        //写入相应的流水和更新账户信息
-        $order_id = make_orderId();//生成订单号
-        $re = M()->execute("call pro_cash($uid,$fact_money,$game_money,7,$recommend_income,$order_id,7)");
-        if($re == 1){
-            return true;
-        }else{
-            return false;
-        }
-    }
-}
-
-/**
- * 推荐推广专员奖励
+ * 分享奖励
+ * 说明：推荐第一个奖励100，第二个150，三个以后每个200
  * @param $recommend_num
  * @return int
  */
 function recommend_awards($recommend_num){
     //首先判断该用户已经推荐了几人；第一个奖励100元，第二个150元，三个以后200元；
-    if ($recommend_num == 0){
+    if ($recommend_num == 1){
         $award = 100;
-    }elseif ($recommend_num == 1){
+    }elseif ($recommend_num == 2){
         $award = 150;
     }else{
         $award = 200;
@@ -1054,14 +1015,14 @@ function recommend_awards($recommend_num){
 }
 
 /**
- * 服务费奖励结算
+ * 中心充值业绩奖励结算
  * @param $type
  * @param $service_id
  * @param $uid
  * @param $money
  * @return bool
  */
-function service_awards($uid,$type,$service_id,$money){
+function service_awards($type,$service_id,$money){
     //首先查询出各个参数比例
     $parameter = M('parameter')->field('value')->select();
     //首先获取所有的兑换中心的服务费比例
@@ -1072,75 +1033,46 @@ function service_awards($uid,$type,$service_id,$money){
     //新推广专员注册获得的服务费
     if ($type == 'register'){
         $a = 0;
-        foreach($result_message as $value){
-            $b = $value['service_ratio'];
+        foreach($result_message as $key=>$value){
+            $b = $value['recommend_ratio'];
             $c = $b - $a;
             if($c > 0){
                 $service_fee = $money * $c/100;//服务费
                 $fact_service_fee = $service_fee * $parameter[3]['value'];
                 $game_coin = $service_fee * $parameter[2]['value'];
                 $order_id = make_orderId();//生成订单号
-                M()->execute("call pro_cash($uid,$fact_service_fee,$game_coin,6,$service_fee,$order_id,5)");
+                $service_award[$key]['id'] = $value['apply_id'];
+                $service_award[$key]['fact_money'] = $fact_service_fee;
+                $service_award[$key]['coin'] = $game_coin;
+                $service_award[$key]['money'] = $service_fee;
+                $service_award[$key]['order_id'] = $order_id;
                 $a = $b;//将服务费比例赋值给变量$a;
             }
         }
-        return true;
+        return $service_award;
     }
 
     //昨日伞下人员充值服务费奖励
     if($type == 'recharge'){
         $start = 0;
-        foreach($result_message as $value){
-            $b = $value['service_ratio'];
+        foreach($result_message as $key=>$value){
+            $b = $value['recharge_ratio'];
             $c = $b - $start;
             if($c > 0){
                 $service_fee = $money * $c/100;//服务费
                 $fact_service_fee = $service_fee * $parameter[3]['value'];
                 $game_coin = $service_fee * $parameter[2]['value'];
                 $order_id = make_orderId();//生成订单号
-                M()->execute("call pro_cash($uid,$fact_service_fee,$game_coin,6,$service_fee,$order_id,6)");
+                $service_award[$key]['id'] = $value['apply_id'];
+                $service_award[$key]['fact_money'] = $fact_service_fee;
+                $service_award[$key]['coin'] = $game_coin;
+                $service_award[$key]['money'] = $service_fee;
+                $service_award[$key]['order_id'] = $order_id;
                 $start = $b;//将服务费比例赋值给变量$a;
             }
         }
-        return true;
+        return $service_award;
     }
-}
-
-/**
- * 分红奖励结算
- * @param $type
- * @param $money
- * @return bool
- */
-function subsidy_awards($type,$money){
-    //首先查询出各个参数比例
-    $parameter = M('parameter')->field('value')->select();
-    $user = D('userInfo');
-    if ($type == 1){//按照固定分红点发放游戏分红
-        //首先查询出每个人的固定分红点和信用分
-        $user_msg = $user->field('uid,fix_bonus,credit_value')->select();
-        //运算出每个人应得的金额以及总金额
-        foreach ($user_msg as $val){
-            $reward = $money * $val['fix_bonus'] * $val['credit_value']/100;//个人所得游戏分红金额
-            $fact_reward = $reward * $parameter[3]['value'];
-            $game_coin = $reward * $parameter[2]['value'];
-            $order_id = make_orderId();//生成订单号
-            M()->execute("call pro_cash(".$val['uid'].",$fact_reward,$game_coin,8,$reward,$order_id,1)");
-        }
-    }
-    if ($type == 2){//按照所有的分红点发放游戏分红
-        //首先获取每个人的所有分红点和信用分
-        $user_msg = $user->field('uid,fix_bonus,extra_bonus,credit_value')->select();
-        //运算出每个人应得的金额以及总金额
-        foreach ($user_msg as $val){
-            $reward = $money * ($val['fix_bonus'] + $val['extra_bonus']) * $val['credit_value']/100;   //个人所得游戏分红金额
-            $fact_reward = $reward * $parameter[3]['value'];
-            $game_coin = $reward * $parameter[2]['value'];
-            $order_id = make_orderId();//生成订单号
-            M()->execute("call pro_cash(".$val['uid'].",$fact_reward,$game_coin,8,$reward,$order_id,1)");
-        }
-    }
-    return true;
 }
 
 /**
@@ -1157,6 +1089,7 @@ function std_class_object_to_array($stdclassobject){
     return $array;
 }
 
+
 /**
  * 支付各项奖励事务处理
  * @param $rewardMsg
@@ -1170,47 +1103,52 @@ function payReward($userMsg,$rewardMsg,$flowMsg,$noticeMsg){
     $flow = M('flow');
     $notice = M('notice');
     $staff->startTrans();//启用事务
+    $result = true;
     //修改账户信息
     foreach ($userMsg as $val){
-        $staff_update = $staff->where(array('id'=>$val['id']))->save($val['data']);
+        $data = $val['data'];
+        $staff_update = $staff->where(array('id'=>$val['id']))->save($data);
         if(!$staff_update){
-            $error_staff[] = $val['id'];
+            $result = false;
         }
     }
     //添加奖励发放记录
     foreach ($rewardMsg as $value){
         $reward_update = $reward->add($value['data']);
         if(!$reward_update){
-            $error_reward[] = $value['id'];
+            $result = false;
         }
     }
     //添加流水记录
     foreach ($flowMsg as $item){
         $flow_update = $flow->add($item['data']);
         if(!$flow_update){
-            $error_flow[] = $item['id'];
+            $result = false;
         }
     }
     //添加消息
     foreach ($noticeMsg as $vals){
         $notice_update = $notice->add($vals['data']);
         if(!$notice_update){
-            $error_notice[] = $vals['id'];
+            $result = false;
         }
     }
-    if(empty($error_staff) && empty($error_reward) && empty($error_flow) && empty($error_notice)){
+    if($result == true){
         $staff->commit();//成功则提交
     }else{
         $staff->rollback();//不成功，则回滚
+        error_log(date("[Y-m-d H:i:s]")."false:",3,"1.log");
     }
 }
 
+
 /**
- * 提现事务处理
+ * 提现事务
  * @param $cashMsg
  * @param $userMsg
  * @param $flowMsg
  * @param $noticeMsg
+ * @return string
  */
 function getCash($cashMsg,$userMsg,$flowMsg,$noticeMsg){
     $staff = M('staff');
@@ -1219,37 +1157,19 @@ function getCash($cashMsg,$userMsg,$flowMsg,$noticeMsg){
     $notice = M('notice');
     $staff->startTrans();//启用事务
     //修改账户信息
-    foreach ($userMsg as $val){
-        $staff_update = $staff->where(array('id'=>$val['id']))->save($val['data']);
-        if(!$staff_update){
-            $error_staff[] = $val['id'];
-        }
-    }
+    $staff_update = $staff->where(array('id'=>$cashMsg['id']))->setDec('money',$cashMsg['money']);
     //添加提现记录
-    foreach ($cashMsg as $value){
-        $reward_update = $withdraw->add($value['data']);
-        if(!$reward_update){
-            $error_reward[] = $value['id'];
-        }
-    }
+    $withdraw_insert = $withdraw->add($userMsg);
     //添加流水记录
-    foreach ($flowMsg as $item){
-        $flow_update = $flow->add($item['data']);
-        if(!$flow_update){
-            $error_flow[] = $item['id'];
-        }
-    }
+    $flow_update = $flow->add($flowMsg);
     //添加消息
-    foreach ($noticeMsg as $vals){
-        $notice_update = $notice->add($vals['data']);
-        if(!$notice_update){
-            $error_notice[] = $vals['id'];
-        }
-    }
-    if(empty($error_staff) && empty($error_reward) && empty($error_flow) && empty($error_notice)){
+    $notice_update = $notice->add($noticeMsg);
+    if($staff_update && $withdraw_insert && $flow_update && $notice_update){
         $staff->commit();//成功则提交
+        return "success";
     }else{
         $staff->rollback();//不成功，则回滚
+        return "false";
     }
 }
 
@@ -1301,4 +1221,365 @@ function makeRecharge($rechargeMsg,$userMsg,$flowMsg,$noticeMsg){
     }
 }
 
+/**
+ * 中心推荐奖励拨付总额
+ * @param $service_id
+ * @param $money
+ * @return mixed
+ */
+function service_recommend_award($service_id,$money){
+    //首先获取所有的兑换中心的服务费比例
+    $exchange = D('exchange');
+    $exchange->serviceCharge($service_id);
+    $result_message = $exchange->allMessages;
+    //新推广专员注册获得的服务费
+        $a = 0;
+        $service_fee = 0;
+        foreach($result_message as $key=>$value){
+            $b = $value['recommend_ratio'];
+            $c = $b - $a;
+            if($c > 0){
+                $service_fee += $money * $c/100;//服务费
+                $a = $b;//将服务费比例赋值给变量$a;
+            }
+        }
+        return $service_fee;
+}
 
+/**
+ * 中心业绩奖励拨付总额
+ * @param $service_id
+ * @param $money
+ * @return mixed
+ */
+function service_recharge_award($service_id,$money){
+    //首先获取所有的兑换中心的服务费比例
+    $exchange = D('exchange');
+    $exchange->serviceCharge($service_id);
+    $result_message = $exchange->allMessages;
+    //新推广专员注册获得的服务费
+    $a = 0;
+    $service_fee = 0;
+    foreach($result_message as $key=>$value){
+        $b = $value['recharge_ratio'];
+        $c = $b - $a;
+        if($c > 0){
+            $service_fee += $money * $c/100;//服务费
+            $a = $b;//将服务费比例赋值给变量$a;
+        }
+    }
+    return $service_fee;
+}
+
+/**
+ * 个人分红拨付总额
+ * @param $uid
+ * @param $type
+ * @param $money
+ * @return float|int
+ */
+function bonus_personal($uid,$type,$money){
+    $user = M('staff_info');
+    //首先查询出每个人的固定分红点和信用分
+    $user_msg = $user->field('fix_bonus,extra_bonus,credit_value')->where(array('uid'=>$uid))->find();
+    if ($type == 1){//按照固定分红点发放游戏分红
+        //运算出每个人应得的金额以及总金额
+        $reward = $money * $user_msg['fix_bonus'] * $user_msg['credit_value']/100;//个人所得游戏分红金额
+    }
+    if ($type == 2){//按照所有的分红点发放游戏分红
+        //运算出每个人应得的金额以及总金额
+        $reward = $money * ($user_msg['fix_bonus'] + $user_msg['extra_bonus']) * $user_msg['credit_value']/100;
+    }
+    return $reward;
+}
+
+/**
+ * 加盟商任务奖励
+ * 任务奖励值=公司利润-直推奖励-业绩提成-中心业绩奖励-中心推荐奖励-分销奖励-分红奖励；
+ * @param $rec_num 已经推荐推广专员人数
+ * @param $share_id 推荐人id
+ * @param $service_number 用户所属中心id
+ * @param $uid 用户
+ * @param $recharge 充值业绩指标
+ * @return int
+ */
+function taskMoney($uid,$rec_num,$recharge,$service_number,$share_id){
+        //首先查询出各个参数比例
+        $parameter = M('parameter')->field('name,value')->select();
+        //公司利润
+        $company = ($rec_num * 1000 + $recharge) * 60/100;
+        //直推奖励；首先查询已经推荐几个推广专员
+        $recommend_num = M('staff')->where(array('id'=>$share_id,'is_league'=>0))->count();
+        if($recommend_num == 0){
+            if($rec_num == 1){
+                $recommend_award = 100;
+            }elseif($rec_num == 2){
+                $recommend_award = 250;
+            }else{
+                $recommend_award = 250 + ($rec_num - 2) * 200;
+            }
+        }elseif ($recommend_num == 1){
+            if($rec_num == 1){
+                $recommend_award = 150;
+            }else{
+                $recommend_award = 150 + ($rec_num - 1) * 200;
+            }
+        }elseif($recommend_num >= 2){
+            $recommend_award = $rec_num * 200;
+        }
+        //业绩提成
+        $recharge_award = $recharge * $parameter[0]['value'];
+        //分销奖励
+        $distribution = $recharge_award * $parameter[1]['value'];
+        if(!empty($service_number)){
+            //中心业绩奖励
+            $service_recharge = service_recharge_award($service_number,$recharge);
+            //中心推荐奖励
+            $re_money = $rec_num * 1000;
+            $service_recommend = service_recharge_award($service_number,$re_money);
+        }else{
+            $service_recharge = 0;
+            $service_recommend = 0;
+        }
+        //分红奖励
+        $bonus = bonus_personal($uid,1,$parameter[4]['value']);
+        $taskMoney = $company - $recommend_award - $recharge_award - $distribution - $service_recharge - $service_recommend - $bonus;
+        if($taskMoney < 0){
+            $taskMoney = 0;
+        }
+        return $taskMoney;
+    }
+
+/**
+ * 推荐推广专员成功注册奖励拨付
+ * @param $share_id
+ */
+function recommend($share_id){
+    $share_num = M('staff')->where(array('referee'=>$share_id,'is_league'=>0))->count();
+    //分享奖励发放
+    $share_msg = M('staff')->field('money,consume_coin,income,service_number')->where(array('id'=>$share_id))->find();
+    $share_award = recommend_awards($share_num);
+    $order_id = make_orderId();//生成订单号
+    $new_money = $share_msg['money'] + $share_award * 70/100;
+    $new_coin = $share_msg['consume_coin'] + $share_award * 30/100;
+    $new_income = $share_msg['income'] + $share_award;
+    $user_msg[0]['id'] = $share_id;
+    $user_msg[0]['data'] = array(
+        'id'=>$share_id,
+        'money'=>$new_money,
+        'consume_coin'=>$new_coin,
+        'income'=>$new_income,
+    );
+    //分享奖励发放流水
+    $flow_msg[0]['id'] = $share_id;
+    $flow_msg[0]['data'] = array(
+        'uid'=>$share_id,
+        'type'=>2,
+        'money'=>$share_award,
+        'order_id'=>$order_id,
+    );
+    //分享奖励记录
+    $reward_msg[0]['id'] = $share_id;
+    $reward_msg[0]['data'] = array(
+        'uid'=>$share_id,
+        'type'=>3,
+        'money'=>$share_award*70/100,
+        'game_coin'=>$share_award*30/100,
+        'order_id'=>$order_id,
+        'remarks'=>"分享奖励，奖励金额￥".$share_award."元"
+    );
+    //金额变动消息
+    $notice_msg[0]['id'] = $share_id;
+    $notice_msg[0]['data'] = array(
+        'uid'=>$share_id,
+        'poster'=>'system',
+        'kind'=>2,
+        'notice_title'=>"分享奖励",
+        'notice_content'=>"恭喜您推荐成功注册一名推广专员，奖励￥".$share_award."元。",
+        'notice_type_id'=>3
+    );
+    /*中心分享奖励发放*/
+    if(!empty($share_award['service_number'])){
+        $service_award = service_awards('register',$share_award['service_number'],1000);
+        foreach ($service_award as $key=>$val){
+            $concert_msg = M('staff')->where(array('id'=>$val['id']))->find();
+            //拨付
+            $money = $concert_msg['money'] + $val['fact_money'];
+            $coin = $concert_msg['consume_coin'] + $val['coin'];
+            $income = $concert_msg['income'] + $val['money'];
+            $new_key = $key + 1;
+            $user_msg[$new_key]['id'] = $val['id'];
+            $user_msg[$new_key]['data'] = array(
+                'id'=>$val['id'],
+                'money'=>$money,
+                'consume_coin'=>$coin,
+                'income'=>$income,
+            );
+            //中心分享奖励发放流水
+            $flow_msg[$new_key]['id'] = $val['id'];
+            $flow_msg[$new_key]['data'] = array(
+                'uid'=>$val['id'],
+                'type'=>6,
+                'money'=>$money,
+                'order_id'=>$val['order_id'],
+            );
+            //中心分享奖励记录
+            $reward_msg[$new_key]['id'] = $val['id'];
+            $reward_msg[$new_key]['data'] = array(
+                'uid'=>$val['id'],
+                'type'=>5,
+                'money'=>$val['fact_money'],
+                'game_coin'=>$val['coin'],
+                'order_id'=>$val['order_id'],
+                'remarks'=>"兑换中心分享奖励，奖励金额￥".$val['money']."元"
+            );
+            //金额变动消息
+            $notice_msg[$new_key]['id'] = $val['id'];
+            $notice_msg[$new_key]['data'] = array(
+                'uid'=>$val['id'],
+                'poster'=>'system',
+                'kind'=>2,
+                'notice_title'=>"兑换中心分享奖励",
+                'notice_content'=>"恭喜您的团队推荐成功注册一名推广专员，奖励￥".$val['money']."元。",
+                'notice_type_id'=>3
+            );
+        }
+    }
+    payReward($user_msg,$reward_msg,$flow_msg,$notice_msg);
+}
+
+/**
+ * 玩家充值，用户奖励结算
+ * @param $msg
+ * @param $recharge
+ */
+function recharge($msg,$recharge){//todo查看gameController的备注
+    //充值提成
+    $recharge_draw = $recharge * 20/100;
+    $order_id1 = make_orderId();//生成订单号
+    $user_msg[0]['id'] = $msg['my']['id'];
+    $user_msg[0]['data'] = array(
+        'id'=>$msg['my']['id'],
+        'money'=>$msg['my']['money'] + $recharge_draw * 70/100,
+        'consume_coin'=>$msg['my']['coin'] + $recharge_draw * 30/100,
+        'income'=>$msg['my']['money'] + $recharge_draw,
+    );
+    //充值提成发放流水
+    $user_msg[0]['id'] = $msg['my']['id'];
+    $user_msg[0]['data'] = array(
+        'uid'=>$msg['my']['id'],
+        'type'=>4,
+        'money'=>$recharge_draw,
+        'order_id'=>$order_id1,
+    );
+    //充值提成记录
+    $reward_msg[0]['id'] = $msg['my']['id'];
+    $reward_msg[0]['data'] = array(
+        'uid'=>$msg['my']['id'],
+        'type'=>4,
+        'money'=>$recharge_draw * 70/100,
+        'game_coin'=>$recharge_draw * 30/100,
+        'order_id'=>$order_id1,
+        'remarks'=>"充值提成奖励，奖励金额￥".$recharge_draw."元"
+    );
+    //金额变动消息
+    $notice_msg[0]['id'] = $msg['my']['id'];
+    $notice_msg[0]['data'] = array(
+        'uid'=>$msg['my']['id'],
+        'poster'=>'system',
+        'kind'=>2,
+        'notice_title'=>"充值提成奖励",
+        'notice_content'=>"恭喜您的辖下有玩家充值，奖励￥".$recharge_draw."元。",
+        'notice_type_id'=>3
+    );
+    //分销奖励
+    /*判断是否有上级推广专员*/
+    if(!empty($msg['last'])){
+        $distribution = $recharge * 20 * 50/10000;
+        $order_id2 = make_orderId();//生成订单号
+        $user_msg[1]['id'] = $msg['last']['id'];
+        $user_msg[1]['data'] = array(
+            'id'=>$msg['last']['id'],
+            'money'=>$msg['last']['money'] + $distribution * 70/100,
+            'consume_coin'=>$msg['last']['coin'] + $distribution * 30/100,
+            'income'=>$msg['last']['money'] + $distribution,
+        );
+        //分销发放流水
+        $user_msg[1]['id'] = $msg['last']['id'];
+        $user_msg[1]['data'] = array(
+            'uid'=>$msg['last']['id'],
+            'type'=>8,
+            'money'=>$distribution,
+            'order_id'=>$order_id2,
+        );
+        //分销奖励记录
+        $reward_msg[1]['id'] = $msg['last']['id'];
+        $reward_msg[1]['data'] = array(
+            'uid'=>$msg['last']['id'],
+            'type'=>7,
+            'money'=>$distribution * 70/100,
+            'game_coin'=>$distribution * 30/100,
+            'order_id'=>$order_id2,
+            'remarks'=>"分销奖励，奖励金额￥".$distribution."元"
+        );
+        //金额变动消息
+        $notice_msg[1]['id'] = $msg['last']['id'];
+        $notice_msg[1]['data'] = array(
+            'uid'=>$msg['last']['id'],
+            'poster'=>'system',
+            'kind'=>2,
+            'notice_title'=>"分销奖励",
+            'notice_content'=>"恭喜您的下级推广专员获得充值提成，奖励￥".$distribution."元。",
+            'notice_type_id'=>3
+        );
+    }
+    //兑换中心业绩奖励
+    /*判断是否有兑换中心*/
+    if(!empty($msg['my']['service_number'])){
+        $service_recharge = service_awards('recharge',$msg['my']['service_number'],$recharge);
+        foreach ($service_recharge as $key=>$val){
+            $concert_msg = M('staff')->where(array('id'=>$val['id']))->find();
+            //拨付
+            $money = $concert_msg['money'] + $val['fact_money'];
+            $coin = $concert_msg['consume_coin'] + $val['coin'];
+            $income = $concert_msg['income'] + $val['money'];
+            $new_key = $key + 2;
+            $user_msg[$new_key]['id'] = $val['id'];
+            $user_msg[$new_key]['data'] = array(
+                'id'=>$val['id'],
+                'money'=>$money,
+                'consume_coin'=>$coin,
+                'income'=>$income,
+            );
+            //中心业绩奖励发放流水
+            $flow_msg[$new_key]['id'] = $val['id'];
+            $flow_msg[$new_key]['data'] = array(
+                'uid'=>$val['id'],
+                'type'=>6,
+                'money'=>$money,
+                'order_id'=>$val['order_id'],
+            );
+            //中心业绩奖励记录
+            $reward_msg[$new_key]['id'] = $val['id'];
+            $reward_msg[$new_key]['data'] = array(
+                'uid'=>$val['id'],
+                'type'=>6,
+                'money'=>$val['fact_money'],
+                'game_coin'=>$val['coin'],
+                'order_id'=>$val['order_id'],
+                'remarks'=>"兑换中心业绩奖励，奖励金额￥".$val['money']."元"
+            );
+            //金额变动消息
+            $notice_msg[$new_key]['id'] = $val['id'];
+            $notice_msg[$new_key]['data'] = array(
+                'uid'=>$val['id'],
+                'poster'=>'system',
+                'kind'=>2,
+                'notice_title'=>"兑换中心业绩奖励",
+                'notice_content'=>"恭喜您的团队辖下有玩家充值，奖励￥".$val['money']."元。",
+                'notice_type_id'=>3
+            );
+        }
+    }
+    makeRecharge($user_msg,$reward_msg,$flow_msg,$notice_msg);
+}

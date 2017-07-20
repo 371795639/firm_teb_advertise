@@ -100,7 +100,6 @@ class LoginController extends \Think\Controller {
                     }
                     if($phoneRepeat['pay_status'] !== 3){
                         $this->wxcallback();
-//                        die;
                     }
                 }
                 //查表获得该用户id
@@ -274,7 +273,7 @@ class LoginController extends \Think\Controller {
                         if($dbStaff->where('mobile='.$phoneNum)->save($RegStaff)){
                             //清空session指定字段值
                             unset($_SESSION['verifyNum']);
-                            $this -> redirect('Login/login');
+                            echo "<script>alert('修改成功，快去登陆吧。');window.location.href='".U('Login/login')."';</script>";
                         }
                     }else{
                         echo "<script>alert('该用户不存在!');</script>";
