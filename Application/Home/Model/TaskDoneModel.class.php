@@ -86,6 +86,28 @@ class TaskDoneModel extends Model{
 
 
     /**
+     * 根据当前时间获取这周一的某个时间
+     * @param $date     string  日期
+     * @param $format   string  时间
+     * @return bool|string
+     */
+    public function get_monday_time($date,$format){
+        if(!empty($date)) {
+            $time = strtotime($date);
+            $week = date('N', $time);
+            if ($week == 1) {
+                $start_time = date('Y-m-d '.$format, strtotime('monday', $time));       //'Y-m-d 'd后要保留空格，否则时间日和小时之间没有空格
+            } else {
+                $start_time = date('Y-m-d '.$format, strtotime('-1 monday', $time));
+            }
+        }else{
+            $start_time = "";
+        }
+        return $start_time;
+    }
+
+
+    /**
      * 根据用户获取本周内所有已领取的任务
      * @param   $group  string      根据字段进行分组
      * @param   $uid    integer     根据$uid获取本周任务；传入空，则返回所有
@@ -343,7 +365,7 @@ class TaskDoneModel extends Model{
         $sunday = get_last_sunday($date);
         $map = array(
             'get_time'  => array(array('gt',$monday),array('lt',$sunday)),
-            'task_id'   => array('neq',0),
+            'task_id'   => array('gt',0),
         );
         if($uid && empty($group)){
             $map['uid'] = $uid;
