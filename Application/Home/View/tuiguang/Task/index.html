@@ -88,8 +88,10 @@
 				<div id="item1" class="mui-control-content mui-active" >					
 					<!--时间列表模板-->
                     <p class="limit-time">
-                        	期限： {$resDoneStart|time_formatss} ~ {$resDoneEnd|time_formatss}
-                        <span style="margin-left: 2rem"><a href="{:U('Home/Task/taskWhat')}" style="color:red" class="limit-time">任务状态检测</a></span>
+                        期限： {$resDoneStart|time_formatss} ~ {$resDoneEnd|time_formatss}
+                        <if condition="$doingNo neq null">
+                            <span style="margin-left: 2rem"><a href="{:U('Home/Task/taskWhat')}" style="color:red" class="limit-time">任务状态检测</a></span>
+                        </if>
                     </p>
 					<div class="content" >
                         <p class="task-type">
