@@ -1106,9 +1106,10 @@ function payReward($userMsg,$rewardMsg,$flowMsg,$noticeMsg){
     $result = true;
     //修改账户信息
     foreach ($userMsg as $val){
-        $data = $val['data'];
-        $staff_update = $staff->where(array('id'=>$val['id']))->save($data);
-        if(!$staff_update){
+        $money_add  = $staff->where(array('id'=>$val['id']))->setInc('money',$val['data']['money']);
+        $coin_add   = $staff->where(array('id'=>$val['id']))->setInc('consume_coin',$val['data']['consume_coin']);
+        $income_add = $staff->where(array('id'=>$val['id']))->setInc('income',$val['data']['income']);
+        if(!$money_add || !$coin_add || !$income_add){
             $result = false;
         }
     }
@@ -1137,7 +1138,8 @@ function payReward($userMsg,$rewardMsg,$flowMsg,$noticeMsg){
         $staff->commit();//成功则提交
     }else{
         $staff->rollback();//不成功，则回滚
-        error_log(date("[Y-m-d H:i:s]")."false:",3,"1.log");
+//        error_log(date("[Y-m-d H:i:s]")."false:",3,"1.log");
+        error_log(date("[Y-m-d H:i:s]").print_r($result,1),3,"/data/tuiguang/logs/shiwu.log");
     }
 }
 

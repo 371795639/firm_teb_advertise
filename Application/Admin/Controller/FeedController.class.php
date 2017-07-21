@@ -18,7 +18,7 @@ class FeedController extends AdminController {
         }
         $this->assign('msg', $res_msg);
         $this->meta_title = '反馈列表';
-        $this->display('main/feed/index');
+        $this->display('Main/Feed/index');
     }
 
 
@@ -32,7 +32,7 @@ class FeedController extends AdminController {
         $this -> assign('resMsgRe',$resMsgRe);
         $this -> assign('resMsgDetail',$resMsgDetail);
         $this -> meta_title = '反馈详情';
-        $this -> display('main/feed/feedView');
+        $this -> display('Main/Feed/feedView');
     }
 
 

@@ -28,12 +28,12 @@
 			<div style="padding: 1.4rem 1.5rem; background: #FFF;">
 				<div id="segmentedControl" class="mui-segmented-control">
                     <div class="inline">
-                        <a class="mui-control-item" href="#item3">
+                        <a class="mui-control-item mui-active" href="#item3">
                             周收益
                         </a>
                     </div>
 					<div class="inline">
-						<a class="mui-control-item mui-active" href="#item1">
+						<a class="mui-control-item" href="#item1">
 							任务奖励
 						</a>
 					</div>
@@ -45,8 +45,24 @@
 				</div>
 			</div>
 			<div  id="list">
+				<!--描述：周收益 -->
+				<div id="item3" class="mui-control-content mui-active">
+					<ul>
+						<li>
+							<div class="left ">
+								<span class="text-overflow">周收益</span>
+								<span class="time"></span>
+							</div>
+						 	<div class="right col-ye">
+                                <if condition="$weekReward eq 0">暂无周收益
+                                    <else /> +{$weekReward}
+                                </if>
+							</div>
+						</li>
+					</ul>
+				</div>
 				<!--描述：任务奖励-->
-				<div id="item1" class="mui-control-content mui-active" >
+				<div id="item1" class="mui-control-content" >
 					<ul>
 						<volist name="taskReward" id="vo">
 						<li>
@@ -120,20 +136,6 @@
 								</switch>
 							</li>
 						</volist>
-					</ul>
-				</div>
-				<!--描述：周收益 -->
-				<div id="item3" class="mui-control-content">
-					<ul>
-						<li>
-							<div class="left ">
-								<span class="text-overflow">周收益</span>
-								<span class="time"></span>
-							</div>
-						 	<div class="right col-ye">
-                                +{$weekReward}
-							</div>
-						</li>
 					</ul>
 				</div>
 			</div>

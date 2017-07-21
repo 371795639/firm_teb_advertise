@@ -28,16 +28,18 @@
             <tr>
                 <th class="row-selected row-selected"><input class="check-all" type="checkbox"/></th>
                 <th class="text-center">ID</th>
-                <th class="text-center">昵称</th>
                 <th class="text-center">真实姓名</th>
                 <th class="text-center">身份证号</th>
                 <th class="text-center">手机号</th>
                 <th class="text-center">推荐人</th>
                 <th class="text-center">游戏ID</th>
                 <th class="text-center">余额</th>
-                <th class="text-center">消费币</th>
+                <th class="text-center">游戏币</th>
+                <th class="text-center">推广收益</th>
                 <th class="text-center">服务中心</th>
                 <th class="text-center">加盟商等级</th>
+                <th class="text-center">所属中心ID</th>
+                <th class="text-center">信用值</th>
                 <th class="text-center">注册时间</th>
                 <th class="text-center">状态</th>
                 <th class="text-center">操作</th>
@@ -49,14 +51,26 @@
                         <tr>
                             <td><input class="ids" type="checkbox" name="id[]" value="{$vo.id}" /></td>
                             <td>{$vo.id}</td>
-                            <td>{$vo.staff_name}</td>
                             <td>{$vo.staff_real}</td>
-                            <td>{$vo.card_id}</td>
+                            <td>
+                                <if condition="$vo.card_id eq null">-
+                                    <else />{$vo.card_id}
+                                </if>
+                            </td>
                             <td>{$vo.mobile}</td>
-                            <td>{$vo.referee}</td>
-                            <td>{$vo.game_id}</td>
+                            <td>
+                                <if condition="$vo.referee eq null">-
+                                    <else />{$vo.referee}
+                                </if>
+                            </td>
+                            <td>
+                                <if condition="$vo.game_id eq null">-
+                                    <else />{$vo.game_id}
+                                </if>
+                            </td>
                             <td>{$vo.money}</td>
                             <td>{$vo.consume_coin}</td>
+                            <td>{$vo.income}</td>
                             <td>
                                 <if condition="$vo.is_service eq 0">否
                                     <else/>是
@@ -64,10 +78,20 @@
                             </td>
                             <td>
                                 <if condition="$vo.is_league eq 0"> 推广专员
-                                    <elseif condition="$vo.class eq 1"/> 一级加盟商
-                                    <elseif condition="$vo.class eq 2"/> 二级加盟商
-                                    <elseif condition="$vo.class eq 3"/> 三级加盟商
+                                    <elseif condition="$vo.class eq 1"/> 一级
+                                    <elseif condition="$vo.class eq 2"/> 二级
+                                    <elseif condition="$vo.class eq 3"/> 三级
                                     <else/> -
+                                </if>
+                            </td>
+                            <td>
+                                <if condition="$vo.service_number eq 0">-
+                                    <else />{$vo.service_number}
+                                </if>
+                            </td>
+                            <td>
+                                <if condition="$vo.credit_value eq null">-
+                                    <else />{$vo.credit_value}
                                 </if>
                             </td>
                             <td>
@@ -75,12 +99,15 @@
                                     <else/>{$vo.create_time}
                                 </if>
                             </td>
-                            <td><if condition="$vo.status eq 1"> 正常
-                                <else/>禁用
-                            </if>
+                            <td>
+                                <if condition="$vo.status eq 1"> 正常
+                                    <elseif condition="$vo.status eq 2"/>禁用
+                                    <elseif condition="$vo.status eq 3"/>信息待完善
+                                    <else /> -
+                                </if>
                             </td>
                             <td>
-                                <if condition="$vo.status eq 1">
+                                <if condition="$vo.status neq 2">
                                     <a href="{:U('main/msgEdit',array('id'=>$vo['id']))}">编辑</a>
                                     <else />
                                     编辑
@@ -93,7 +120,7 @@
                         </tr>
                     </volist>
                     <else/>
-                    <td colspan="12" class="text-center"> @_@ 暂时还没有内容哦，快去添加吧。 </td>
+                    <td colspan="17" class="text-center"> @_@ 暂时还没有内容哦，快去添加吧。 </td>
                 </notempty>
             </tbody>
         </table>

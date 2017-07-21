@@ -92,7 +92,7 @@ class CashController extends AdminController {
         int_to_string($result_list);
         $this->assign('list',$result_list);
         $this -> meta_title = '分红管理';
-        $this -> display('Main/cash/cashGiven');
+        $this -> display('Main/Cash/cashGiven');
     }
 
 
@@ -228,7 +228,7 @@ class CashController extends AdminController {
         $this->assign('status',$status);
         $this->assign('vo',$vo);
         $this -> meta_title = '出入帐理';
-        $this -> display('Main/cash/cashIo');
+        $this -> display('Main/Cash/cashIo');
     }
 
 
@@ -265,7 +265,7 @@ class CashController extends AdminController {
         $this->assign('percent',$percent);
         $this->assign('system_spend',$system_spend);
         $this -> meta_title = '财务总表';
-        $this -> display('Main/cash/cashTotal');
+        $this -> display('Main/Cash/cashTotal');
     }
 
 
@@ -330,7 +330,7 @@ class CashController extends AdminController {
         $this->assign('list',$result_list);
         $this->assign('type',$type);
         $this -> meta_title = '奖励明细';
-        $this -> display('Main/cash/cashDetail');
+        $this -> display('Main/Cash/cashDetail');
     }
 
 

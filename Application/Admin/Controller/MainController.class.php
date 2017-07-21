@@ -46,7 +46,11 @@ class MainController extends AdminController {
         foreach($resStaff as $k => $v){
             $id = $resStaff[$k]['id'];
             $info = $dbStaffInfo -> where("uid = $id") -> find();
-            $resStaff[$k]['class'] = $info['class'];
+            $resStaff[$k]['class']          = $info['class'];
+            $resStaff[$k]['credit_value']   = $info['credit_value'];
+            $resStaff[$k]['credit_num']     = $info['credit_num'];
+            $resStaff[$k]['fix_bonus']      = $info['fix_bonus'];
+            $resStaff[$k]['extra_bonus']    = $info['extra_bonus'];
         }
         //导出查询到的数据（不含分页）
         $excel = A('Excel');
@@ -125,7 +129,7 @@ class MainController extends AdminController {
             $resStaffEdit = $dbStaff -> msg_find($where);
             $this->assign('resStaffEdit', $resStaffEdit);
             $this->meta_title = '修改推广专员信息';
-            $this->display('Main/msg/msgEdit');
+            $this->display('Main/Msg/msgEdit');
         }
     }
 
@@ -146,7 +150,7 @@ class MainController extends AdminController {
             }
         }else {
             $this->meta_title = '添加推广专员';
-            $this->display('Main/msg/msgAdd');
+            $this->display('Main/Msg/msgAdd');
         }
     }
 
@@ -250,7 +254,7 @@ class MainController extends AdminController {
         int_to_string($resTask);
         $this -> assign('resTask',$resTask);
         $this -> meta_title = '任务列表';
-        $this -> display('Main/task/taskList');
+        $this -> display('Main/Task/taskList');
     }
 
 
@@ -274,7 +278,7 @@ class MainController extends AdminController {
             }
         }else {
             $this -> meta_title = '添加日常任务';
-            $this -> display('Main/task/daliyTaskAdd');
+            $this -> display('Main/Task/daliyTaskAdd');
         }
     }
 
@@ -297,7 +301,7 @@ class MainController extends AdminController {
             }
         }else {
             $this -> meta_title = '添加额外任务';
-            $this -> display('Main/task/extraTaskAdd');
+            $this -> display('Main/Task/extraTaskAdd');
         }
     }
 
@@ -395,7 +399,7 @@ class MainController extends AdminController {
         int_to_string($resTaskWeekly);
         $this -> assign('resTaskWeekly',$resTaskWeekly);
         $this -> meta_title = '周计划任务';
-        $this -> display('Main/task/taskWeekly');
+        $this -> display('Main/Task/taskWeekly');
     }
 
 
@@ -426,7 +430,7 @@ class MainController extends AdminController {
             $resTask = $dbTask -> get_task_by_id($where);
             $this->assign('resTask', $resTask);
             $this->meta_title = '编辑日常任务';
-            $this->display('Main/task/dailyTaskEdit');
+            $this->display('Main/Task/dailyTaskEdit');
         }
     }
 
@@ -455,7 +459,7 @@ class MainController extends AdminController {
             $resTask = $dbTask -> get_task_by_id($where);
             $this->assign('resTask', $resTask);
             $this->meta_title = '编辑额外任务';
-            $this->display('Main/task/extraTaskEdit');
+            $this->display('Main/Task/extraTaskEdit');
         }
     }
 
@@ -511,7 +515,7 @@ class MainController extends AdminController {
         }
         $this->assign('resTaskDone',$resTaskDone);
         $this->meta_title = '已完成任务';
-        $this->display('Main/task/taskDone');
+        $this->display('Main/Task/taskDone');
     }
 
 
@@ -534,7 +538,7 @@ class MainController extends AdminController {
         $this->assign('staff',$staff);
         $this->assign('resTask',$resTask);
         $this->meta_title = '查看已完成任务';
-        $this->display('Main/task/taskDoneView');
+        $this->display('Main/Task/taskDoneView');
 
     }
 
@@ -616,7 +620,7 @@ class MainController extends AdminController {
                 break;
         }
         $this -> meta_title = '消息管理';
-        $this -> display('Main/notice/notice');
+        $this -> display('Main/Notice/notice');
     }
 
 
@@ -661,7 +665,7 @@ class MainController extends AdminController {
             $result = M('notice_type')->where($where)->select();
             $this->assign('type', $result);
             $this->meta_title = '消息管理';
-            $this->display('Main/notice/noticePost');
+            $this->display('Main/Notice/noticePost');
         }
     }
 
@@ -747,7 +751,7 @@ class MainController extends AdminController {
         $resNotice = $this -> lists($dbNotice,$map);
         $this -> assign('resNotice',$resNotice);
         $this -> meta_title = '金额变动消息';
-        $this -> display('Main/notice/moneyNotice');
+        $this -> display('Main/Notice/moneyNotice');
     }
 
 
@@ -782,7 +786,7 @@ class MainController extends AdminController {
         $this -> assign('refereeIds',$refereeIds);
         $this -> assign('superiorGameIds',$superiorGameIds);
         $this -> meta_title = '查看关系';
-        $this -> display('Main/msg/relationDetail');
+        $this -> display('Main/Msg/relationDetail');
     }
 
 

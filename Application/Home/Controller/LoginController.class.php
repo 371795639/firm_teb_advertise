@@ -70,7 +70,7 @@ class LoginController extends \Think\Controller {
                 unset($_SESSION['verifyNum']['content']);
             }
             //判断手机验证码
-//            if ($_SESSION['verifyNum']['content'] == $_POST['verifyNum']) {
+           // if ($_SESSION['verifyNum']['content'] == $_POST['verifyNum']) {
             if ($_POST['verifyNum'] == 1) {
                 if($_POST['password1'] !== $_POST['password2']){
                     echo "<script>alert('输入的两次密码不一致，再检查下!');</script>";
@@ -94,7 +94,7 @@ class LoginController extends \Think\Controller {
                     }
                 }else{
                     if($phoneRepeat['pay_status'] == 3 && $phoneRepeat['status'] == 1){
-                        echo "<script>alert('该手机号已注册，别再瞎注册了!');window.location.href='".U('Home/Login/login')."';</script>";
+                        echo "<script>alert('该手机号已注册，请勿重复注册!');window.location.href='".U('Home/Login/login')."';</script>";
                         unset($_SESSION['verifyNum']['content']);
                         die;
                     }
@@ -105,7 +105,7 @@ class LoginController extends \Think\Controller {
                 //查表获得该用户id
                 $ref =  $dbStaff->where('mobile=' . $refStaff['mobile'])->find();
                 //添加session用户id信息
-                $_SESSION['user_id'] = $ref['id'] ;
+                $_SESSION['userid'] = $ref['id'] ;
                 //跳转微信支付
                 $customerid = 102090;                               //商户在网关系统上的商户号 - 获得商户号
                 $sdcustomno = $customerid . time() . rand(1000000, 9999999);//订单在商户系统中的流水号 商户信息+日期+随机数
@@ -118,7 +118,7 @@ class LoginController extends \Think\Controller {
                 $Md5str = 'customerid=' . $customerid . '&sdcustomno=' . $sdcustomno . '&orderAmount=' . $orderAmount . '&cardno=' . $cardno . '&noticeurl=' . $noticeurl . '&backurl=' . $backurl . $key;
                 $sign = strtoupper(md5($Md5str));//发送给网关的签名字符串,为以上参数加商户在网关系秘钥（key）一起按照顺序MD5加密并转为大写的字符串
                 $mark = $ref['id'];     //商户自定义信息，不能包含中文字符，因为可能编码不一致导致MD5加密结果不一致,返回用户uid 然后查询该纪录
-                $_SESSION['user_id'] = $ref['id'];
+                $_SESSION['userid'] = $ref['id'];
                 //拼接url
                 $url = 'http://www.51card.cn/gateway/weixinpay/wap-weixinpay.asp?customerid=' . $customerid . '&sdcustomno=' . $sdcustomno . '&orderAmount=' . $orderAmount . '&cardno=' . $cardno . '&noticeurl=' . $noticeurl . '&backurl=' . $backurl . '&sign=' . $sign . '&mark=' . $mark;
                 error_log(date("[Y-m-d H:i:s]")." -[".$_SERVER['REQUEST_URI']."] :".$url."\n", 3, "/tmp/tuiguang.log");
@@ -226,7 +226,7 @@ class LoginController extends \Think\Controller {
         {
             //等待付款状态
             case 1:
-                echo "<script>alert('等待付款状态,3秒后重新跳转到本页面！');window.location.href='".U('Login/registerSucc')."';</script>";
+                echo "<script>window.location.href='".U('Login/registerSucc')."';</script>";
                 break;
             //付款失败状态
             case 2:

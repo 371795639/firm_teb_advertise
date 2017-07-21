@@ -299,7 +299,8 @@ class Dispatcher {
                 }
             }
         }        
-        return strip_tags(strtolower($action));
+//        return strip_tags(strtolower($action));
+        return strip_tags(($action));
     }
 
     /**

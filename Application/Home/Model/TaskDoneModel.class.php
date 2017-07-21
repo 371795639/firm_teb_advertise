@@ -254,6 +254,7 @@ class TaskDoneModel extends Model{
         $map = array(
             'get_time'  => array(array('gt',$monday),array('lt',$sunday)),
             'task_id'   => array('gt',0),
+            'get_money' => 1,
         );
         if($uid){
             $map['uid'] = $uid;
@@ -397,6 +398,13 @@ class TaskDoneModel extends Model{
     }
 
 
+    /**
+     * 获取用户上周领取的某一任务指标
+     * @param $date     string  时间
+     * @param $uid      integer 用户ID
+     * @param $names    string  任务名称
+     * @return mixed    integer 任务指标
+     */
     public function get_task_inneed($date,$uid,$names){
         $re = $this -> get_last_week_done($date,$uid);
         foreach ($re as $key => $val) {

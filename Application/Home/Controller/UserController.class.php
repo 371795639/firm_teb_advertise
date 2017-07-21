@@ -23,15 +23,15 @@ class UserController extends HomeController {
             header('Content-Type:text/html;charset=utf-8');
             $dbStaff = D('staff');
             $userid = $_SESSION['userid'];
-            if ($_POST['type'] == 'league') {
+            if ($_GET['type'] == 'league') {
+	    
                 $game_id = $_POST['game_id'];
                 $res = $dbStaff->where(array('id'=>$userid))->save(array('game_id'=>$game_id,'status'=>1));
-                if($res){
-                    $data['code'] = 1;
+		if($res){
+                    $this->redirect('User/index');
                 }else{
-                    $data['code'] = 2;
+                    echo "<script>alert('绑定失败，请重新绑定!');history.back(-1);</script>";
                 }
-                $this->ajaxReturn($data,"JSON");
             } else {
                 $refData = array(
                     'game_id' => $_POST['gameId'],
@@ -95,9 +95,6 @@ class UserController extends HomeController {
         }else{
             $pic = 2;
         }
-        /**检测日常任务是否完成**/
-        $task = A('Task');
-        $task -> taskWhat();
         /**信用值**/
         $credit = D('StaffInfo') -> get_staff_by_uid($userid);
         $creditValue = $credit['credit_value'];
@@ -149,14 +146,21 @@ class UserController extends HomeController {
             'type'          => array('in','1,2,3,4,5,6,7'),
         );
         $weekReward = $dbReward->where($map)->sum('money');
+        $weekReward = $weekReward / 0.7;
         //任务奖励
         $taskReward = $dbReward->where(array('uid' => $userid , 'type' => array('in','1,2')))->order('create_time desc')->select();
+        foreach ($taskReward as $key => $value) {
+            $taskReward[$key]['money'] = $value['money'];
+        }
         //推荐奖励
         $map =array(
             'uid'   => $userid,
             'type'  => array('in','3,4,5,6,7'),
         );
         $spreadReward = $dbReward->where($map)->order('create_time desc')->select();
+        foreach ($spreadReward as $key => $value) {
+            $spreadReward[$key]['money'] = $value['money']/0.7;
+        }
         //输出模板
         $this->assign('weekReward',$weekReward);
         $this->assign('taskReward',$taskReward);

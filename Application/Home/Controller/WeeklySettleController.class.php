@@ -7,9 +7,8 @@ class WeeklySettleController{
     /**任务结算**/
     public function taskSettle(){
         $dbStaff        = D('Staff');
-        $taskDone       = D('TaskDone');
         $dbTaskDone     = D('TaskDone');
-        $dbParameter    = M('Parameter');
+        $dbParameter    = D('Parameter');
         $dbStaffInfo    = D('StaffInfo');
         $date           = date('Y-m-d H:i:s');
         $uids           = $dbTaskDone -> get_time_in_last_week($date,'','uid');             //获取已完成上周日常任务的所有用户ID
@@ -33,14 +32,14 @@ class WeeklySettleController{
             $dbStaffInfo -> save_staff_by_uid($uidUnsets,$infoCred);
             //任务未完成只发分红奖励
             $oldData        = $dbStaff -> get_staff_by_id($uidUnsets);
-            $parameter      = $dbParameter -> where("id = 3") -> find();
-            $parameterBase  = $dbParameter -> where("id = 5") -> find();
-            $totalMoney     = bonus_personal($uidUnsets,'1',$parameterBase['value']);
+            $parameter      = $dbParameter -> get_parameter_by_id('3');
+            $parameterBase  = $dbParameter -> get_parameter_by_id('5');
+            $bounsMoney     = bonus_personal($uidUnsets,'1',$parameterBase['value']);
             $discount       = $parameter['value'] / 100;
             $dataStaff  = array(
-                'consume_coin'  => $oldData['consume_coin'] + ($totalMoney * $discount),
-                'money'         => $oldData['money'] + $totalMoney * (1 - $discount),
-                'income'        => $oldData['income'] + $totalMoney,
+                'consume_coin'  => $oldData['consume_coin'] + ($bounsMoney * $discount),
+                'money'         => $oldData['money'] + $bounsMoney * (1 - $discount),
+                'income'        => $oldData['income'] + $bounsMoney,
             );
             $staffArr[] = array(
                 'id'    => $uidUnsets,
@@ -50,7 +49,7 @@ class WeeklySettleController{
             $dataFlow   = array(
                 'uid'           => $uidUnsets,
                 'type'          => 1,
-                'money'         => $totalMoney,
+                'money'         => $bounsMoney,
                 'order_id'      => 0,
                 'create_time'   => date('Y-m-d H:i:s'),
             );
@@ -62,11 +61,11 @@ class WeeklySettleController{
             $dataRewardDaily = array(
                 'uid'           => $uidUnsets,
                 'type'          => 1,       //日常任务奖励
-                'money'         => $totalMoney,
-                'game_coin'     => 0,
-                'order_id'      => 0,
+                'money'         => $bounsMoney,
+                'game_coin'     => $dataStaff['consume_coin'],
+                'order_id'      => date('YmdHis'),
                 'create_time'   => date('Y-m-d H:i:s'),
-                'remarks'       => "未完成上周日常任务，获得分红奖励 $totalMoney 元",
+                'remarks'       => "未完成上周日常任务，获得分红奖励 $bounsMoney 元",
             );
             $rewardDailyArr[]   = array(
                 'id'    => $uidUnsets,
@@ -77,13 +76,25 @@ class WeeklySettleController{
                 'uid'           => $uidUnsets,
                 'kind'          => '2',
                 'poster'        => 'system',
-                'notice_type_id'=> '3',
+                'notice_type_id'=> 3,
                 'notice_title'  => '未完成上周任务',
-                'notice_content'=> "未完成上周日常任务，获得分红奖励 $totalMoney 元",
+                'notice_content'=> "未完成上周日常任务，获得分红奖励 $bounsMoney 元",
+            );
+            $dataNotices = array(
+                'uid'           => $uidUnsets,
+                'kind'          => '2',
+                'poster'        => 'system',
+                'notice_type_id'=> 4,
+                'notice_title'  => '未完成上周任务',
+                'notice_content'=> "未完成上周日常任务，获得分红奖励 $bounsMoney 元",
             );
             $noticeArr[]= array(
                 'id'    => $uidUnsets,
                 'data'  => $dataNotice,
+            );
+            $noticeArr[]= array(
+                'id'    => $uidUnsets,
+                'data'  => $dataNotices,
             );
         }
         //对于已完成分享推广专员任务的用户：修改recommend_num值=总值-指标，保留此字段值，用于下次任务
@@ -101,8 +112,8 @@ class WeeklySettleController{
         //给完成任务的用户发奖励，写通知
         foreach($uids as $k => $v) {
             $id             = $uids[$k];
-            $parameter      = $dbParameter -> where("id = 3") -> find();
-            $parameterBase  = $dbParameter -> where("id = 5") -> find();
+            $parameter      = $dbParameter -> get_parameter_by_id('3');
+            $parameterBase  = $dbParameter -> get_parameter_by_id('5');
             //给完成任务的用户增加信用分
             $infoCredit     = $dbStaffInfo -> get_staff_by_uid($id);
             $infoCreditNum  = $infoCredit['credit_num'] + 1;
@@ -114,16 +125,15 @@ class WeeklySettleController{
             );
             $dbStaffInfo-> save_staff_by_uid($id,$infoCred);
             $rec_num    = $dbStaff -> count_staff_by_referee($id);
-            $dbTaskDone -> get_last_week_done($date,$id);
-            $recharge   = $dbTaskDone -> get_task_inneed($date,'769','充值业绩');
+            $recharge   = $dbTaskDone -> get_task_inneed($date,$id,'充值业绩');
             $oldData    = $dbStaff -> get_staff_by_id($id);
             $service_number = $oldData['service_number'];
             $share_id   = $oldData['referee'];
             //计算任务总金额
-            $totlMoney  = taskMoney($id,$rec_num,$recharge,$service_number,$share_id);
+            $taskMoney  = taskMoney($id,$rec_num,$recharge,$service_number,$share_id);
             //计算分红奖励
-            $baseMoney  = bonus_personal($id,'1',$parameterBase['value']);
-            $totalMoney = $totlMoney + $baseMoney;
+            $bounsMoney = bonus_personal($id,'1',$parameterBase['value']);
+            $totalMoney = $taskMoney + $bounsMoney;
             //staff表发放奖励 =>income = $totalMoney * $discount;money = $totalMoney * (1 - $discount);
             $discount   = $parameter['value'] / 100;
             $dataStaff  = array(
@@ -152,8 +162,8 @@ class WeeklySettleController{
                 'uid'           => $id,
                 'type'          => 1,       //日常任务奖励
                 'money'         => $totalMoney,
-                'game_coin'     => 0,
-                'order_id'      => 0,
+                'game_coin'     => $dataStaff['consume_coin'],
+                'order_id'      => date('YmdHis'),
                 'create_time'   => date('Y-m-d H:i:s'),
                 'remarks'       => "完成上周日常任务，奖励总金额 $totalMoney 元",
             );
@@ -166,13 +176,25 @@ class WeeklySettleController{
                 'uid'           => $id,
                 'kind'          => '2',
                 'poster'        => 'system',
-                'notice_type_id'=> '3',
+                'notice_type_id'=> 3,
+                'notice_title'  => '恭喜您已完成上周任务',
+                'notice_content'=> "获得上周任务总金额 $totalMoney 元",
+            );
+            $dataNotices = array(
+                'uid'           => $id,
+                'kind'          => '2',
+                'poster'        => 'system',
+                'notice_type_id'=> 4,
                 'notice_title'  => '恭喜您已完成上周任务',
                 'notice_content'=> "获得上周任务总金额 $totalMoney 元",
             );
             $noticeArr[]= array(
                 'id'    => $id,
                 'data'  => $dataNotice,
+            );
+            $noticeArr[]= array(
+                'id'    => $id,
+                'data'  => $dataNotices,
             );
         }
         payReward($staffArr,$rewardDailyArr,$flowArr,$noticeArr);
