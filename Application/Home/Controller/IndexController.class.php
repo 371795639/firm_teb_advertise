@@ -30,7 +30,7 @@ class IndexController extends Controller {
         /*授权*/
         $url = "http://119.23.60.80/admin/napp";
         $post_data = "api=auth&username=admin&passworld=admin123";
-        $cookie_file = dirname(__FILE__).'/cookie.txt';
+        $cookie_file = '/data/tuiguang/cookie/cookie.txt';
         //获取cookies并保存
         $ch = curl_init();//初始化
         curl_setopt($ch, CURLOPT_URL, $url);

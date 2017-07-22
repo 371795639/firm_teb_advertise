@@ -35,6 +35,7 @@ class WeeklySettleController{
             $parameter      = $dbParameter -> get_parameter_by_id('3');
             $parameterBase  = $dbParameter -> get_parameter_by_id('5');
             $bounsMoney     = bonus_personal($uidUnsets,'1',$parameterBase['value']);
+            $bounsMoney     = $bounsMoney/0.8;
             $discount       = $parameter['value'] / 100;
             $dataStaff  = array(
                 'consume_coin'  => $oldData['consume_coin'] + ($bounsMoney * $discount),
@@ -50,7 +51,7 @@ class WeeklySettleController{
                 'uid'           => $uidUnsets,
                 'type'          => 1,
                 'money'         => $bounsMoney,
-                'order_id'      => 0,
+                'order_id'      => make_orderId(),
                 'create_time'   => date('Y-m-d H:i:s'),
             );
             $flowArr[]  = array(
@@ -61,9 +62,9 @@ class WeeklySettleController{
             $dataRewardDaily = array(
                 'uid'           => $uidUnsets,
                 'type'          => 1,       //日常任务奖励
-                'money'         => $bounsMoney,
-                'game_coin'     => $dataStaff['consume_coin'],
-                'order_id'      => date('YmdHis'),
+                'money'         => $bounsMoney * (1 - $discount),
+                'game_coin'     => $bounsMoney * $discount,
+                'order_id'      => make_orderId(),
                 'create_time'   => date('Y-m-d H:i:s'),
                 'remarks'       => "未完成上周日常任务，获得分红奖励 $bounsMoney 元",
             );
@@ -124,19 +125,19 @@ class WeeklySettleController{
                 'credit_num'    => $infoCreditNum,
             );
             $dbStaffInfo-> save_staff_by_uid($id,$infoCred);
-            $rec_num    = $dbStaff -> count_staff_by_referee($id);
-            $recharge   = $dbTaskDone -> get_task_inneed($date,$id,'充值业绩');
-            $oldData    = $dbStaff -> get_staff_by_id($id);
-            $service_number = $oldData['service_number'];
-            $share_id   = $oldData['referee'];
-            //计算任务总金额
-            $taskMoney  = taskMoney($id,$rec_num,$recharge,$service_number,$share_id);
-            //计算分红奖励
-            $bounsMoney = bonus_personal($id,'1',$parameterBase['value']);
-            $totalMoney = $taskMoney + $bounsMoney;
+            //任务奖励
+            $start          = $dbTaskDone -> get_start_time($date);
+            $end            = $dbTaskDone -> get_end_time($date);
+            $taskMoney      = $dbTaskDone->where(array('uid'=>$id,'status'=>8,'task_id'=>0,'get_time'=>array(array('gt',$start),array('lt',$end))))->getField('reward');
+            //分红奖励
+            $bounsMoney     = bonus_personal($id,'1',$parameterBase['value']);
+            $bounsMoney     = $bounsMoney/0.8;
+            //任务总收益
+            $totalMoney     = $taskMoney + $bounsMoney;
             //staff表发放奖励 =>income = $totalMoney * $discount;money = $totalMoney * (1 - $discount);
-            $discount   = $parameter['value'] / 100;
-            $dataStaff  = array(
+            $discount       = $parameter['value']/100;
+            $oldData        = $dbStaff -> get_staff_by_id($id);
+            $dataStaff      = array(
                 'consume_coin'  => $oldData['consume_coin'] + ($totalMoney * $discount),
                 'money'         => $oldData['money'] + $totalMoney * (1 - $discount),
                 'income'        => $oldData['income'] + $totalMoney,
@@ -150,7 +151,7 @@ class WeeklySettleController{
                 'uid'           => $id,
                 'type'          => 1,
                 'money'         => $totalMoney,
-                'order_id'      => 0,
+                'order_id'      => make_orderId(),
                 'create_time'   => date('Y-m-d H:i:s'),
             );
             $flowArr[]  = array(
@@ -161,9 +162,9 @@ class WeeklySettleController{
             $dataRewardDaily    = array(
                 'uid'           => $id,
                 'type'          => 1,       //日常任务奖励
-                'money'         => $totalMoney,
-                'game_coin'     => $dataStaff['consume_coin'],
-                'order_id'      => date('YmdHis'),
+                'money'         => $totalMoney * (1 - $discount),
+                'game_coin'     => $totalMoney * $discount,
+                'order_id'      => make_orderId(),
                 'create_time'   => date('Y-m-d H:i:s'),
                 'remarks'       => "完成上周日常任务，奖励总金额 $totalMoney 元",
             );

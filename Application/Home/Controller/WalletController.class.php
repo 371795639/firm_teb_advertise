@@ -174,7 +174,7 @@ class WalletController extends HomeController{
         /*取值*/
         $url = "http://119.23.60.80/admin/napp";
         $post_data = "api=pay&uid=".$uid."&money=".$money."&orderNo=".$orderNo."&payType=api";
-        $cookie_file = dirname(__FILE__).'/cookie.txt';
+        $cookie_file = '/data/tuiguang/cookie/cookie.txt';
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_HEADER, 0);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);

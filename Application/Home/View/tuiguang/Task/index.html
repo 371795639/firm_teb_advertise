@@ -53,7 +53,8 @@
 	</head>
 	<body>
 		<header class="mui-bar mui-bar-nav gradient">
-			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left "></a>
+			<!--<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left "></a>-->
+			<a class="mui-icon mui-icon-left-nav mui-pull-left" href="{:U('Home/User/my')}"></a>
 			<h1 class="mui-title">我的任务</h1>
 		</header>
 		<div class="mui-content">
@@ -89,7 +90,7 @@
 					<!--时间列表模板-->
                     <p class="limit-time">
                         期限： {$resDoneStart|time_formatss} ~ {$resDoneEnd|time_formatss}
-                        <if condition="$doingNo neq null">
+                        <if condition="($doingNo neq null) OR ($doneNo neq null)">
                             <span style="margin-left: 2rem"><a href="{:U('Home/Task/taskWhat')}" style="color:red" class="limit-time">提交任务</a></span>
                         </if>
                     </p>

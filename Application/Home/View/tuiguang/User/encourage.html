@@ -55,7 +55,8 @@
 							</div>
 						 	<div class="right col-ye">
                                 <if condition="$weekReward eq 0">暂无周收益
-                                    <else /> +{$weekReward}
+                                    <elseif condition="$weekReward gt 0" /> +{$weekReward}
+                                    <else /> {$weekReward}
                                 </if>
 							</div>
 						</li>
@@ -76,7 +77,9 @@
 								<span class="time">{$vo.create_time}</span>
 							</div>
 						 	<div class="right col-ye">
-								+ {$vo.money}
+                                <if condition="$vo.money gt 0">  +{$vo.money}
+                                    <else/> {$vo.money}
+                                </if>
 							</div>
 						</li>
 						</volist>
@@ -94,7 +97,9 @@
 											<span class="time">{$vo.create_time}</span>
 										</div>
 										<div class="right col-ye">
-											+{$vo.money}
+                                            <if condition="$vo.money gt 0">  +{$vo.money}
+                                                <else/> {$vo.money}
+                                            </if>
 										</div>
 									</case>
 									<case value="4">
@@ -103,7 +108,9 @@
 											<span class="time">{$vo.create_time}</span>
 										</div>
 										<div class="right col-ye">
-											+{$vo.money}
+                                            <if condition="$vo.money gt 0">  +{$vo.money}
+                                                <else/> {$vo.money}
+                                            </if>
 										</div>
 									</case>
 									<case value="5">
@@ -112,7 +119,9 @@
 											<span class="time">{$vo.create_time}</span>
 										</div>
 										<div class="right col-ye">
-											+{$vo.money}
+                                            <if condition="$vo.money gt 0">  +{$vo.money}
+                                                <else/> {$vo.money}
+                                            </if>
 										</div>
 									</case>
 									<case value="6">
@@ -121,7 +130,9 @@
 											<span class="time">{$vo.create_time}</span>
 										</div>
 										<div class="right col-ye">
-											+{$vo.money}
+                                            <if condition="$vo.money gt 0">  +{$vo.money}
+                                                <else/> {$vo.money}
+                                            </if>
 										</div>
 									</case>
 									<case value="7">
@@ -130,7 +141,9 @@
 											<span class="time">{$vo.create_time}</span>
 										</div>
 										<div class="right col-ye">
-											+{$vo.money}
+                                            <if condition="$vo.money gt 0">  +{$vo.money}
+                                                <else/> {$vo.money}
+                                            </if>
 										</div>
 									</case>
 								</switch>

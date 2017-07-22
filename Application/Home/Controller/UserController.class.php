@@ -24,7 +24,6 @@ class UserController extends HomeController {
             $dbStaff = D('staff');
             $userid = $_SESSION['userid'];
             if ($_GET['type'] == 'league') {
-	    
                 $game_id = $_POST['game_id'];
                 $res = $dbStaff->where(array('id'=>$userid))->save(array('game_id'=>$game_id,'status'=>1));
 		if($res){
@@ -57,6 +56,7 @@ class UserController extends HomeController {
                                 }else{
                                     //更新用户信息
                                     $refData['referee'] = $refStaffExist['id'];
+                                    $refData['service_number'] = $refStaffExist['service_number'];
                                     $ref = $dbStaff->where('id=' . $userid)->save($refData);
                                     //给推荐人recommend_num+1
                                     $refDateRecommend['recommend_num'] = $refStaffExist['recommend_num'] + 1;
@@ -146,7 +146,7 @@ class UserController extends HomeController {
             'type'          => array('in','1,2,3,4,5,6,7'),
         );
         $weekReward = $dbReward->where($map)->sum('money');
-        $weekReward = $weekReward / 0.7;
+        $weekReward = $weekReward;
         //任务奖励
         $taskReward = $dbReward->where(array('uid' => $userid , 'type' => array('in','1,2')))->order('create_time desc')->select();
         foreach ($taskReward as $key => $value) {
@@ -159,7 +159,7 @@ class UserController extends HomeController {
         );
         $spreadReward = $dbReward->where($map)->order('create_time desc')->select();
         foreach ($spreadReward as $key => $value) {
-            $spreadReward[$key]['money'] = $value['money']/0.7;
+            $spreadReward[$key]['money'] = $value['money'];
         }
         //输出模板
         $this->assign('weekReward',$weekReward);
