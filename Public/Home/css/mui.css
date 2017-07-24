@@ -271,11 +271,10 @@ th
     -webkit-box-sizing: border-box;
             box-sizing: border-box;
 
-    -webkit-user-select: none;
+    -webkit-user-select: auto;
 
     outline: none;
 
-    -webkit-tap-highlight-color: transparent;
     -webkit-tap-highlight-color: transparent;
 }
 

@@ -16,10 +16,10 @@
 </header>
 <div class="mui-content">
 	<div style="height: 20px;width: 100%;"></div>
-	<form  action="{:U('Login/register')}" id='register-form' class="mui-input-group" method="post" name="myform">
+	<form  action="{:U('Login/register')}" id='register-form' class="mui-input-group" method="post">
 		<div class="mui-input-row" style="border-top: 1px solid #DDDDDD;">
 			<label>真实姓名:</label>
-			<input id='userName' name="staffName" type="text" class="mui-input-clear mui-input" onkeyup="value=value.replace(/[^\u4E00-\u9FA5]/g,'')" onbeforepaste="clipboardData.setData('text',clipboardData.getData('text').replace(/[^\u4E00-\u9FA5]/g,''))">
+            <input id='userName' name="staffName" type="text" class="mui-input-clear mui-input" onbeforepaste="clipboardData.setData('text',clipboardData.getData('text').replace(/[^\u4E00-\u9FA5]/g,''))">
 		</div>
 		<div class="mui-input-row">
 			<label>手机号码:</label>
