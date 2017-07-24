@@ -11,9 +11,9 @@ class WeeklySettleController{
         $dbParameter    = D('Parameter');
         $dbStaffInfo    = D('StaffInfo');
         $date           = date('Y-m-d H:i:s');
-        $uids           = $dbTaskDone -> get_time_in_last_week($date,'','uid');             //获取已完成上周日常任务的所有用户ID
-        $taskDones      = $dbTaskDone -> get_time_in_last_week($date,'','select');          //获取已完成上周日常任务列表
-        $uidAll         = $dbTaskDone -> get_last_week_done_group($date,'','uid','uids');   //获取领取上周日常任务的所有用户ID
+        $uids           = $dbTaskDone   -> get_time_in_last_week($date,'','uid');           //获取已完成上周日常任务的所有用户ID
+        $taskDones      = $dbTaskDone   -> get_time_in_last_week($date,'','select');        //获取已完成上周日常任务列表
+        $uidAll         = $dbStaff      -> get_all_staff_key('id');                         //获取所有加盟商的ID
         $uidUnset       = i_array_unique($uidAll,$uids);                                    //未完成上周日常任务的所有用户ID
         error_log(date("[Y-m-d H:i:s]").'上周完成日常任务的用户ID:'.print_r($uids,1),3,"/data/tuiguang/logs/taskSettle.log");
         error_log(date("[Y-m-d H:i:s]").'上周领取任务的用户ID:'.print_r($uidAll,1),3,"/data/tuiguang/logs/taskSettle.log");

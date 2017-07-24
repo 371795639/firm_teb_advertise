@@ -70,8 +70,8 @@ class LoginController extends \Think\Controller {
                 unset($_SESSION['verifyNum']['content']);
             }
             //判断手机验证码
-           // if ($_SESSION['verifyNum']['content'] == $_POST['verifyNum']) {
-            if ($_POST['verifyNum'] == 1) {
+           if ($_SESSION['verifyNum']['content'] == $_POST['verifyNum']) {
+           // if ($_POST['verifyNum'] == 1) {
                 if($_POST['password1'] !== $_POST['password2']){
                     echo "<script>alert('输入的两次密码不一致，再检查下!');</script>";
                 }
@@ -109,7 +109,7 @@ class LoginController extends \Think\Controller {
                 //跳转微信支付
                 $customerid = 102090;                               //商户在网关系统上的商户号 - 获得商户号
                 $sdcustomno = $customerid . time() . rand(1000000, 9999999);//订单在商户系统中的流水号 商户信息+日期+随机数
-                $orderAmount = 1;                                   //订单支付金额；单位:分(人民币)
+                $orderAmount = 100000;                                   //订单支付金额；单位:分(人民币)
                 $cardno = 51;                                       //微信wap  (固定值 51)
                 $key = 'b0308d76c651420ce1e4662f36dc11ee';          //获得key
                 $noticeurl = 'http://' . $_SERVER['HTTP_HOST'] . '/index.php/Home/Login/wxcallback';    //在网关返回信息时通知商户的地址,该地址不能带任何参数，否则异步通知会不成功
@@ -164,7 +164,7 @@ class LoginController extends \Think\Controller {
                 //回调参数获得该用户id
                 $uid = $mark;
                 if($state == 1){//充值成功
-                     if($ordermoney>=0.01){
+                     if($ordermoney>=1000){
                         //金额支付大于等于1000
                         $refStaff = array(
                             'pay_status' => 3,

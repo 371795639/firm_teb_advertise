@@ -7,11 +7,11 @@ use User\Api\UserApi;
 class UserChargeModel extends Model{
 
     /**
-     * 获取本周内的玩家首次充值数量/玩家充值列表
+     * 获取本周内的玩家首次充值数量/玩家充值列表/充值金额
      * @param $game_id  integer 玩家ID
      * @param $first    integer 玩家ID
-     * @param $what     integer count：返回数量；select：返回列表
-     * @return bool|mixed|string    $number：玩家数量；$res：玩家充值列表
+     * @param $what     integer count：返回数量；select：返回列表；$money：返回充值金额
+     * @return bool|mixed|string    $number：玩家数量；$res：玩家充值列表；$money：充值金额
      */
     public function get_user_charge($game_id,$first,$what){
         $TaskWeekly = D('TaskWeekly');
@@ -31,8 +31,8 @@ class UserChargeModel extends Model{
         }else{
             $where['game_id'] = $game_id;
         }
-        $res = $this -> where($where) -> select();
-        $total = $this -> where($where) -> field('money') -> sum('money');
+        $res    = $this -> where($where) -> select();
+        $total  = $this -> where($where) -> field('money') -> sum('money');
         switch($what){
             case 'count':
                 $number = $res == 0 ? 0 : count($res);

@@ -51,20 +51,6 @@ class StaffModel extends Model{
         }
     }
 
-    /*
-     * 根据条件获取推广专员列表
-     * @param   string  $field  字段组成的字符串
-     * @param   array   $map    搜索条件
-     * @return  array   $re     推广专员列表
-     */
-    public function get_all_task($field,$map){
-        $re = $this -> Field($field) -> where($map) -> order('id DESC') -> select();
-        if($re){
-            return $re;
-        }else{
-            return false;
-        }
-    }
 
     /**
      * 根据ID获取加盟商的等级
@@ -88,4 +74,24 @@ class StaffModel extends Model{
         return $class;
     }
 
+
+    /**获取表中加盟商某一字段的所有值
+     * @param $id   string  字段名
+     * @return mixed
+     */
+    public function get_all_staff_key($id){
+        $re = $this  -> where(array("is_league" => 1)) ->select();
+        if($re){
+            if(empty($id)){
+                return $re;
+            }else{
+                foreach($re as $k => $v){
+                    $ids[] = $re[$k][$id];
+                }
+                return $ids;
+            }
+        }else{
+            return false;
+        }
+    }
 }

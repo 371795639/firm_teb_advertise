@@ -147,7 +147,8 @@
                                 <if condition="$vo.status eq 1">
                                     <li class="mui-table-view-cell mui-media">
                                         <a >
-                                            <span class="task-name">{$vo.detail}</span><span class="right compeleting">进行中</span>
+                                            <span class="task-name">{$vo.detail}</span>
+                                            <span class="right compeleting">{$vo.count}/{$vo.inneed}</span>
                                         </a>
                                     </li>
                                 </if>

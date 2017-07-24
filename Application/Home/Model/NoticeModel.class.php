@@ -39,14 +39,16 @@ class NoticeModel extends Model{
      * @return bool|mixed   array   $re
      */
     public function get_notice_by_type($type,$uid,$kind){
-        $map = array(
-            'uid' => $uid,
-            'kind'=> $kind,
-        );
+        if($uid){
+            $map['uid'] = $uid;
+        }
+        if($kind){
+            $map['kind'] = $kind;
+        }
         if($type){
             $map['notice_type_id'] = $type;
         }else{
-            $map['notice_type_id'] = array('in','1,2,3');
+            $map['notice_type_id'] = array('in','1,2,3,4');
         }
         $re = $this -> where($map) -> order('id DESC') -> select();
         if($re){

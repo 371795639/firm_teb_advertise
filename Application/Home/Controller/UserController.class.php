@@ -25,12 +25,20 @@ class UserController extends HomeController {
             $userid = $_SESSION['userid'];
             if ($_GET['type'] == 'league') {
                 $game_id = $_POST['game_id'];
-                $res = $dbStaff->where(array('id'=>$userid))->save(array('game_id'=>$game_id,'status'=>1));
-		if($res){
-                    $this->redirect('User/index');
-                }else{
-                    echo "<script>alert('绑定失败，请重新绑定!');history.back(-1);</script>";
-                }
+		//首先确认该游戏账号是否存在
+		$is_game = M('user_ship')->where(array('game_id'=>$game_id))->find();
+		if(!empty($is_game)){
+			//存入表中
+		     $res = $dbStaff->where(array('id'=>$userid))->save(array('game_id'=>$game_id,'status'=>1));
+		     if($res){
+	             	$this->redirect('User/index');
+	             }else{
+	             	echo "<script>alert('绑定失败，请重新绑定!');history.back(-1);</script>";
+	             }	
+		}else{
+		     echo "<script>alert('该游戏ID不存在，请重新填写正确账户ID!');history.back(-1);</script>";
+		}
+                
             } else {
                 $refData = array(
                     'game_id' => $_POST['gameId'],
@@ -50,22 +58,27 @@ class UserController extends HomeController {
                             if ($refStaffExist['id'] == $userid) {
                                 echo "<script>alert('推荐人不能是自己!');</script>";
                             } else {
-                                $gameId = $dbStaff->where(array('game_id' => $refData['game_id']))->select();
-                                if ($gameId) {
-                                    echo "<script>alert('此游戏ID已被占用，请检查输入');</script>";
-                                }else{
-                                    //更新用户信息
-                                    $refData['referee'] = $refStaffExist['id'];
-                                    $refData['service_number'] = $refStaffExist['service_number'];
-                                    $ref = $dbStaff->where('id=' . $userid)->save($refData);
-                                    //给推荐人recommend_num+1
-                                    $refDateRecommend['recommend_num'] = $refStaffExist['recommend_num'] + 1;
-                                    $refAdd = $dbStaff ->  save_staff_by_id($refStaffExist['id'],$refDateRecommend);
-                                    if($ref && $refAdd){
-                                        recommend($refStaffExist['id']);
-                                        $this->redirect('User/index');
-                                    }
-                                }
+			    	$is_game = M('user_ship')->where(array('game_id'=>$refData['game_id']))->find();
+				if(!empty($is_game)){
+                                	$gameId = $dbStaff->where(array('game_id' => $refData['game_id']))->select();
+                                	if ($gameId) {
+                                    	echo "<script>alert('此游戏ID已被占用，请检查输入');history.back(-1);</script>";
+                                	}else{
+                                    	//更新用户信息
+                                   	 $refData['referee'] = $refStaffExist['id'];
+                                   	 $refData['service_number'] = $refStaffExist['service_number'];
+                                   	 $ref = $dbStaff->where('id=' . $userid)->save($refData);
+                                    	//给推荐人recommend_num+1
+                                    	$refDateRecommend['recommend_num'] = $refStaffExist['recommend_num'] + 1;
+                                   	 $refAdd = $dbStaff ->  save_staff_by_id($refStaffExist['id'],$refDateRecommend);
+                                   	 if($ref && $refAdd){
+                                        	recommend($refStaffExist['id']);
+                                        	$this->redirect('User/index');
+                                    	}
+                                   }
+				}else{
+					echo "<script>alert('此游戏ID不存在，请重新正确填写！');history.back(-1);</script>";
+				}
                             }
                         }
                     }else{

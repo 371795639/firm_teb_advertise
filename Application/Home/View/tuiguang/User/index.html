@@ -40,7 +40,13 @@
                         {$resStaff.staff_real}
                     </p>
                     <p>
-                        <span class="p-left"><span>信用值：{$creditValue}</span></span>
+                        <span class="p-left">
+                                <span>信用值：
+                                    <if condition="$creditValue neq 0">{$creditValue}
+                                        <else />0
+                                    </if>
+                                </span>
+                        </span>
                         <span class="p-right">推广收益：{$resStaff.income}</span>
                     </p>
 				</div>

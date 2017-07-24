@@ -9,7 +9,9 @@ class NoticeController extends HomeController {
     public function index(){
         $dbNotice   = D('Notice');
         $sysCount   = $dbNotice -> count_notice_by_type('1',0,'1');
-        $taskCount  = $dbNotice -> count_notice_by_type('4',0,'1');
+        $taskSys    = $dbNotice -> count_notice_by_type('4',0,'1');
+        $taskOwn    = $dbNotice -> count_notice_by_type('4',$_SESSION['userid'],'2');
+        $taskCount  = $taskSys + $taskOwn;
         $eventCount = $dbNotice -> count_notice_by_type('2',0,'1');
         $moneyCount = $dbNotice -> count_notice_by_type('3',$_SESSION['userid'],'2');
         $this -> assign('sysCount',$sysCount);
@@ -33,7 +35,18 @@ class NoticeController extends HomeController {
     /**任务消息**/
     public function taskNotice(){
         $dbNotice   = D('Notice');
-        $taskNotice = $dbNotice -> get_notice_by_type_time_format('4',0,'1');
+        $taskOwn    = $dbNotice -> get_notice_by_type_time_format('4',$_SESSION['userid'],2);      //任务结算时的任务消息
+        $taskSystem = $dbNotice -> get_notice_by_type_time_format('4',0,1);                        //管理员发布的任务消息
+        if(empty($taskOwn)){
+            $taskNotice = $taskSystem;
+        }elseif(empty($taskSystem)){
+            $taskNotice = $taskOwn;
+        }elseif(empty($taskOwn) && empty($taskSystem)){
+            $taskNotice = null;
+        }else{
+            $taskNotice = array_merge($taskOwn,$taskSystem);
+        }
+        $dbNotice   -> set_is_read('4',$_SESSION['userid'],'2');
         $dbNotice   -> set_is_read('4',0,'1');
         $this -> assign('taskNotice',$taskNotice);
         $this -> display('Notice/taskNotice');
