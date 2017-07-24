@@ -86,7 +86,7 @@ class TaskController extends HomeController {
                     $inneed['recharge'] = $item['inneed'];
                 }
             }
-            $oldData        = D('staff') -> get_staff_by_id($_SESSION['userid']);
+            $oldData        = $dbStaff -> get_staff_by_id($_SESSION['userid']);
             $service_number = $oldData['service_number'];
             $taskMoney      = taskMoney($_SESSION['userid'],$inneed['rec_num'],$inneed['recharge'],$service_number);
             //插入结算数据
@@ -98,8 +98,8 @@ class TaskController extends HomeController {
                 'get_time'  => date('Y-m-d H:i:s'),
                 'done_time' => '',  //不可用null，否则无法插入数据
             );
-            $start          = D('task_done') -> get_start_time(date('Y-m-d H:i:s'));
-            $end            = D('task_done') -> get_end_time(date('Y-m-d H:i:s'));
+            $start          = $dbTaskDone -> get_start_time(date('Y-m-d H:i:s'));
+            $end            = $dbTaskDone -> get_end_time(date('Y-m-d H:i:s'));
             $select_data = array(
                 'uid'       => $_SESSION['userid'],
                 'status'    => 8,
@@ -199,7 +199,7 @@ class TaskController extends HomeController {
                             'done_time' => '',  //不可用null，否则无法插入数据
                             'status'    => 1,
                         );
-                        $resDone  = $dbTaskDone->add_done($data);
+                        $resDone  = $dbTaskDone -> add_done($data);
                     }
                 }
                 break;
