@@ -24,7 +24,7 @@ class TaskController extends HomeController {
         $fiveCount      = $left['recommend_num'];
         $twoGameId      = $left['game_id'];
         $oneCount       = $dbUserShip -> get_weekly_user_by_recommend($twoGameId, 'count'); //已分享玩家数量
-        $users          = $dbUserShip ->  get_user_by_recommend($twoGameId,'select');
+        $users          = $dbUserShip -> get_user_by_recommend($twoGameId,'select');
         if(empty($users)){
             $twoCount   = 0;
             $threeCount = 0;
@@ -238,7 +238,7 @@ class TaskController extends HomeController {
         }else {
             //5：判断分享推广专员任务（日常任务） $dailyTaskFiveStatus
             foreach ($doneDaily as $k5 => $v5) {
-                if ($doneDaily[$k5]['name']  == '分享推广专员') {
+                if ($doneDaily[$k5]['name'] == '分享推广专员') {
                     $dailyTaskFiveInneed    = $doneDaily[$k5]['inneed'];
                     $dailyTaskFiveStatus    = $doneDaily[$k5]['status'];
                     $dailyTaskFiveId        = $doneDaily[$k5]['id'];
@@ -253,7 +253,7 @@ class TaskController extends HomeController {
             $twoGameId  = $left['game_id'];
             $number = $userShip -> get_weekly_user_by_recommend($twoGameId, 'count');
             foreach ($doneDaily as $k1 => $v1) {
-                if ($doneDaily[$k1]['name']  == '分享玩家') {
+                if ($doneDaily[$k1]['name'] == '分享玩家') {
                     $dailyTaskOneInneed     = $doneDaily[$k1]['inneed'];
                     $dailyTaskOneStatus     = $doneDaily[$k1]['status'];
                     $dailyTaskOneId         = $doneDaily[$k1]['id'];
