@@ -29,7 +29,7 @@ class WeeklySettleController{
                 'credit_value'  => $infoCreditValue,
                 'credit_num'    => $infoCreditNum,
             );
-            $dbStaffInfo -> save_staff_by_uid($uidUnsets,$infoCred);
+            $dbStaffInfo    -> save_staff_by_uid($uidUnsets,$infoCred);
             //任务未完成只发分红奖励
             $oldData        = $dbStaff -> get_staff_by_id($uidUnsets);
             $parameter      = $dbParameter -> get_parameter_by_id('3');
@@ -124,7 +124,7 @@ class WeeklySettleController{
                 'credit_value'  => $infoCreditValue,
                 'credit_num'    => $infoCreditNum,
             );
-            $dbStaffInfo-> save_staff_by_uid($id,$infoCred);
+            $dbStaffInfo    -> save_staff_by_uid($id,$infoCred);
             //任务奖励
             $start          = $dbTaskDone -> get_start_time($date);
             $end            = $dbTaskDone -> get_end_time($date);

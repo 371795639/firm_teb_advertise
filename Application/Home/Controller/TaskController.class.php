@@ -36,16 +36,16 @@ class TaskController extends HomeController {
             $threeCount  = $dbUserCharge -> get_user_charge($game_id,'2','money');          //充值业绩
         }
         foreach($resDoneOne as $k => $v){
-            if($resDoneOne[$k]['name'] == '分享推广专员'){
+            if($resDoneOne[$k]['name']  == '分享推广专员'){
                 $resDoneOne[$k]['count'] = $fiveCount;
             }
-            if($resDoneOne[$k]['name'] == '分享玩家'){
+            if($resDoneOne[$k]['name']  == '分享玩家'){
                 $resDoneOne[$k]['count'] = $oneCount;
             }
-            if($resDoneOne[$k]['name'] == '首充金额'){
+            if($resDoneOne[$k]['name']  == '首充金额'){
                 $resDoneOne[$k]['count'] = $twoCount;
             }
-            if($resDoneOne[$k]['name'] == '充值业绩'){
+            if($resDoneOne[$k]['name']  == '充值业绩'){
                 $resDoneOne[$k]['count'] = $threeCount;
             }
         }
@@ -66,7 +66,7 @@ class TaskController extends HomeController {
         $dbStaff            = D('Staff');
         $dbTaskDone         = D('TaskDone');
         $dbParameter        = D('Parameter');
-        $class              = $dbStaff    -> get_staff_league($_SESSION['userid']);   //获取当前等陆用户的加盟商等级
+        $class              = $dbStaff      -> get_staff_league($_SESSION['userid']);   //获取当前等陆用户的加盟商等级
         if($class == 0){        //推广专员无任务
             $weeklyTypeOne  = null;
             $weeklyTypeTwo  = null;
@@ -74,8 +74,8 @@ class TaskController extends HomeController {
             $weeklyTypeOne  = $dbTaskWeekly -> get_weekly_type('1', $class);    //获取本周日常任务
             $weeklyTypeTwo  = $dbTaskWeekly -> get_weekly_type('2','');         //获取本周额外任务
             //分红奖励
-            $parameterBase  = $dbParameter -> get_parameter_by_id('5');
-            $bonusMoney = task_bonus($_SESSION['userid'],$parameterBase['value']);//个人所得游戏分红金额
+            $parameterBase  = $dbParameter  -> get_parameter_by_id('5');
+            $bonusMoney     = task_bonus($_SESSION['userid'],$parameterBase['value']);//个人所得游戏分红金额
             $bonusMoney     = $bonusMoney/0.8;
             //预计任务奖励
             foreach($weeklyTypeOne as $item){
@@ -212,12 +212,7 @@ class TaskController extends HomeController {
     }
 
 
-    /**
-     * 说明
-     * 日常任务判断：$dailyTaskOneStatus、$dailyTaskTwoStatus、$dailyTaskThreeStatus、$dailyTaskFourStatus、$dailyTaskFiveStatus的值，为2完成任务，为1未完成任务
-     * 额外任务：如果$status中不含有1且$doneExtra不为空，执行额外任务逻辑代码，否则说明日常任务未全部完成或者全部完成日常任务但是未领取额外任务。
-     * 额外任务判断：$extraTaskOne、$extraTaskTwo值存在，则说明已领取，$extraTaskOneReward、$extraTaskTwoReward是对应额外任务的额外奖励
-     */
+    /**任务手动结算**/
     public function taskWhat(){
         $staff          = D('Staff');
         $taskDone       = D('TaskDone');
