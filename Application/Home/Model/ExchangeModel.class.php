@@ -15,7 +15,7 @@ class ExchangeModel extends Model {
         $map['id'] = $service_number;
         $result = $this->field('id,apply_id,exchange_class,superior_number,recommend_ratio,recharge_ratio')->where($map)->find();
         $this->allMessages[] = $result;
-        if($result['superior_number'] != 1){
+        if($result['superior_number'] != 1 && $result['superior_number'] != null){
             $this->serviceCharge($result['superior_number']);
         }
     }

@@ -1231,7 +1231,7 @@ function makeRecharge($rechargeMsg,$userMsg,$flowMsg,$noticeMsg){
  */
 function service_recommend_award($service_id,$money){
     //首先获取所有的兑换中心的服务费比例
-    $exchange = D('exchange');
+    $exchange = D('Exchange');
     $exchange->serviceCharge($service_id);
     $result_message = $exchange->allMessages;
     //新推广专员注册获得的服务费
@@ -1256,7 +1256,7 @@ function service_recommend_award($service_id,$money){
  */
 function service_recharge_award($service_id,$money){
     //首先获取所有的兑换中心的服务费比例
-    $exchange = D('exchange');
+    $exchange = D('Exchange');
     $exchange->serviceCharge($service_id);
     $result_message = $exchange->allMessages;
     //新推广专员注册获得的服务费

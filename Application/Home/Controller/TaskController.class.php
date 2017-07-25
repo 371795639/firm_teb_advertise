@@ -413,7 +413,6 @@ class TaskController extends HomeController {
                             'notice_title'  => '恭喜您已完成本周任务',
                             'notice_content'=> "获得本周任务总金额 $totalMoney 元",
                         )
-
                     );
                     $noticeArr[]  = array(
                         'data'  => array(
