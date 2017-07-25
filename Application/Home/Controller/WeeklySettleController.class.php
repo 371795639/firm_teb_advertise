@@ -52,7 +52,7 @@ class WeeklySettleController{
                 'type'          => 1,
                 'money'         => $bounsMoney,
                 'order_id'      => make_orderId(),
-                'create_time'   => date('Y-m-d H:i:s'),
+                'create_time'   => date('Y-m-d 5:21:21'),
             );
             $flowArr[]  = array(
                 'id'    => $uidUnsets,
@@ -65,7 +65,7 @@ class WeeklySettleController{
                 'money'         => $bounsMoney * (1 - $discount),
                 'game_coin'     => $bounsMoney * $discount,
                 'order_id'      => make_orderId(),
-                'create_time'   => date('Y-m-d H:i:s'),
+                'create_time'   => date('Y-m-d 5:21:21'),
                 'remarks'       => "未完成上周日常任务，获得分红奖励 $bounsMoney 元",
             );
             $rewardDailyArr[]   = array(
@@ -79,6 +79,7 @@ class WeeklySettleController{
                 'poster'        => 'system',
                 'notice_type_id'=> 3,
                 'notice_title'  => '未完成上周任务',
+                'create_time'   => date('Y-m-d 5:21:21'),
                 'notice_content'=> "未完成上周日常任务，获得分红奖励 $bounsMoney 元",
             );
             $dataNotices = array(
@@ -87,6 +88,7 @@ class WeeklySettleController{
                 'poster'        => 'system',
                 'notice_type_id'=> 4,
                 'notice_title'  => '未完成上周任务',
+                'create_time'   => date('Y-m-d 5:21:21'),
                 'notice_content'=> "未完成上周日常任务，获得分红奖励 $bounsMoney 元",
             );
             $noticeArr[]= array(
@@ -152,7 +154,7 @@ class WeeklySettleController{
                 'type'          => 1,
                 'money'         => $totalMoney,
                 'order_id'      => make_orderId(),
-                'create_time'   => date('Y-m-d H:i:s'),
+                'create_time'   => date('Y-m-d 5:21:21'),
             );
             $flowArr[]  = array(
                 'id'    => $id,
@@ -165,7 +167,7 @@ class WeeklySettleController{
                 'money'         => $totalMoney * (1 - $discount),
                 'game_coin'     => $totalMoney * $discount,
                 'order_id'      => make_orderId(),
-                'create_time'   => date('Y-m-d H:i:s'),
+                'create_time'   => date('Y-m-d 5:21:21'),
                 'remarks'       => "完成上周日常任务，奖励总金额 $totalMoney 元",
             );
             $rewardDailyArr[]   = array(
@@ -179,6 +181,7 @@ class WeeklySettleController{
                 'poster'        => 'system',
                 'notice_type_id'=> 3,
                 'notice_title'  => '恭喜您已完成上周任务',
+                'create_time'   => date('Y-m-d 5:21:21'),
                 'notice_content'=> "获得上周任务总金额 $totalMoney 元",
             );
             $dataNotices = array(
@@ -187,6 +190,7 @@ class WeeklySettleController{
                 'poster'        => 'system',
                 'notice_type_id'=> 4,
                 'notice_title'  => '恭喜您已完成上周任务',
+                'create_time'   => date('Y-m-d 5:21:21'),
                 'notice_content'=> "获得上周任务总金额 $totalMoney 元",
             );
             $noticeArr[]= array(
