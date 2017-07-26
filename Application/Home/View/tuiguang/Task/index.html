@@ -53,8 +53,8 @@
 	</head>
 	<body>
 		<header class="mui-bar mui-bar-nav gradient">
-			<!--<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left "></a>-->
-			<a class="mui-icon mui-icon-left-nav mui-pull-left" href="{:U('Home/User/my')}"></a>
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left "></a>
+			<!--<a class="mui-icon mui-icon-left-nav mui-pull-left" href="{:U('Home/User/my')}"></a>-->
 			<h1 class="mui-title">我的任务</h1>
 		</header>
 		<div class="mui-content">
@@ -146,9 +146,11 @@
                             <volist name="resDoneOne" id="vo">
                                 <if condition="$vo.status eq 1">
                                     <li class="mui-table-view-cell mui-media">
-                                        <a >
-                                            <span class="task-name">{$vo.detail}({$vo.inneed}-{$vo.count})</span>
-                                            <span class="right compeleting">进行中</span>
+                                        <a>
+                                            <span class="task-name">{$vo.detail}</span>
+                                            <span class="right">
+                                                <span>{$vo.count}</span>/<span style="color:red">{$vo.inneed}</span>
+                                            </span>
                                         </a>
                                     </li>
                                 </if>

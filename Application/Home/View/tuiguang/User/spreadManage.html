@@ -64,17 +64,17 @@
 								暂无信息
 							</div>
 						<else />
-						<volist name="lists" id="vo">
-						<li class="mui-table-view-cell" >
-							<a >
-								<img class="mui-media-object mui-pull-left" src="/Public/Home/img/100.png" class="imgEle">
-								<div class="mui-media-body">
-									玩家:{$vo.game_id}
-									<p class='mui-ellipsis'>{$vo.create_time}</p>
-								</div>								
-							</a>
-						</li>					
-						</volist>
+                            <volist name="lists" id="vo">
+                                <li class="mui-table-view-cell" >
+                                    <a>
+                                        <img class="mui-media-object mui-pull-left imgEle" src="/Public/Home/img/100.png">
+                                        <div class="mui-media-body">
+                                            玩家:{$vo.game_id}
+                                            <p class='mui-ellipsis'>{$vo.create_time}</p>
+                                        </div>
+                                    </a>
+                                </li>
+                            </volist>
 						</if>
 					</ul>
 				</div>

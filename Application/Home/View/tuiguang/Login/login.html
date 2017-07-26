@@ -41,11 +41,11 @@
 		<form id='login-form' action="{:U('Login/login')}" method="post" onsubmit="return checkPhone()">
 			<div class="hr">
 				<label><img src="/Public/Home/img/5.png"/></label>
-				<input id='user' name="username" type="text"  placeholder="请输入手机号" onkeyup="login()">
+				<input id='user' name="username" type="text"  placeholder="请输入手机号" onfocus="this.placeholder=''" onblur="this.placeholder='请输入手机号'" onkeyup="login()">
 			</div>
 			<div class="hr">
 				<label><img src="/Public/Home/img/3.png"/></label>
-				<input id='psd' name="password" type="password"  placeholder="请输入密码" onkeyup="login()">
+				<input id='psd' name="password" type="password"  placeholder="请输入密码" onfocus="this.placeholder=''" onblur="this.placeholder='请输入密码'"  onkeyup="login()">
 			</div>
 			<div class="link-area">
 				<a id='reg'  onclick="goResg()">注册</a> <a id='forgetPassword' class="right" onclick="gofgpsd()">忘记密码？</a>

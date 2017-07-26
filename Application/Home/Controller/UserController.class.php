@@ -25,19 +25,19 @@ class UserController extends HomeController {
             $userid = $_SESSION['userid'];
             if ($_GET['type'] == 'league') {
                 $game_id = $_POST['game_id'];
-		//首先确认该游戏账号是否存在
-		$is_game = M('user_ship')->where(array('game_id'=>$game_id))->find();
-		if(!empty($is_game)){
-			//存入表中
-		     $res = $dbStaff->where(array('id'=>$userid))->save(array('game_id'=>$game_id,'status'=>1));
-		     if($res){
-	             	$this->redirect('User/index');
-	             }else{
-	             	echo "<script>alert('绑定失败，请重新绑定!');history.back(-1);</script>";
-	             }	
-		}else{
-		     echo "<script>alert('该游戏ID不存在，请重新填写正确账户ID!');history.back(-1);</script>";
-		}
+		        //首先调用接口确认该游戏账号是否存在
+                $is_game = $this->idExist($game_id);
+                if($is_game['error'] == 0 && $is_game['data'] == "success"){
+                    //存入表中
+                     $res = $dbStaff->where(array('id'=>$userid))->save(array('game_id'=>$game_id,'status'=>1));
+                     if($res){
+                            $this->redirect('User/index');
+                         }else{
+                            echo "<script>alert('绑定失败，请重新绑定!');history.back(-1);</script>";
+                         }
+                }else{
+                     echo "<script>alert('该游戏ID不存在，请重新填写正确账户ID!');history.back(-1);</script>";
+                }
                 
             } else {
                 $refData = array(
@@ -58,8 +58,9 @@ class UserController extends HomeController {
                             if ($refStaffExist['id'] == $userid) {
                                 echo "<script>alert('推荐人不能是自己!');</script>";
                             } else {
-			    	$is_game = M('user_ship')->where(array('game_id'=>$refData['game_id']))->find();
-				if(!empty($is_game)){
+                                //首先调用接口确认该游戏账号是否存在
+                                $is_game = $this->idExist($refData['game_id']);
+                                if($is_game['error'] == 0 && $is_game['data'] == "success"){
                                 	$gameId = $dbStaff->where(array('game_id' => $refData['game_id']))->select();
                                 	if ($gameId) {
                                     	echo "<script>alert('此游戏ID已被占用，请检查输入');history.back(-1);</script>";
@@ -128,15 +129,9 @@ class UserController extends HomeController {
         }else{
             $res = '级加盟商';
             switch($class){
-                case 1:
-                    $re = '一'.$res;
-                    break;
-                case 2:
-                    $re = '二'.$res;
-                    break;
-                case 3:
-                    $re = '三'.$res;
-                    break;
+                case 1:$re = '一'.$res;break;
+                case 2:$re = '二'.$res;break;
+                case 3:$re = '三'.$res;break;
             }
         }
         $this->assign('re',$re);
@@ -158,8 +153,7 @@ class UserController extends HomeController {
             'create_time'   => array(array('gt',$monday),array('lt',$sunday)),
             'type'          => array('in','1,2,3,4,5,6,7'),
         );
-        $weekReward = $dbReward->where($map)->sum('money');
-        $weekReward = $weekReward;
+        $weekReward= $dbReward->where($map)->sum('money + game_coin');
         //任务奖励
         $taskReward = $dbReward->where(array('uid' => $userid , 'type' => array('in','1,2')))->order('create_time desc')->select();
         foreach ($taskReward as $key => $value) {
@@ -220,10 +214,43 @@ class UserController extends HomeController {
         $list = M('staff')->where(array('referee'=>$uid))->order('create_time desc')->select();
         $list['count'] = count($list);
         $game_id = M('staff')->where(array('id'=>$uid))->getField('game_id');
-        $lists = M('user_ship')->where(array('recommend'=>$game_id,'superior'=>$uid))->order('create_time desc')->select();
+        $lists = M('user_ship')->where(array('recommend'=>$game_id,'superior'=>$uid))->order('reg_time desc')->select();
         $lists['count'] = count($lists);
         $this->assign('list',$list);
         $this->assign('lists',$lists);
         $this->display('User/spreadManage');
     }
+
+
+    /**判断该游戏ID是否存在**/
+    public function idExist($game_id){
+        $api = A('index');
+        $api -> getApi();
+        /*取值*/
+        $url = "http://119.23.60.80/admin/napp";
+        $post_data = "api=userExist&uid=".$game_id;
+        $cookie_file = '/data/tuiguang/cookie/cookie.txt';
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_HEADER, 0);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        // post数据
+        curl_setopt($ch, CURLOPT_POST, 1);
+        // post的变量
+        curl_setopt($ch, CURLOPT_COOKIEFILE, $cookie_file); //使用上面获取的cookies
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
+        $response = curl_exec($ch);
+        curl_close($ch);
+        $api_data = json_decode($response);
+        $api_status = std_class_object_to_array($api_data);
+        return $api_status;
+    }
+
+
+    /**我的推广二维码**/
+    public function qrcode(){
+
+        $this -> display('User/qrcode');
+    }
+
+
 }

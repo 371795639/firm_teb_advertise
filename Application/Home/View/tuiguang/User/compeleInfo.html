@@ -55,11 +55,11 @@
 				</div>
 				<div class="mui-input-row">
 					<label>推荐人手机号:</label>
-					<input id='accountPhone' name="refPhoneNum" type="text" class="mui-input-clear mui-input" placeholder="">
+					<input id='accountPhone' name="refPhoneNum" type="number" class="mui-input-clear mui-input" placeholder="">
 				</div>
 				<div class="mui-input-row">
 					<label>绑定游戏账号:</label>
-					<input id='gameId' name="gameId" type="text" class="mui-input-clear mui-input" placeholder="">
+					<input id='gameId' name="gameId" type="number" class="mui-input-clear mui-input" placeholder="请填写不小于六位数字">
 				</div>
 				<div class="mui-input-row">
 					<label>身份证号:</label>
@@ -90,15 +90,19 @@
 			var val3 = $("#gameId").val();
 			var val4 = $("#num").val();
 			var val5 = $("#address").val();						
-			var bb = val1&&val2&&val3&&val4&&val5;
+			var bb = val1&&val2&&val3&&val4&&val5&&(val3.length>=6);
 			btn( bb );
 		}
 		//按钮逻辑处理方法   			
 		var btn = function(a){
 			if( a ){
 	         	$("#compelet").removeAttr("disabled");
+                $('#compelet').removeAttr("background");
+	         	$('#compelet').css('background','red');
 	        }else{
 	         	$("#compelet").attr("disabled","disabled");
+                $('#compelet').removeAttr("background");
+                $('#compelet').css("background-color",'#38B7EE');
 	        }
 	    }
 		//input框绑定事件
@@ -141,13 +145,18 @@
     	//绑定游戏id
 		$('#compelet1').on('click',function(){
 		   var game_id = $('#game').val();
-		    $.ajax({
-				url:"{:U('user/compeleInfo')}",
-				type:'post',
-				dataType:'json',
-				data:{game_id:game_id},
-				
-			});
+		   if(game_id.length >= 6){
+               $.ajax({
+                   url:"{:U('user/compeleInfo')}",
+                   type:'post',
+                   dataType:'json',
+                   data:{game_id:game_id},
+
+               });
+		   }else{
+               mui.toast("请填写不得少于六位数的游戏账户ID！");
+               return false;
+		   }
 		});
 	</script>
 </body>

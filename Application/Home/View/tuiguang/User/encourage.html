@@ -7,7 +7,7 @@
     <link href="/Public/Home/css/mui.css" rel="stylesheet"/>
     <!--自定义样式-->
     <link rel="stylesheet" href="/Public/Home/css/common/common.css" />
-    <link rel="stylesheet" href="/Public/Home/css/encourage/encourage.css" />
+	<link rel="stylesheet" href="/Public/Home/css/finance/rechargeWithdrawCash.css" />
     <style type="text/css">
     	.text-overflow {
 		    display:inline-block;
@@ -24,69 +24,28 @@
 			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left "></a>
 			<h1 class="mui-title">奖励中心</h1>
 		</header>
-		<div class="mui-content" style="padding-bottom: 50px;">
-			<div style="padding: 1.4rem 1.5rem; background: #FFF;">
-				<div id="segmentedControl" class="mui-segmented-control">
-                    <div class="inline">
-                        <a class="mui-control-item mui-active" href="#item3">
-                            周收益
-                        </a>
-                    </div>
+		<div class="mui-text-center " style="width:100%;height:100px;margin-top: 45px;border-top: 1px solid #fff;background-color: #fff;">
+			<p style="margin-top: 20px;font-size: 16px;padding-bottom: 10px;">本周收益</p>
+			<p style="color: red;font-size: 25px;">{$weekReward}元</p>
+		</div>
+		<div class="mui-content" style="padding-bottom: 50px;padding-top: 0">
+			<div class="gradient" style="width: 100%; padding: 0.5rem;">
+				<div id="segmentedControl" class="mui-segmented-control gradient">
 					<div class="inline">
-						<a class="mui-control-item" href="#item1">
-							任务奖励
+						<a class="mui-control-item mui-active" href="#item1">
+							推广奖励
 						</a>
 					</div>
 					<div class="inline">
 						<a class="mui-control-item" href="#item2">
-							推广奖励
+							任务奖励
 						</a>
 					</div>
 				</div>
 			</div>
 			<div  id="list">
-				<!--描述：周收益 -->
-				<div id="item3" class="mui-control-content mui-active">
-					<ul>
-						<li>
-							<div class="left ">
-								<span class="text-overflow">周收益</span>
-								<span class="time"></span>
-							</div>
-						 	<div class="right col-ye">
-                                <if condition="$weekReward eq 0">暂无收益
-                                    <elseif condition="$weekReward gt 0" /> +{$weekReward}
-                                    <else /> {$weekReward}
-                                </if>
-							</div>
-						</li>
-					</ul>
-				</div>
-				<!--描述：任务奖励-->
-				<div id="item1" class="mui-control-content" >
-					<ul>
-						<volist name="taskReward" id="vo">
-						<li>
-							<div class="left ">
-                                <span class="text-overflow">
-                                    <if condition="$vo.type eq 1">
-                                         日常任务奖励
-                                        <else/> 额外任务奖励
-                                    </if>
-                                </span>
-								<span class="time">{$vo.create_time}</span>
-							</div>
-						 	<div class="right col-ye">
-                                <if condition="$vo.money gt 0">  +{$vo.money}
-                                    <else/> {$vo.money}
-                                </if>
-							</div>
-						</li>
-						</volist>
-					</ul>
-				</div>
 				<!--描述：推广奖励-->
-				<div id="item2" class="mui-control-content">
+				<div id="item1" class="mui-control-content mui-active">
 					<ul>
 						<volist name="spreadReward" id="vo">
 							<li>
@@ -147,6 +106,29 @@
 										</div>
 									</case>
 								</switch>
+							</li>
+						</volist>
+					</ul>
+				</div>
+				<!--描述：任务奖励-->
+				<div id="item2" class="mui-control-content " >
+					<ul>
+						<volist name="taskReward" id="vo">
+							<li>
+								<div class="left ">
+                                <span class="text-overflow">
+                                    <if condition="$vo.type eq 1">
+                                         日常任务奖励
+                                        <else/> 额外任务奖励
+                                    </if>
+                                </span>
+									<span class="time">{$vo.create_time}</span>
+								</div>
+								<div class="right col-ye">
+									<if condition="$vo.money gt 0">  +{$vo.money}
+										<else/> {$vo.money}
+									</if>
+								</div>
 							</li>
 						</volist>
 					</ul>
