@@ -69,15 +69,18 @@
             <a class="mui-icon mui-icon-left-nav mui-pull-left" href="{:U('Home/User/index')}"></a>
 			<h1 class="mui-title">任务大厅</h1>
 		</header>
-		<div class="mui-content gradient">
+		<div id="task" class="mui-content gradient">
 			<!--日常-->
 			<p></p>
             <div class="model">
                 <p><img src="/Public/Home/img/imgRed.png"/></p>
                 <p>
                 	<span class="top-title">
-                		日常任务
+                        日常任务
                 	</span>
+                    <span id="taskCall" class="small-mind">
+	                	【任务说明】
+	                </span>
                     <if condition="($weeklyTypeOne neq null) AND ($class neq 0)">
                         <if condition="$daily eq 1"><span class="right geted">已领取</span>
                             <else/> <a id="btn1" href="{:U('Home/Task/taskOfficeDetail',array('method'=>'daily'))}"><span class="right get" >待领取</span></a>
@@ -157,11 +160,33 @@
                 </notempty>
             </div>
 		</div>
+        <div id="dialog" class="mui-content" style="display: none;">
+            <br/>
+            <p style="font-size: 16px;">&nbsp;&nbsp;1、游戏内首次充值金额达100元：直接分享玩家首充金额总和≧100，任务完成。</p>
+            <p style="font-size: 16px;">&nbsp;&nbsp;如：直接分享4个玩家，每人充值30元，累计120元，任务完成。或者分享1个玩家，并充值100元，任务也算完成。</p><br/>
+            <p style="font-size: 16px;">&nbsp;&nbsp;2、直接分享玩家达5人：5位玩家下载游戏，绑定分享人推广码的后才算任务完成。</p>
+            <p style="font-size: 16px;">&nbsp;&nbsp;注：玩家分享在游戏“个人中心”中操作。</p><br/>
+            <p style="font-size: 16px;">&nbsp;&nbsp;3、充值业绩达到300元：直接分享的所有玩家首充金额加后续充值金额总和≧300元，任务完成;
+            或者直接分享和间接分享的所有玩家首充金额加后续充值金额总和≧300元，任务也算完成。</p><br/>
+            <p style="font-size: 16px;">&nbsp;&nbsp;4、分享推广专员1人：在推广系统中注册并完成注册资金缴纳后，任务完成。</p>
+             <p style="font-size: 16px;">注：推广系统中，推广专员需先注册游戏账号，并且获得自己的游戏ID号后，进入推广系统，按照实际操作步骤逐步操作即可。</p>
+            <p class="back-task" style="text-align:center;font-size: 18px;color: red">返回任务大厅>>></p>
+        </div>
 		<script src="/Public/Home/js/mui.min.js"></script>
+        <script src="/Public/Home/js/jQuery/jquery-1.11.3.min.js"></script>
 		<script>
 			mui.init({
 				swipeBack:true //启用右滑关闭功能	
 			});
+
+			$('#taskCall').on('click',function () {
+                $('#task').css('display','none');
+                $('#dialog').css('display','block');
+            });
+            $('.back-task').on('click',function () {
+                $('#task').css('display','block');
+                $('#dialog').css('display','none');
+            });
 		</script>
 	</body>
 </html>

@@ -10,7 +10,7 @@ use Think\Controller;
 class GameController extends Controller{
     public $n;
     public function inTime(){
-    error_log(date("[Y-m-d H:i:s]")." -[".$_SERVER['REQUEST_URI']."] :定时器\n",3,"/data/tuiguang/logs/time.log");    		
+    error_log(date("[Y-m-d H:i:s]")." -[".$_SERVER['REQUEST_URI']."] :定时器启动\n",3,"/data/tuiguang/logs/".date("[Y-m-d]").".log");    		
 	$this->playList();
 	$this->rechargeList();
 	$this->makeRecharge();
@@ -36,28 +36,24 @@ class GameController extends Controller{
 
     /**获取玩家列表信息**/
     public function playList(){
-    	error_log(date("[Y-m-d H:i:s]")." -[".$_SERVER['REQUEST_URI']."] :玩家列表定时器\n",3,"/data/tuiguang/logs/user.log");
+    	error_log(date("[Y-m-d H:i:s]")." -[".$_SERVER['REQUEST_URI']."] :玩家列表定时器\n",3,"/data/tuiguang/logs/".date("[Y-m-d]").".log");
         header('Content-Type: text/html; charset=utf-8');
         
-	/*测试专用，请勿删除*/
+	/*获取上次更新的时间*/
 	$file_path = "/data/tuiguang/logs/lasttime.txt";
 	if(file_exists($file_path)){
  		$str = file_get_contents($file_path);//将整个文件内容读入到一个字符串中
  		$str = str_replace("\r\n","<br />",$str);		
 	}
+	/*本次更新的开始时间和结束时间*/
 	$start_time = $str + 1;
-	$end_time = $str + 60;
-        /*正常使用，请勿删除*/
-//        $yearstoday = strtotime(date('Y-m-d',strtotime('-1 day')));
-//        $yearstoday_end = strtotime(date('Y-m-d 23:59:59',strtotime('-1 day')));
+	$end_time = $str + 86400;
+        /*接口授权*/
         $this->auth_curl();
         $url = "http://119.23.60.80/admin/napp";
-  //    	$post_data = "api=userlist&tstart=0&tend=1500706140";
-//        $post_data = "api=userlist&tstart=".$yearstoday."&tend=".$yearstoday_end;
 
-        //测试使用
-      $post_data = "api=userlist&tstart=".$start_time."&tend=".$end_time;
-	error_log($post_data,3,"/data/tuiguang/logs/ceshi.log");
+        //参数
+        $post_data = "api=userlist&tstart=".$start_time."&tend=".$end_time;
         $cookie_file = '/data/tuiguang/cookie/cookie.txt';
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_HEADER, 0);
@@ -69,10 +65,9 @@ class GameController extends Controller{
         curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
         $response = curl_exec($ch);
         curl_close($ch);
-	error_log($cookie_file,3,'/data/tuiguang/logs/test.log');
         $api_data = json_decode($response);
         $userList = std_class_object_to_array($api_data);
-	error_log(print_r($userList['data'],1),3,"/data/tuiguang/logs/user.log");
+	error_log(print_r($userList['data'],1),3,"/data/tuiguang/logs/".date("[Y-m-d]").".log");
         if(!empty($userList['data'])){
             foreach ($userList['data'] as $key => $val){
                 $name = urldecode($val["name"]);
@@ -152,9 +147,7 @@ class GameController extends Controller{
                 $relation = M('user_ship')->field('superior,relation')->where(array('id'=>$new_game[$m]['createBy']))->find();
                 $new_game[$m]['relation'] = $relation['relation'].$new_game[$m]['relation'];//完整的关系值（字符串）
                 $new_relation = explode(',',$new_game[$m]['relation']);
-		//error_log(print_r($new_relation,1),3,"/data/tuiguang/logs/ceshi.log");
                 $new_res = array_reverse($new_relation);
-		//error_log(print_r($new_res,1),3,"/data/tuiguang/logs/ceshi.log");
                 for ($n = 0;$n < count($new_res);$n++){
                     //判断上级是否存在推广专员
                     $recommend_id = M('staff')->where(array('game_id'=>$new_res[$n]))->getField('id');
@@ -180,26 +173,23 @@ class GameController extends Controller{
 
     /**获取充值列表**/
     public function rechargeList(){
-    error_log(date("[Y-m-d H:i:s]")." -[".$_SERVER['REQUEST_URI']."] :充值列表\n", 3, "/data/tuiguang/logs/recharge.log");
-    error_log("ceshi",3,"/data/tuiguang/logs/test.log");
+    
         header('Content-Type: text/html; charset=utf-8');
-        /*测试专用，请勿删除*/
+        /*获取上次更新时间*/
 	$file_path = "/data/tuiguang/logs/lasttime.txt";
 	if(file_exists($file_path)){
  		$str = file_get_contents($file_path);//将整个文件内容读入到一个字符串中
  		$str = str_replace("\r\n","<br />",$str);		
 	}
+	/*本次更新开始时间和结束时间*/
 	$start_time = $str + 1;
-	$end_time = $str + 60;
+	$end_time = $str + 86400;
 	
-
+	/*接口授权*/
         $this->auth_curl();
-        /*正常流程时间段，请勿删除*/
-//        $yearstoday = strtotime(date('Y-m-d',strtotime('-1 day')));
-//        $yearstoday_end = strtotime(date('Y-m-d 23:59:59',strtotime('-1 day')));
+        
         $url = "http://119.23.60.80/admin/napp";
-       // $post_data = "api=rechargelist&tstart=0&tend=1500706140";
-     //   $post_data = "api=rechargelist&tstart=".$yearstoday."&tend=".$yearstoday_end;
+     
         $post_data = "api=rechargelist&tstart=".$start_time."&tend=".$end_time;
         $cookie_file = '/data/tuiguang/cookie/cookie.txt';
         $ch = curl_init($url);
@@ -212,10 +202,9 @@ class GameController extends Controller{
         curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
         $response = curl_exec($ch);
         curl_close($ch);
-	error_log($cookie_file,3,"/data/tuiguang/logs/test.log");
         $api_data = json_decode($response);
         $rechargeList = std_class_object_to_array($api_data);
-	error_log(print_r($rechargeList['data'],1),3,"/data/tuiguang/logs/recharge.log");
+	error_log(print_r($rechargeList['data'],1),3,"/data/tuiguang/logs/".date("[Y-m-d]").".log");
         if(!empty($rechargeList['data'])) {
             foreach ($rechargeList['data'] as $key => $val) {
                 $name = urldecode($val["name"]);
@@ -225,15 +214,23 @@ class GameController extends Controller{
                 }else{
                     $recharge_type = 2;
                 }
+                //获取该玩家所属的兑换中心id
+                $superior_id = M('user_ship')->where(array('game_id'=>$val['id']))->getField('superior');
+                if($superior_id != ""){
+                    $service_number = M('staff')->where(array('id'=>$superior_id))->getField('service_number');
+                }else{
+                    $service_number = "";
+                }
                 //将获得数据写入数据库中
                 $add_data = array(
                     'game_id'=>$val['id'],
                     'is_first'=>$val['isFirst'],
                     'money'=>$val['rmb'],
                     'type'=>$recharge_type,
-                    'create_time' => date('Y-m-d H:i:s',$val['orderTime'])
+                    'create_time' => date('Y-m-d H:i:s',$val['orderTime']),
+                    'service_num' => $service_number
                 );
-		//error_log(print_r($add_data,1),3,"/data/tuiguang/logs/recharge.log");
+		//error_log(print_r($add_data,1),3,"/data/tuiguang/logs/".date("[Y-m-d]").".log");
                 M('user_charge')->add($add_data);
             }
         }
@@ -243,25 +240,26 @@ class GameController extends Controller{
      * 定时拨付充值业绩奖励
      */
     public function makeRecharge(){
-    error_log(date("[Y-m-d H:i:s]")." -[".$_SERVER['REQUEST_URI']."] :充值奖励\n", 3, "/data/tuiguang/logs/makerecharge.log");
-        /*测试专用，请勿删除*/
+    error_log(date("[Y-m-d H:i:s]")." -[".$_SERVER['REQUEST_URI']."] :结算充值奖励\n", 3, "/data/tuiguang/logs/".date("[Y-m-d]").".log");
+        /*获取上次更新时间*/
 	$file_path = "/data/tuiguang/logs/lasttime.txt";
 	if(file_exists($file_path)){
  		$str = file_get_contents($file_path);//将整个文件内容读入到一个字符串中
  		$str = str_replace("\r\n","<br />",$str);		
 	}
+	/*本次更新开始时间和结束时间*/
 	$start_time = $str + 1;
-	$end_time = $str + 60;
+	$end_time = $str + 86400;
+	//更新文件中更新时间
 	file_put_contents($file_path, $end_time);
         $starts_time = date('Y-m-d H:i:s',$start_time);
         $ends_time = date('Y-m-d H:i:s',$end_time);
         //从充值列表中获取昨日充值的相应数据
-//        $start_time = date("Y-m-d",strtotime("-1 day"));
-//        $end_time = date("Y-m-d 23:59:59",strtotime("-1 day"));
+
         $map['create_time'] = array(array('egt',$starts_time), array('elt', $ends_time));
         $map['type'] = 1;
         $recharge_msg = M('user_charge')->where($map)->select();
-	error_log(date("[Y-m-d H:i:s]").print_r($recharge_msg,1),3,"/data/tuiguang/logs/tests.log");
+	error_log("昨日所有充值记录：".print_r($recharge_msg,1),3,"/data/tuiguang/logs/".date("[Y-m-d]").".log");
         if(!empty($recharge_msg)){
             foreach ($recharge_msg as $key=>$val){
                 $superior = M('user_ship')->where(array('game_id'=>$val['game_id']))->getField('superior');
@@ -271,7 +269,6 @@ class GameController extends Controller{
                 }
             }
             $res = array_unique ($result);
-	    error_log(date("[Y-m-d H:i:s]").print_r($res,1),3,"/data/tuiguang/logs/tests.log");
             foreach ($res as $key=>$value){
                 $msg[$key]['recharge'] = 0;
                 $msg[$key]['id'] = $value;
@@ -287,7 +284,7 @@ class GameController extends Controller{
                     }
                 }
             }
-            error_log(date("[Y-m-d H:i:s]").print_r($msg,1),3,"/data/tuiguang/logs/tests.log");
+            error_log(date("[Y-m-d H:i:s]").print_r($msg,1),3,"/data/tuiguang/logs/".date("[Y-m-d]").".log");
             //循环发放奖励
             foreach ($msg as $values){
                 if($values['recharge'] != 0){
@@ -305,7 +302,7 @@ class GameController extends Controller{
                 $post_data['my']['coin'] = $values['consume_coin'];
                 $post_data['my']['income'] = $values['income'];
                 $post_data['my']['service_number'] = $values['service_number'];
-                error_log(date("[Y-m-d H:i:s]").print_r($post_data,1),3,"/data/tuiguang/logs/tests.log");
+                error_log(date("[Y-m-d H:i:s]").print_r($post_data,1),3,"/data/tuiguang/logs/".date("[Y-m-d]").".log");
                 recharge($post_data,$values['recharge']);
 	    }
                 

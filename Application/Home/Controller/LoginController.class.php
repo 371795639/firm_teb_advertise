@@ -194,6 +194,17 @@ class LoginController extends \Think\Controller {
                     //写入流水表,注册资金记录
                     $refFlow      =   $dbFlow->add($refFlow);
                     $refregCharge =   $dbregCharge->add($refregCharge);
+                    M('staff')->where(array('id'=>$uid))->setInc('consume_coin',1000);
+                    //给用户发送注册成功消息
+                    $dataNotice = array(
+                    'uid'           => $uid,
+                    'kind'          => '2',
+                    'poster'        => 'system',
+                    'notice_type_id'=> '3',
+                    'notice_title'  => '注册成功',
+                    'notice_content'=> "恭喜您已完成注册，1000游戏币已存入您的账户。",
+                );
+                M('Notice') -> add($dataNotice);
 
                 }else{//充值失败
                     $refStaff=array(
@@ -237,18 +248,9 @@ class LoginController extends \Think\Controller {
                 $dataStaff = array(
                     'status' => 3,
                 );
-                $dataStaff['consume_coin'] = $refStaff['consume_coin'] + 1000;
+                
                 $dbStaff->where('id='.$_SESSION['userid'])->save($dataStaff);
-                //给用户发送注册成功消息
-                $dataNotice = array(
-                    'uid'           => $_SESSION['userid'],
-                    'kind'          => '2',
-                    'poster'        => 'system',
-                    'notice_type_id'=> '3',
-                    'notice_title'  => '注册成功',
-                    'notice_content'=> "恭喜您已完成注册，1000游戏币已存入您的账户。",
-                );
-                M('Notice') -> add($dataNotice);
+                
                 break;
         }
         $this->display('Login/registerSucc');

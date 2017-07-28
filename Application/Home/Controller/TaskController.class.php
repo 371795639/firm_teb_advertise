@@ -382,7 +382,7 @@ class TaskController extends HomeController {
         foreach($doneDaily as $kAll => $vAll){
             $status[]   = $doneDaily[$kAll]['status'];
             if ($doneDaily[$kAll]['name'] == '分享推广专员') {
-                $dailyTaskFiveInneed = $doneDaily[$kAll]['inneed'];
+                $dailyTaskFiveInneed    = $doneDaily[$kAll]['inneed'];
             }
         }
         //$status ：日常任务总状态值 => 1：日常任务全部完成；0：日常任务未全部完成
@@ -397,12 +397,12 @@ class TaskController extends HomeController {
                 $getMoney[] = $doneDaily[$key]['get_money'];
             }
             if(in_array(2,$getMoney)){
-                echo "<script>alert('奖励已发放,请到奖励中心查看。');history.back(-1);</script>";
+                echo "<script>alert('奖励已发放,请到奖励中心查看。');window.location.href='".U('Home/Task/index')."';</script>";
             }else{
                 $start          = $taskDone -> get_start_time($dateTime);
                 $end            = $taskDone -> get_end_time($dateTime);
-                $taskMoney      = $taskDone -> where(array('uid'=>$_SESSION['userid'],'status'=>8,'task_id'=>0,'get_time'=>array(array('gt',$start),array('lt',$end))))->getField('reward');
-                $oldData        = $staff    -> get_staff_by_id($_SESSION['userid']);
+                $taskMoney      = $taskDone->where(array('uid'=>$_SESSION['userid'],'status'=>8,'task_id'=>0,'get_time'=>array(array('gt',$start),array('lt',$end))))->getField('reward');
+                $oldData        = $staff -> get_staff_by_id($_SESSION['userid']);
                 //增加信用分
                 $infoCredit     = $dbStaffInfo -> get_staff_by_uid($_SESSION['userid']);
                 $infoCreditNum  = $infoCredit['credit_num'] + 1;
@@ -495,10 +495,10 @@ class TaskController extends HomeController {
                     )
                 );
                 payReward($staffArr,$rewardDailyArr,$flowArr,$noticeArr);
-                echo "<script>alert('恭喜您完成本周任务，奖励已发放，请到奖励中心查看详情。');history.back(-1);</script>";
+                echo "<script>alert('恭喜您完成本周任务，奖励已发放，请到奖励中心查看详情。');window.location.href='".U('Home/Task/index')."';</script>";
             }
         }else{
-            echo "<script>alert('任务还未全部完成哦，加油吧。');history.back(-1);</script>";
+            echo "<script>alert('任务还未全部完成哦，加油吧。');window.location.href='".U('Home/Task/index')."';</script>";
         }
     }
 }

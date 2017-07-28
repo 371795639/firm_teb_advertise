@@ -136,7 +136,7 @@ class WeeklySettleController{
             $bounsMoney     = $bounsMoney/0.8;
             //任务总收益
             $totalMoney     = $taskMoney + $bounsMoney;
-            //staff表发放奖励 =>income = $totalMoney * $discount;money = $totalMoney * (1 - $discount);
+            //staff表发放奖励=>INCOME = $totalMoney;;CONSUME_COIN = $totalMoney * $discount;;MONEY = $totalMoney * (1 - $discount).
             $discount       = $parameter['value']/100;
             $oldData        = $dbStaff -> get_staff_by_id($id);
             $dataStaff      = array(

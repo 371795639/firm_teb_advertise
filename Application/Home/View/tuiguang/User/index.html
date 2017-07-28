@@ -49,6 +49,24 @@
                         </span>
                         <span class="p-right">推广收益：{$resStaff.income}</span>
                     </p>
+					<if condition="$total.type eq 1">
+					<p>
+                        <span class="p-left">
+                                <span>推广业绩总额：
+                                    <if condition="$total.recommend neq 0">{$total.recommend}
+                                        <else />0
+                                    </if>
+                                </span>
+                        </span>
+						<span class="p-right">
+							<span>充值业绩总额：
+                                    <if condition="$total.recharge neq 0">{$total.recharge}
+                                        <else />0
+                                    </if>
+                                </span>
+						</span>
+					</p>
+					</if>
 				</div>
 				<div class="topTabs">
 					<p onclick="goJlzx()">

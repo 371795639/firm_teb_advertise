@@ -22,14 +22,13 @@
 						<div class="inline">
 							<a class="mui-control-item mui-active" href="#item1">
 								我的合作伙伴<br>
-								{$list.count}
-								
+								{$list_count}
 							</a>
 						</div>
 						<div class="inline">
 							<a class="mui-control-item" href="#item2">
-								我的伞下玩家<br>
-								{$lists.count}
+								我的推荐玩家<br>
+								{$lists_count}
 							</a>
 						</div>
 					</div>
@@ -37,7 +36,7 @@
 				<!--我的合作伙伴-->
 				<div id="item1" class="mui-control-content mui-active">
 					<ul class="mui-content mui-table-view" style="margin: 14px 0;">
-						<if condition="$list.count eq 0">
+						<if condition="$list_count eq 0">
 							<div class="no-data">
 								暂无信息
 							</div>
@@ -59,7 +58,7 @@
 				<!--我的伞下玩家-->
 				<div id="item2" class="mui-control-content">
 					<ul class="mui-content mui-table-view" style="margin: 14px 0;">
-						<if condition="$lists.count eq 0">
+						<if condition="$lists_count eq 0">
 							<div class="no-data">
 								暂无信息
 							</div>

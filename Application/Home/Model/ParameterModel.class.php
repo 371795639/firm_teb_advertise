@@ -8,7 +8,7 @@ class ParameterModel extends Model{
 
     /**
      * 根据ID获取值
-     * @param $id
+     * @param $id   integer     自增ID
      * @return bool|mixed
      */
     public function get_parameter_by_id($id){

@@ -112,7 +112,17 @@ class UserController extends HomeController {
         /**信用值**/
         $credit = D('StaffInfo') -> get_staff_by_uid($userid);
         $creditValue = $credit['credit_value'];
+        //判断是否是兑换中心
+        if($resStaff['is_service'] == 1) {
+            $total['type'] = 1;
+            /*推广业绩总额*/
+            $res_count = M('staff')->where(array('is_league'=>0,'service_number'=>$resStaff['service_number']))->count();
+            $total['recommend'] = $res_count * 1000;
+            /*充值业绩总额*/
+            $total['recharge'] = M('user_charge')->where(array('service_num'=>$resStaff['service_number'],'type'=>1))->sum('money');
+        }
         $this->assign('creditValue',$creditValue);
+        $this->assign('total',$total);
         $this->assign('pic',$pic);
         $this->display('User/index');
     }
@@ -212,12 +222,14 @@ class UserController extends HomeController {
         header('Content-Type:text/html;charset=utf-8');
         $uid   = $_SESSION['userid'];
         $list = M('staff')->where(array('referee'=>$uid))->order('create_time desc')->select();
-        $list['count'] = count($list);
+	$list_count = count($list);
         $game_id = M('staff')->where(array('id'=>$uid))->getField('game_id');
         $lists = M('user_ship')->where(array('recommend'=>$game_id,'superior'=>$uid))->order('reg_time desc')->select();
-        $lists['count'] = count($lists);
+        $lists_count = count($lists);
         $this->assign('list',$list);
+	$this->assign('list_count',$list_count);
         $this->assign('lists',$lists);
+	$this->assign('lists_count',$lists_count);
         $this->display('User/spreadManage');
     }
 

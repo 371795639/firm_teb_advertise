@@ -1365,7 +1365,7 @@ function taskMoney($uid,$rec_num,$recharge,$service_number){
         if($taskMoney < 0){
             $taskMoneys = 0;
         }else{
-	    $taskMoneys = $taskMoney/0.8;	
+	    $taskMoneys = $taskMoney/0.8;
 	}
         return $taskMoneys;
     }
