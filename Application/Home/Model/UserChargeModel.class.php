@@ -14,11 +14,6 @@ class UserChargeModel extends Model{
      * @return bool|mixed|string    $number：玩家数量；$res：玩家充值列表；$money：充值金额
      */
     public function get_user_charge($game_id,$first,$what){
-        $TaskWeekly = D('TaskWeekly');
-        $date       = date('Y-m-d H:i:s');
-        $start      = $TaskWeekly -> get_start_time($date);
-        $end        = $TaskWeekly -> get_end_time($date);
-        $where['create_time'] = array(array('gt',$start),array('lt',$end));
         if($first == 1){
             $where['is_first'] = 1;
         }elseif($first == 0){
@@ -49,7 +44,4 @@ class UserChargeModel extends Model{
                 return '参数错误';
         }
     }
-
-
-
 }

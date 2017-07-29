@@ -22,6 +22,48 @@ class StaffModel extends Model{
 
 
     /*
+     * 获取推荐人是同一推广专员的数量
+     * @param  integer  $referee    推荐人ID
+     * @param  integer  $what       返回方式
+     * @param  integer  $ids        返回ID
+     * @return integer
+     */
+    public function get_staff_by_referee($referee,$what,$ids){
+        $map['is_league'] = 0;
+        $field = 'id,staff_real,mobile,is_league';
+        if(is_array($referee)){
+            $map['referee'] = array('in',$referee);
+        }else{
+            $map['referee'] = $referee;
+        }
+        switch (strtolower($what)){
+            case 'find':
+                $re = $this ->field($field)-> where($map) -> order('id ASC') -> find();
+                break;
+            case 'select':
+                $re = $this ->field($field)-> where($map) -> order('id ASC') -> select();
+                break;
+            default :
+                $re = '参数错误';
+        }
+        if($re){
+            if(isset($ids)){
+                $tgIds = [];
+                foreach($re as $k => $v){
+                    $tgIds[] = $re[$k]['id'];
+                }
+//                $tgIds = implode(',',$tgIds);
+                return $tgIds;
+            }else{
+                return $re;
+            }
+        }else{
+            return false;
+        }
+    }
+
+
+    /*
      * 根据ID查找推广专员
      * @param  integer  $id     推广专员ID
      * @return array    $re     查找的数据

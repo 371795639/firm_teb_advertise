@@ -108,19 +108,18 @@ class TaskDoneModel extends Model{
 
 
     /**
-     * 根据用户获取本周内所有已领取的任务
+     * 根据用户ID获取本周内所有已领取的任务
      * @param   $group  string      根据字段进行分组
      * @param   $uid    integer     根据$uid获取本周任务；传入空，则返回所有
      * @return  mixed
      */
-    public function get_this_week_all_task($uid,$group){
-        $date = date('Y-m-d H:i:s');
-//        $date       = '2017-07-08 15:55:55';
-        $start_time = $this -> get_start_time($date);
-        $end_time   = $this -> get_end_time($date);
-        $map['get_time']    = array(array('gt', $start_time), array('lt', $end_time));
+//    public function get_this_week_all_task($uid,$group){
+    public function get_all_task($uid,$group,$taskId){
         if($uid){
             $map['uid'] = $uid;
+        }
+        if($taskId){
+            $map['task_id'] = array('neq',0);
         }
         if(empty($group)){
             $res = $this -> where($map) -> select();//有值就说明已经领取过了
@@ -134,6 +133,75 @@ class TaskDoneModel extends Model{
             $res[$k]['money']   = $task_ids['money'];
             $res[$k]['inneed']  = $task_ids['inneed'];
             $res[$k]['name']    = $task_ids['name'];
+            $res[$k]['detail']  = $task_ids['detail'];
+        }
+        return $res;
+    }
+
+
+    /**
+     * 根据用户ID获取本周内已领取的任务（不包含结算数据）
+     * @param   $group  string      根据字段进行分组
+     * @param   $uid    integer     根据$uid获取本周任务；传入空，则返回所有
+     * @param   $status integer     任务的状态
+     * @param   $limit  integer     取出来的限制条数
+     * @return  mixed
+     */
+//    public function get_this_week_doing_task($uid,$status,$group,$limit){
+    public function get_doing_task($uid,$status,$group,$limit){
+        $map = array(
+            'task_id'       => array('gt',0),
+        );
+        if(is_string($status)){
+            $map['status']  = array('in',$status);
+        }else{
+            $map['status']  = $status;
+        }
+        if($uid){
+            $map['uid']     = $uid;
+        }
+        if(empty($group)){
+            $res = $this -> where($map) -> order('id DESC')-> limit($limit) -> select();
+        }else{
+            $res = $this -> where($map) -> group($group) -> order('id DESC')-> limit($limit) -> select();
+        }
+        foreach($res as $k => $v){
+            $task_id    = $res[$k]['task_id'];
+            $task_ids   = D('Task') -> get_task_by_id($task_id);
+            $res[$k]['type']    = $task_ids['type'];
+            $res[$k]['money']   = $task_ids['money'];
+            $res[$k]['inneed']  = $task_ids['inneed'];
+            $res[$k]['name']    = $task_ids['name'];
+            $res[$k]['detail']  = $task_ids['detail'];
+        }
+        return $res;
+    }
+
+
+    /**
+     * 获取结算数据
+     * @param $uid      integer     用户ID
+     * @param $field    string      字段
+     * @param $what     string      返回方式
+     * @return array|false|mixed
+     */
+    public function get_task_field($uid,$field,$what){
+        $map = array(
+            'task_id'   => 0,
+            'status'    => 8,
+        );
+        if($uid){
+            $map['uid'] = $uid;
+        }
+        switch (strtolower($what)){
+            case 'select':
+                $res = $this -> where($map) -> find();
+                break;
+            case 'field':
+                $res = $this -> where($map) -> getField($field);
+                break;
+            default :
+                $res = '参数错误';
         }
         return $res;
     }
@@ -146,8 +214,9 @@ class TaskDoneModel extends Model{
      * @param   $type   integer     任务类型 1：日常任务 2：额外任务
      * @return  bool
      */
-    public function get_this_week_task($uid,$group,$type){
-        $resDone = $this -> get_this_week_all_task($uid,$group);
+//    public function get_this_week_task($uid,$group,$type,$taskId){
+    public function get_week_type_task($uid,$group,$type,$taskId){
+        $resDone = $this -> get_all_task($uid,$group,$taskId);
         if($resDone){
             foreach($resDone as $k => $v){
                 $task_id = $resDone[$k]['task_id'];
@@ -251,7 +320,7 @@ class TaskDoneModel extends Model{
     public function get_last_week_done($date,$uid){
         $monday = get_last_monday($date);
         $sunday = get_last_sunday($date);
-        $map = array(
+        $map    = array(
             'get_time'  => array(array('gt',$monday),array('lt',$sunday)),
             'task_id'   => array('gt',0),
             'get_money' => 1,
@@ -269,6 +338,7 @@ class TaskDoneModel extends Model{
             $res[$k]['money']   = $task_ids['money'];
             $res[$k]['inneed']  = $task_ids['inneed'];
             $res[$k]['name']    = $task_ids['name'];
+            $res[$k]['detail']  = $task_ids['detail'];
         }
         return $res;
 
@@ -381,6 +451,7 @@ class TaskDoneModel extends Model{
             $res[$k]['money']   = $task_ids['money'];
             $res[$k]['inneed']  = $task_ids['inneed'];
             $res[$k]['name']    = $task_ids['name'];
+            $res[$k]['detail']  = $task_ids['detail'];
         }
         switch($what){
             case 'select':

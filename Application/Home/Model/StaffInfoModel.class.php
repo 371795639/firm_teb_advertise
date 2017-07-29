@@ -93,4 +93,9 @@ class StaffInfoModel extends Model{
         return $credit;
     }
 
+
+    public function get_class(){
+
+    }
+
 }

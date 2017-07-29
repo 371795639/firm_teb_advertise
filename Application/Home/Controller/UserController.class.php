@@ -97,9 +97,9 @@ class UserController extends HomeController {
         $userid   = $_SESSION['userid'];
         $resStaff = $dbStaff->where('id='.$userid)->find();
         $this->assign('resStaff',$resStaff);
-        /*显示剩余任务个数--开始*/
+        /*显示剩余任务个数*/
         $dbTaskDone     = D('TaskDone');
-        $resDoneCount   = $dbTaskDone -> get_this_week_all_task($_SESSION['userid'],'');
+        $resDoneCount   = $dbTaskDone -> get_all_task($_SESSION['userid'],'','1');
         $doingNo        = $dbTaskDone -> get_count($resDoneCount,'status',1);
         $this->assign('doingNo',$doingNo);
         /*根据当前时间更换问候图片*/
@@ -256,13 +256,5 @@ class UserController extends HomeController {
         $api_status = std_class_object_to_array($api_data);
         return $api_status;
     }
-
-
-    /**我的推广二维码**/
-    public function qrcode(){
-
-        $this -> display('User/qrcode');
-    }
-
 
 }
