@@ -58,6 +58,7 @@ class StaffInfoModel extends Model{
         $num = intval($num);
         $num = $num >= 4 ? 4 : $num;
         $num = $num <= -5 ? -5 : $num;
+        $credit = 0;
         switch($num){
             case -5:
                 $credit = 10;
@@ -91,11 +92,6 @@ class StaffInfoModel extends Model{
                 break;
         }
         return $credit;
-    }
-
-
-    public function get_class(){
-
     }
 
 }

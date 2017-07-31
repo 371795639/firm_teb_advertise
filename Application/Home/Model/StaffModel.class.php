@@ -122,7 +122,13 @@ class StaffModel extends Model{
      * @return mixed
      */
     public function get_all_staff_key($id){
-        $re = $this  -> where(array("is_league" => 1)) ->select();
+//        $endTime = date('Y-m-d 23:59:59',strtotime("-1 week Monday"));
+        $map = array(
+            "is_league"     => 1,
+            'id'            => array('gt','4'),
+//            'create_time'   => array('lt',$endTime),
+            );
+        $re = $this  -> where($map) ->select();
         if($re){
             if(empty($id)){
                 return $re;
