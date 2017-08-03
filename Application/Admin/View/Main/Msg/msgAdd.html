@@ -5,17 +5,29 @@
     </div>
     <form action="{:U()}" method="post" class="form-horizontal">
         <div class="form-item">
-            <label class="item-label">昵称 <span class="check-tips">（请输入推广专员的昵称）</span></label>
+            <label class="item-label">手机号 <span class="check-tips">（请输入推广专员的手机号）</span></label>
             <div class="controls">
-                <input type="text" class="text input-large" id="name" name="name" value="">
+                <input type="text" class="text input-large" name="mobile" value="">
             </div>
-            <label class="item-label">推荐人<span class="check-tips">（请输入推荐人的ID，只能是数字）</span></label>
+            <label class="item-label">真实姓名<span class="check-tips">（请输入推广专员的真实姓名）</span></label>
             <div class="controls">
-                <input type="text" class="text input-large" id="referee" name="referee" value="">
+                <input type="text" class="text input-large" name="ture_name" value="">
             </div>
-            <label class="item-label">联系方式<span class="check-tips">（请输入11位手机号）</span></label>
+            <label class="item-label">推荐人手机号<span class="check-tips">（请输入推荐人的手机号）</span></label>
             <div class="controls">
-                <input type="text" class="text input-large" id="mobile" name="mobile" value="">
+                <input type="text" class="text input-large" name="referee_mobile" value="">
+            </div>
+            <label class="item-label">身份证号<span class="check-tips">（身份证号选填，其他为必填项）</span></label>
+            <div class="controls">
+                <input type="text" class="text input-large" name="card_id" value="">
+            </div>
+            <label class="item-label">游戏ID<span class="check-tips">（请输入推广专员的游戏ID）</span></label>
+            <div class="controls">
+                <input type="text" class="text input-large" name="game_id" value="">
+            </div>
+            <label class="item-label">地址<span class="check-tips">（请输入推广专员的地址）</span></label>
+            <div class="controls">
+                <input type="text" class="text input-large" name="addr" value="">
             </div>
         </div>
         <div class="form-item">
@@ -26,26 +38,4 @@
             </div>
         </div>
     </form>
-</block>
-<block name="script">
-    <script type="text/javascript">
-        /*
-        $('#refer').on('click',function(){
-            var name = $('#name').val();
-            var referee = $('#referee').val();
-            var mobile = $('#mobile').val();
-            $.ajax({
-                type:"post",
-                url:"{:U('Main/msgAdd')}",
-                data:{"name":name,"referee":referee,"mobile":mobile},
-                dataType:"json",
-                success:function (data) {
-                    if (data['code'] == 1 ){
-                        alert("success");
-                    }
-                }
-            })
-        })
-        */
-    </script>
 </block>

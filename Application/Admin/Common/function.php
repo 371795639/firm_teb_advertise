@@ -387,3 +387,131 @@ function time_formats($date,$format='Y-m-d H:i'){
     }
     return $re;
 }
+
+
+/**
+ * 事务发放奖励
+ * @param $userMsg      array       推广专员数组（更新）
+ * @param $rewardMsg    array       奖励表数组（插入）
+ * @param $flowMsg      array       流水表（插入）
+ * @param $noticeMsg    array       通知表（插入）
+ * @return  boolean     intager     1：执行成功；2：执行失败
+ */
+function pay_reward($userMsg,$rewardMsg,$flowMsg,$noticeMsg){
+    $staff = M('staff');
+    $reward = M('reward');
+    $flow = M('flow');
+    $notice = M('notice');
+    $staff->startTrans();//启用事务
+    $result = true;
+    //修改账户信息
+    if(!empty($userMsg)){
+        foreach ($userMsg as $val){
+            $update_money   = $staff->where(array('id'=>$val['id']))->setInc('money',$val['data']['money']);
+            $update_coin    = $staff->where(array('id'=>$val['id']))->setInc('consume_coin',$val['data']['consume_coin']);
+            if($val['data']['income'] != 0){
+                $update_income  = $staff->where(array('id'=>$val['id']))->setInc('income',$val['data']['income']);
+            }else{
+                $update_income  = 1;
+            }
+            if(!$update_money || !$update_coin || !$update_income){
+                $result = false;
+            }
+        }
+    }
+
+    //添加奖励发放记录
+    if(!empty($rewardMsg)){
+        foreach ($rewardMsg as $value){
+            $reward_update = $reward->add($value['data']);
+            if(!$reward_update){
+                $result = false;
+            }
+        }
+    }
+
+    //添加流水记录
+    if(!empty($flowMsg)){
+        foreach ($flowMsg as $item){
+            $flow_update = $flow->add($item['data']);
+            if(!$flow_update){
+                $result = false;
+            }
+        }
+    }
+
+    //添加消息
+    if(!empty($noticeMsg)){
+        foreach ($noticeMsg as $vals){
+            $notice_update = $notice->add($vals['data']);
+            if(!$notice_update){
+                $result = false;
+            }
+        }
+    }
+
+    if($result == true){
+        $staff->commit();//成功则提交
+        return 1;
+    }else{
+        $staff->rollback();//不成功，则回滚
+        return 2;
+    }
+}
+
+
+/**发放推荐奖励**/
+function handle_settle(){
+    $staff = M('staff');
+    $map['recommend_num'] = array('gt',0);
+    $staff_msg = $staff->where($map)->select();
+    foreach ($staff_msg as $key=>$val){
+        $order_id = make_orderId();//生成订单号
+        if($val['recommend_num'] == 1){
+            $recommend_reward = 1.2 * 1000 * 1/100;
+        }elseif($val['recommend_num'] == 2){
+            $recommend_reward = 1.5 * 1000 * 2/100;
+        }else{
+            $recommend_reward = $val['recommend_num'] * 1000 * 2/100;
+        }
+        $fact_money = $recommend_reward * 70/100;
+        $coin = $recommend_reward * 30/100;
+        $user_msg[$key]['id'] = $val['id'];
+        $user_msg[$key]['data']['money'] = $fact_money;
+        $user_msg[$key]['data']['consume_coin'] = $coin;
+        $user_msg[$key]['data']['income'] = 0;
+        //流水
+        $flow_msg[$key]['id'] = $val['id'];
+        $flow_msg[$key]['data'] = array(
+            'uid'=>$val['id'],
+            'type'=>2,
+            'money'=>$recommend_reward,
+            'order_id'=>$order_id,
+        );
+        //分享奖励记录
+        $reward_msg[$key]['id'] = $val['id'];
+        $reward_msg[$key]['data'] = array(
+            'uid'=>$val['id'],
+            'type'=>3,
+            'money'=>$fact_money,
+            'game_coin'=>$coin,
+            'order_id'=>$order_id,
+            'remarks'=>"每日发放分享奖励，奖励金额￥".$recommend_reward ."元"
+        );
+        //金额变动消息
+        $notice_msg[$key]['id'] = $val['id'];
+        $notice_msg[$key]['data'] = array(
+            'uid'=>$val['id'],
+            'poster'=>'system',
+            'kind'=>2,
+            'notice_title'=>"分享奖励每日发放",
+            'notice_content'=>"恭喜收到每日发放的分享奖励，奖励￥".$recommend_reward ."元。",
+            'notice_type_id'=>3
+        );
+    }
+    if(pay_reward($user_msg,$reward_msg,$flow_msg,$notice_msg) == 1){
+        return 1;
+    }else{
+        return 2;
+    }
+}

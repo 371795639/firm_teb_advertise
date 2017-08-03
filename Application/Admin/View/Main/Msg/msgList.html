@@ -6,10 +6,11 @@
 
     <div class="cf">
         <div class="fl">
-            <!--<a class="btn" href="{:U('Main/msgAdd')}">新 增</a>-->
+            <a class="btn" href="{:U('Main/msgAdd')}">新 增</a>
             <button class="btn ajax-post" url="{:U('Main/changeStatus',array('method'=>'resumeUser','dbname'=>'Staff'))}" target-form="ids">启 用</button>
             <button class="btn ajax-post" url="{:U('Main/changeStatus',array('method'=>'forbidUser','dbname'=>'Staff'))}" target-form="ids">禁 用</button>
             <button class="btn ajax-post confirm" url="{:U('Main/changeStatus',array('method'=>'deleteUser','dbname'=>'Staff'))}" target-form="ids">删 除</button>
+            <a class="btn" href="{:U('Main/givenReward')}">一键发放奖励</a>
         </div>
         <div class="search-form fr cf">
             <div class="sleft">

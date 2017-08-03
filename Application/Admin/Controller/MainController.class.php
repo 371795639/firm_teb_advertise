@@ -125,7 +125,7 @@ class MainController extends AdminController {
             }else{
                 $this -> error('修改失败');
             }
-        }else {
+        }else{
             $resStaffEdit = $dbStaff -> msg_find($where);
             $this->assign('resStaffEdit', $resStaffEdit);
             $this->meta_title = '修改推广专员信息';
@@ -137,20 +137,79 @@ class MainController extends AdminController {
     /**添加推广专员**/
     public function msgAdd(){
         if(IS_POST) {
-            $dbStaff = D('Staff');
-            $data = array(
-                'staff_name' => I('post.name'),
-                'referee' => I('post.referee'),
-                'mobile' => I('post.mobile')
-            );
-            if($dbStaff->msg_insert($data)){
-                $this->success('增加成功', U('Main/msgList'));
+            $dbStaff    = D('Staff');
+            $ref        = $dbStaff -> get_staff('mobile',I('referee_mobile'));
+            if(I('game_id')){
+                $gameID = $dbStaff -> get_staff('game_id',I('game_id'));
+                if($gameID){
+                    echo "<script>alert('请注意，此游戏ID已被绑定过，若要修改，请在添加完成后“编辑”此推广专员中修改');</script>";
+                }
+            }
+            if($ref){
+                $data = array(
+                    'mobile'        => I('mobile'),
+                    'game_id'       => I('game_id'),
+                    'card_id'       => I('card_id',''),
+                    'address'       => I('addr'),
+                    'referee'       => $ref['id'],
+                    'staff_real'    => I('ture_name'),
+                    'staff_pwd'     => md5('teb123456'),
+                    'service_number'=> $ref['service_number'],
+                );
+                $insert             = $dbStaff -> msg_insert($data);
+                if($insert == 1){
+                    //分享人recommend_num+1
+                    $recommedAdd    = $dbStaff -> where(array('id' => $ref['id'])) -> setInc('recommend_num');
+                    //分享人income补差价
+                    $recomNum       = $dbStaff -> get_staff_by_referee($ref['id'], 'count');
+                    $moneyGive      = $dbStaff -> referee_given($recomNum);
+                    $incomeGiven    = $dbStaff -> where(array('id' => $ref['id'])) -> setInc('income', $moneyGive);
+                    //中心金额数据
+                    $sericeAward    = service_awards('register', $ref['service_number'], '1000');
+                    $money          = $sericeAward[0]['fact_money'];
+                    $consume_coin   = $sericeAward[0]['coin'];
+                    $income         = $sericeAward[0]['money'];
+                    //发放奖励
+                    $staffData      = array('money' => $money, 'income' => $income, 'consume_coin' => $consume_coin,);
+                    $staffArr[]     = array('id' => $ref['service_number'], 'data' => $staffData,);
+                    //流水表 flow
+                    $dataFlow       = array('uid' => $ref['service_number'], 'type' => 6, 'money' => $income, 'order_id' => make_orderId(), 'create_time' => date('Y-m-d H:i:s'),);
+                    $flowArr[]      = array('id' => $ref['service_number'], 'data' => $dataFlow,);
+                    //奖励表 reward
+                    $dataReward     = array('uid' => $ref['service_number'], 'type' => 5, 'money' => $money, 'game_coin' => $consume_coin, 'order_id' => make_orderId(), 'create_time' => date('Y-m-d H:i:s'), 'remarks' => "恭喜您的团队推荐成功注册一名推广专员，奖励￥$income",);
+                    $rewardArr[]    = array('id' => $ref['service_number'], 'data' => $dataReward,);
+                    //通知表 notice
+                    $dataNotices    = array('uid' => $ref['service_number'], 'kind' => '2', 'poster' => 'system', 'notice_type_id' => 3, 'notice_title' => '兑换中心分享奖励', 'create_time' => date('Y-m-d H:i:s'), 'notice_content' => "恭喜您的团队推荐成功注册一名推广专员，奖励￥$income",);
+                    $noticeArr[]    = array('id' => $ref['service_number'], 'data' => $dataNotices,);
+                    $service        = pay_reward($staffArr, $rewardArr, $flowArr, $noticeArr);
+                    if($recommedAdd == 1 && $incomeGiven == 1 && $service == 1){
+                        $this->success('推广专员增加且各项奖励发放成功', U('Main/msgList'));
+                    }elseif($recommedAdd == 0){
+                        $this -> error('推荐人分享数增加失败');
+                    }elseif($incomeGiven == 0){
+                        $this -> error('推荐人income补差价增加失败');
+                    }elseif($service == 2){
+                        $this -> error('中心奖励发放失败');
+                    }
+                }else{
+                    $this->error($dbStaff->getError());
+                }
             }else{
-                $this->error($dbStaff->getError());
+                $this -> error('信息填写不完整或推荐人手机号不存在，请重新填写！');
             }
         }else {
             $this->meta_title = '添加推广专员';
             $this->display('Main/Msg/msgAdd');
+        }
+    }
+
+
+    /**一键发放推荐奖励**/
+    public function givenReward(){
+        if(handle_settle() == 1){
+            $this -> success('奖励发放成功', U('Main/msgList'));
+        }else{
+            $this -> error('奖励发放失败');
         }
     }
 
