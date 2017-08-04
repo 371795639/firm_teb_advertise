@@ -166,21 +166,20 @@ class MainController extends AdminController {
                     $incomeGiven    = $dbStaff -> where(array('id' => $ref['id'])) -> setInc('income', $moneyGive);
                     //中心金额数据
                     $sericeAward    = service_awards('register', $ref['service_number'], '1000');
-                    $money          = $sericeAward[0]['fact_money'];
-                    $consume_coin   = $sericeAward[0]['coin'];
-                    $income         = $sericeAward[0]['money'];
-                    //发放奖励
-                    $staffData      = array('money' => $money, 'income' => $income, 'consume_coin' => $consume_coin,);
-                    $staffArr[]     = array('id' => $ref['service_number'], 'data' => $staffData,);
-                    //流水表 flow
-                    $dataFlow       = array('uid' => $ref['service_number'], 'type' => 6, 'money' => $income, 'order_id' => make_orderId(), 'create_time' => date('Y-m-d H:i:s'),);
-                    $flowArr[]      = array('id' => $ref['service_number'], 'data' => $dataFlow,);
-                    //奖励表 reward
-                    $dataReward     = array('uid' => $ref['service_number'], 'type' => 5, 'money' => $money, 'game_coin' => $consume_coin, 'order_id' => make_orderId(), 'create_time' => date('Y-m-d H:i:s'), 'remarks' => "恭喜您的团队推荐成功注册一名推广专员，奖励￥$income",);
-                    $rewardArr[]    = array('id' => $ref['service_number'], 'data' => $dataReward,);
-                    //通知表 notice
-                    $dataNotices    = array('uid' => $ref['service_number'], 'kind' => '2', 'poster' => 'system', 'notice_type_id' => 3, 'notice_title' => '兑换中心分享奖励', 'create_time' => date('Y-m-d H:i:s'), 'notice_content' => "恭喜您的团队推荐成功注册一名推广专员，奖励￥$income",);
-                    $noticeArr[]    = array('id' => $ref['service_number'], 'data' => $dataNotices,);
+                    foreach($sericeAward as $k => $v){
+                        //发放奖励
+                        $staffData  = array('money' => $v['fact_money'], 'income' => $v['money'], 'consume_coin' => $v['coin'],);
+                        $staffArr[] = array('id' => $v['id'], 'data' => $staffData,);
+                        //流水表 flow
+                        $dataFlow   = array('uid' => $v['id'], 'type' => 6, 'money' => $v['money'], 'order_id' => $v['order_id'], 'create_time' => date('Y-m-d H:i:s'),);
+                        $flowArr[]  = array('id' => $v['id'], 'data' => $dataFlow,);
+                        //奖励表 reward
+                        $dataReward = array('uid' => $v['id'], 'type' => 5, 'money' => $v['fact_money'], 'game_coin' => $v['coin'], 'order_id' => $v['order_id'], 'create_time' => date('Y-m-d H:i:s'), 'remarks' => "恭喜您的团队推荐成功注册一名推广专员，奖励￥".$v['money'],);
+                        $rewardArr[]= array('id' => $v['id'], 'data' => $dataReward,);
+                        //通知表 notice
+                        $dataNotices= array('uid' => $v['id'], 'kind' => '2', 'poster' => 'system', 'notice_type_id' => 3, 'notice_title' => '兑换中心分享奖励', 'create_time' => date('Y-m-d H:i:s'), 'notice_content' => "恭喜您的团队推荐成功注册一名推广专员，奖励￥".$v['money'],);
+                        $noticeArr[]= array('id' => $v['id'], 'data' => $dataNotices,);
+                    }
                     $service        = pay_reward($staffArr, $rewardArr, $flowArr, $noticeArr);
                     if($recommedAdd == 1 && $incomeGiven == 1 && $service == 1){
                         $this->success('推广专员增加且各项奖励发放成功', U('Main/msgList'));

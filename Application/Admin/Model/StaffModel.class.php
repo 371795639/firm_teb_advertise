@@ -13,6 +13,7 @@ class StaffModel extends Model {
 
     protected $_auto = array(
         array('status','1'),
+        array('pay_status','3'),
         array('create_time',DATE,3,'function'),
     );
 
