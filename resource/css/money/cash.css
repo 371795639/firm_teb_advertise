@@ -1,0 +1,117 @@
+
+.showCardList label{
+	display: block;	
+	padding: 0 15px;
+	margin-top: 14px;
+}
+.list{
+	background: #FFF;
+	position: relative;
+}
+.list input{
+	float: right;
+	width: 10px;
+	height: 10px;
+	position: absolute;
+	top: 20px !important;
+	right:20px !important;
+}
+.media{
+	width: calc(100% - 20px);
+	padding: 5px;
+	
+}
+.media img{
+	width: 36px;
+	height: 36px;
+	border-radius: 50%;   		
+	/*float: left;
+	top:7px ;
+	left: 0;	*/
+}
+.card-info{
+	display: inline-block;
+	width: calc(100% - 44px);
+}
+.bank-name{
+	font-size: 16px;
+	color: #333333;
+	display: block;
+    padding-left: 0.6rem;
+}
+.card-num{
+	font-size: 16px;
+	color: #9b9b9b;
+	display: block;
+    padding-left: 0.6rem
+	
+}
+.cash-num{
+	color: #9B9B9B;
+	font-size:16px ;
+	display: block;
+	margin: 14px 0;
+}
+.sum{
+	padding: 15px;
+}
+.cash-img{
+	font-size: 32px;
+	font-weight: 800;
+}
+.remain-money{
+	display: block;
+	color: #CCCCCC;
+	margin: 14px 0;
+	font-size: 14px;
+	
+}
+.btn-box{
+	padding: 15px;
+	
+}
+.btn-box button{
+	width: 100%;
+	height: 40px;
+	font-size: 16px;
+	color: #9B9B9B;
+	background: #CDCDCD;
+	
+}
+.sum input{
+	border-radius: 0;
+	height: 40px;
+	font-size: 24px;
+	color: #febe20;
+	width: calc( 100% - 50px);
+	width: -moz-calc( 100% - 50px);
+	width: -webkit-calc( 100% - 50px);
+	border: none;
+	border-bottom: 1px solid #DDDDDD;
+	background: transparent;
+	text-align: center;
+}
+.bank-image{
+	width: 36px;
+}
+.card-info{
+	position: relative;
+
+}
+.card-id{
+	z-index: -1;
+	background-color:transparent !important;
+	color: transparent !important;
+	position: absolute;
+	top: 0;
+	right: 0;
+	font-size: 12px;
+	padding: 0;
+	margin: 0;
+}
+.card-num{
+	font-size: 13px;
+}
+.btn-box button{
+	color: #fff;
+}

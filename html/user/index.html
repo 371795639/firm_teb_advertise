@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>用户首页</title>
+    <link rel="stylesheet" href="../../resource/css/common/mui.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../resource/css/common/common.css"/>
+    <link rel="stylesheet" type="text/css" href="../../resource/css/user/index.css"/>
+    <script src="../../resource/js/mui.min.js"></script>
+    <script src="../../resource/js/jQuery/jquery-1.11.3.min.js"></script>
+
+    <script type="text/javascript" charset="utf-8">
+        $(function(){
+            var storage = window.localStorage;
+            var tokens  = storage.getItem("token");
+            $.ajax({
+                url:'/api/user/account',
+                data:{
+                    token:tokens
+                },
+                type:'post',
+                dataType:'json',
+                success:function(data){
+//                    console.log(data['status']);
+//                    console.log(data['data']);
+                    if(data['status'] == 0){
+                        var money = data['data'];
+                        var casshow = "";
+                        var cardInfo = document.getElementById('imoney');
+                        casshow +=
+                            '<a href="./qrcode.html">' +
+                            '        <div class="qr">' +
+                            '            <img src="../../resource/img/user/1.png" style="width:50%;">' +
+                            '            <div style="font-size: 1rem;">二维码</div>' +
+                            '        </div>' +
+                            '    </a>' +
+                            '<div class="user_info_f">总收入</div>' +
+                            '<div class="user_info_ff">'+money['totalAmount']+'</div>' +
+                            '<div class="user_info_fff">' +
+                            '   <div class="user_info_fff_block" style="left:2.6rem;">' +
+                            '       <div>余额</div>' +
+                            '       <div>'+money['cashAmount']+'</div>' +
+                            '   </div>' +
+                            '   <div class="user_info_fff_block">' +
+                            '       <div>游戏币</div>' +
+                            '       <div>'+money['gameAmount']+'</div>' +
+                            '   </div>' +
+                            '   <div class="user_info_fff_block" style="right:-2.6rem;">' +
+                            '       <div>注册币</div>' +
+                            '       <div>'+money['registerAmount']+'</div>' +
+                            '   </div>' +
+                            '</div>'
+                        ;
+                        cardInfo.innerHTML = casshow;
+                        //业绩显示
+                        var cardInfos = document.getElementById('gardes');
+                        var casshows = "";
+                        casshows += '' +
+                            '<div class="graf">' +
+                            '     推广业绩：' + money['recommendArchive'] +
+                            '</div>' +
+                            '<div class="graf">' +
+                            '    充值业绩：' + money['rechargeArchive'] +
+                            '</div>';
+                        cardInfos.innerHTML = casshows;
+                    }
+                    else if(data['status'] == 1006){mui.toast('授权已过期，请重新登陆');setTimeout(function(){mui.openWindow('../login/login.html')},1000);}
+                    else if(data['status'] == 1007){mui.toast('授权已过期，请重新登陆');setTimeout(function(){mui.openWindow('../login/login.html')},1000);}
+                    else{mui.toast("获取资金信息失败，刷新下试试");}
+                }
+            });
+        });
+    </script>
+</head>
+<body>    
+
+<img src="../../resource/img/user/user_top_bg.jpg" style="width:100%; height:17rem;position:absolute; top:0; left:0; z-index:-1; ">
+<div class="user_info" id="imoney">
+    <!--
+    <a href="./qrcode.html">
+        <div class="qr">
+            <img src="../../resource/img/user/1.png" style="width:50%;">
+            <div style="font-size: 1rem;">二维码</div>
+        </div>
+    </a>
+    <div class="user_info_f">总收入</div>
+    <div class="user_info_ff">19564686.51</div>
+    <div class="user_info_fff">
+        <div class="user_info_fff_block" style="left:2.6rem;">
+            <div>余额</div>
+            <div>13265.21</div>
+        </div>
+        <div class="user_info_fff_block">
+            <div>游戏币</div>
+            <div>132465.21</div>
+        </div>
+        <div class="user_info_fff_block" style="right:-2.6rem;">
+            <div>注册币</div>
+            <div>1365.21</div>
+        </div>
+    </div>
+    -->
+</div>
+<div class="user_two" id="gardes">
+    <!--
+    <div class="graf">
+        推广业绩：100
+    </div>
+    <div class="graf">
+        充值业绩：200
+    </div>
+    -->
+</div>
+<div class="user_four">
+    <a href="./mine.html">
+        <div class="user_four_block">
+            <img src="../../resource/img/user/2.png">
+            <div class="user_four_con">个人中心</div>
+        </div>
+    </a>
+    <a href="../money/income.html">
+        <div class="user_four_block">
+            <img src="../../resource/img/user/3.png">
+            <div class="user_four_con">我的收入</div>
+        </div>
+    </a>
+    <a href="./partner.html">
+        <div class="user_four_block">
+            <img src="../../resource/img/user/10.jpg">
+            <div class="user_four_con">合作伙伴</div>
+        </div>
+    </a>
+    <a href="../login/register_another.html">
+        <div class="user_four_block">
+            <img src="../../resource/img/user/4.png">
+            <div class="user_four_con">为他人注册</div>
+        </div>
+    </a>
+</div>
+
+<div class="user_six">
+    <div class="user_six_fff">
+        <a href="../bank/my_card.html">
+            <div class="user_six_block">
+                <img src="../../resource/img/user/12.jpg">
+                <div class="user_four_con">我的银行卡</div>
+            </div>
+        </a>
+    </div>
+    <div class="user_six_fff">
+        <a href="../money/cash.html">
+            <div class="user_six_block">
+                <img src="../../resource/img/user/13.jpg">
+                <div class="user_four_con">提现</div>
+            </div>
+        </a>
+    </div>
+    <div class="user_six_fff">
+        <a href="../money/cash_recoder.html">
+            <div class="user_six_block">
+                <img src="../../resource/img/user/14.jpg">
+                <div class="user_four_con">提现记录</div>
+            </div>
+        </a>
+    </div>
+    <div class="user_six_fff">
+        <a href="../money/coin_recharge.html">
+            <div class="user_six_block">
+                <img src="../../resource/img/user/15.jpg">
+                <div class="user_four_con">注册币充值</div>
+            </div>
+        </a>
+    </div>
+    <div class="user_six_fff">
+        <a href="../money/game_recharge.html">
+            <div class="user_six_block">
+                <img src="../../resource/img/user/16.jpg">
+                <div class="user_four_con">游戏充值</div>
+            </div>
+        </a>
+    </div>
+    <div class="user_six_fff">
+        <a href="../money/game_recharge_recoder.html">
+            <div class="user_six_block">
+                <img src="../../resource/img/user/17.jpg">
+                <div class="user_four_con">游戏充值记录</div>
+            </div>
+        </a>
+    </div>
+</div>
+<div style="background: #fff;height:10rem;"></div>
+</body>

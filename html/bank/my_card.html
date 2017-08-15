@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>我的银行卡</title>
+    <link rel="stylesheet" href="../../resource/css/common/mui.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../resource/css/common/common.css"/>
+    <link rel="stylesheet" type="text/css" href="../../resource/css/money/mycard.css"/>
+
+    <script src="../../resource/js/mui.min.js"></script>
+    <script src="../../resource/js/jQuery/jquery-1.11.3.min.js"></script>
+    <script type="text/javascript">
+        $(function(){
+            var storage = window.localStorage;
+            var tokens  = storage.getItem("token");
+            $.ajax({
+                url:'/api/coin/bank/get',
+                data:{
+                    token:tokens
+                },
+                type:'post',
+                dataType:'json',
+                success:function(data){
+//                    console.log(data['status']);
+                    if(data['status'] == 0){
+                        var bankList = data['data']['banklist'];
+//                        console.log(bankList);
+                        var casshow = "";
+                        var cardInfo = document.getElementById('cardInfo');
+                        var i = 0;
+//                        console.log(bankList.length);
+                        for(i = 0;i<bankList.length;i++){
+                            bankList[i].bankNum1 = bankList[i].bankNum.substring(4,0);
+                            bankList[i].bankNum2 = bankList[i].bankNum.substring(bankList[i].bankNum.length-4,bankList[i].bankNum.length);
+                            bankList[i].bankNums = bankList[i].bankNum1+" **** **** "+bankList[i].bankNum2;
+                            if(bankList[i].bankName == "中国银行"){
+                                casshow +='<li class="list-unit"><a href="javascript:;"><img src="../../resource/img/bank/zgbank.png" style="width:100%;z-index: 0; "><div class="bank-info">中国银行<p class="card-info">'+bankList[i].bankNums+'</p></div></a></li>';
+                            }else if(bankList[i].bankName == "工商银行"){
+                                casshow +='<li class="list-unit"><a href="javascript:;"><img src="../../resource/img/bank/gsbank.png" style="width:100%;z-index: 0; "><div class="bank-info">工商银行<p class="card-info">'+bankList[i].bankNums+'</p></div></a></li>';
+                            }else if(bankList[i].bankName == "农业银行"){
+                                casshow +='<li class="list-unit"><a href="javascript:;"><img src="../../resource/img/bank/nybank.png" style="width:100%;z-index: 0; "><div class="bank-info">农业银行<p class="card-info">'+bankList[i].bankNums+'</p></div></a></li>';
+                            }else if(bankList[i].bankName == "建设银行"){
+                                casshow +='<li class="list-unit"><a href="javascript:;"><img src="../../resource/img/bank/jsbank.png" style="width:100%;z-index: 0; "><div class="bank-info">建设银行<p class="card-info">'+bankList[i].bankNums+'</p></div></a></li>';
+                            }
+                            cardInfo.innerHTML = casshow;
+                        }
+                    }
+                    else if(data['status'] == 1006){mui.toast('授权已过期，请重新登陆');setTimeout(function(){mui.openWindow('../login/login.html')},1000);}
+                    else if(data['status'] == 1007){mui.toast('授权已过期，请重新登陆');setTimeout(function(){mui.openWindow('../login/login.html')},1000);}
+                    else{mui.toast("银行卡获取失败");}
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <header class="mui-bar mui-bar-nav lql_head_new">
+        <a class="mui-icon mui-icon-left-nav mui-pull-left" href="/html/user/index.html"></a>
+        <h1 class="mui-title">我的银行卡</h1>
+    </header>
+    <div class="mui-content">
+        <!---银行卡列表-->
+        <ul class="ul" id="cardInfo"></ul>
+        <!---添加银行卡-->
+        <a style="padding-bottom: 5px;margin:14px 0;" href="./bind_card.html">
+            <span class="mui-icon mui-icon-plusempty"></span><br>
+            <span >
+                添加银行卡
+            </span>
+        </a>
+    </div>
+</body>
+</html>

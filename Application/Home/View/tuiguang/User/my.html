@@ -63,6 +63,7 @@
 				</li>
 				<li class="mui-table-view-cell">
 					<a class="mui-navigate-right" href="{:U('Home/task/index')}">
+					<!--<a class="mui-navigate-right" onclick="unopen()">-->
 						<img class="mui-media-object mui-pull-left" src="/Public/Home/img/55.png">
 						<span>我的任务</span>
 					</a>
@@ -109,11 +110,12 @@
 			mui.init({
 				swipeBack:true //启用右滑关闭功能
 			});
-						
+			function unopen(){
+				mui.toast('暂未开放，敬请期待...');
+            }
 			function shareImg(){
                 mui.openWindow("{:U('User/qrcode')}");
 			}
-			
 			function goHome(){
 				mui.openWindow("{:U('User/index')}");
 			}

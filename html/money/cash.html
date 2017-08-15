@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	    <meta charset="utf-8">
+	    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+	    <title>提现</title>
+	    <link href="../../resource/css/common/mui.css" rel="stylesheet"/>
+	    <link rel="stylesheet" type="text/css" href="../../resource/css/common/common.css"/>
+	    <link rel="stylesheet" href="../../resource/css/money/cash.css"/>
+	</head>
+	<body>
+		<div id="Display">
+			<header class="mui-bar mui-bar-nav lql_head_new">
+				<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+				<h1 class="mui-title">提现</h1>
+			</header>
+			<div class="mui-content">
+				<div>
+					<ul class="mui-content mui-table-view" style="margin-top: 14px;">
+						<li class="mui-table-view-cell">
+							<a class="mui-navigate-right" id="choose">							
+								<div class="mui-media-body" id="showcard">请选择银行卡</div>
+								<input type="hidden" value="" id="card-id"/>
+							</a>
+						</li>
+					</ul>
+					<div class="sum">
+						<span class = "cash-num" >提现金额</span>
+						<span class = "cash-img">￥</span><input type="text" name="" id="money-num" value="" />
+						<!--<span class = "remain-money">可用余额<span id="available">{$money}</span></span>-->
+					</div>
+					<div class="btn-box">
+						<button type="button" id="submit">确认提现</button>
+					</div>				
+				</div>
+			</div>
+		</div>
+		<div id="hidden">
+			<header class="mui-bar mui-bar-nav lql_head_new">
+				<a class="mui-icon mui-icon-left-nav mui-pull-left" id="goback"></a>
+				<h1 class="mui-title">请选择银行卡</h1>
+			</header>
+			<div class="mui-content">
+				<ul class="mui-table-view mui-table-view-radio" id="cardInfo">
+				</ul>				
+			</div>
+		</div>
+
+        <script src="../../resource/js/mui.min.js"></script>
+        <script src="../../resource/js/jQuery/jquery-1.11.3.min.js"></script>
+		<script type="text/javascript">
+            $(function(){
+                var storage = window.localStorage;
+                var tokens  = storage.getItem("token");
+                $.ajax({
+                    url:'/api/coin/bank/get',
+                    data:{
+                        token:tokens
+                    },
+                    type:'post',
+                    dataType:'json',
+                    success:function(data){
+//                    console.log(data['status']);
+                        if(data['status'] == 0){
+                            var bankList = data['data']['banklist'];
+//                        console.log(bankList);
+                            var casshow = "";
+                            var cardInfo = document.getElementById('cardInfo');
+                            var i = 0;
+//                        console.log(bankList.length);
+                            for(i = 0;i<bankList.length;i++){
+                                bankList[i].bankNum1 = bankList[i].bankNum.substring(4,0);
+                                bankList[i].bankNum2 = bankList[i].bankNum.substring(bankList[i].bankNum.length-4,bankList[i].bankNum.length);
+                                bankList[i].bankNums = bankList[i].bankNum1+" **** **** "+bankList[i].bankNum2;
+                                if(bankList[i].bankName == "中国银行"){
+                                    casshow +='<li class="mui-table-view-cell"><a class="mui-navigate-right"><img src="../../resource/img/bank/zgyh.png" class="bank-image"/><div class="card-info"><span class="bank-name">中国银行</span><span class="card-id">'+bankList[i].bankNum+'</span><span class="card-num">尾号为'+bankList[i].bankNum2+'储蓄卡</span></div></a></li>';
+                                }else if(bankList[i].bankName == "工商银行"){
+                                    casshow +='<li class="mui-table-view-cell"><a class="mui-navigate-right"><img src="../../resource/img/bank/gsyh.png" class="bank-image"/><div class="card-info"><span class="bank-name">工商银行</span><span class="card-id">'+bankList[i].bankNum+'</span><span class="card-num">尾号为'+bankList[i].bankNum2+'储蓄卡</span></div></a></li>';
+                                }else if(bankList[i].bankName == "农业银行"){
+                                    casshow +='<li class="mui-table-view-cell"><a class="mui-navigate-right"><img src="../../resource/img/bank/nyyh.png" class="bank-image"/><div class="card-info"><span class="bank-name">农业银行</span><span class="card-id">'+bankList[i].bankNum+'</span><span class="card-num">尾号为'+bankList[i].bankNum2+'储蓄卡</span></div></a></li>';
+                                }else if(bankList[i].bankName == "建设银行"){
+                                    casshow +='<li class="mui-table-view-cell"><a class="mui-navigate-right"><img src="../../resource/img/bank/jsyh.png" class="bank-image"/><div class="card-info"><span class="bank-name">建设银行</span><span class="card-id">'+bankList[i].bankNum+'</span><span class="card-num">尾号为'+bankList[i].bankNum2+'储蓄卡</span></div></a></li>';
+                                }
+                                cardInfo.innerHTML = casshow;
+                            }
+                        }
+                        else{mui.toast("银行卡获取失败");}
+                    }
+                });
+            });
+			//切换页面
+			$("#submit").attr("disabled","disabled").css("background-color","#ccc");
+			$("#hidden").hide();
+			$("#choose").click(function(){
+				$("#Display").hide();
+				$("#hidden").show();
+			});
+			$("#goback").click(function(){
+				$("#Display").show();
+				$("#hidden").hide();
+			});
+			//获取选择数据
+			document.querySelector('.mui-table-view.mui-table-view-radio').addEventListener('selected',function(e){
+			    var _display = e.detail.el.innerText;
+                var _html = _display.split('\n');
+				$("#showcard").html(_html[1]+'\r'+_html[3]);
+				$("#card-id").val(_html[2]);
+				//选择卡后按钮可用（输入金额的情况下）
+				if( $('#money-num').val() ){
+					$("#submit").removeAttr("disabled").css("background","#f00");
+				}
+			});
+			//验证
+			var test = function(){
+				var isChoose = $("#showcard").html();
+				var num = $('#money-num').val();//输入值
+				console.log( isChoose );//选择银行卡；
+				if( isChoose == "请选择银行卡" ){
+					$("#submit").attr("disabled","disabled").css("background","#ccc");
+				}else{
+					if(num ){
+			         	$("#submit").removeAttr("disabled").css("background","#f00");
+			        }else{
+			         	$("#submit").attr("disabled","disabled").css("background","#ccc");
+			        }
+				}
+			};
+			var test2 = function(str){
+			    /*
+                var storage = window.localStorage;
+                var tokens  = storage.getItem("token");
+                $.ajax({
+                    url:"/api/user/account",
+                    type:"post",
+                    dataType:'json',
+                    data:{
+                        token : tokens
+                    },
+                    success:function (data) {
+                        if(data['status'] == 0){
+                            console.log(data['data']['totalAmount']);
+                        }else{
+                            mui.toast('获取余额失败，错误代码：'+data['status']+'请截图联系公司');
+                        }
+                    }
+                });
+                */
+				if( str >= 100 ){
+                    if( str%100 == 0 ){
+                        return true;
+                        /*
+                        if( available >= str){
+                            return true;
+                        }else{
+                            mui.toast("提现金额必须小于余额！");
+                            return null;
+                        }
+                        */
+                    }else{
+                        mui.toast("提现金额必须是100的整数倍！");
+                        return null;
+                    }
+                }else{
+                    mui.toast("提现金额必须大于200！");
+                    return null;
+                }
+            };
+            //input框绑定事件；
+            $('input').bind('keyup',function(){
+                test();
+            });
+            //提交数据
+            $('#submit').on('click',function () {
+                var storage = window.localStorage;
+                var tokens  = storage.getItem("token");
+                var card    = $('#card-id').val();
+                var money   = $('#money-num').val();
+                var isok    = test2( money );
+                if( isok ){
+                    $.ajax({
+                        url:"/api/cash/cashout",
+                        type:"post",
+                        dataType:'json',
+                        data:{
+                            token   : tokens,
+                            amount  : money,
+                            bankNum : card
+                        },
+                        success:function (data) {
+                            if(data['status'] == 0){
+                                mui.toast('提现成功');
+                                setTimeout(function(){mui.openWindow('../user/index.html');},1500);
+                            }
+                            else if(data['status'] == 1006){mui.toast('授权已过期，请重新登陆');setTimeout(function(){mui.openWindow('../login/login.html')},1000);}
+                            else if(data['status'] == 1007){mui.toast('授权已过期，请重新登陆');setTimeout(function(){mui.openWindow('../login/login.html')},1000);}
+                            else if(data['status'] == 1014){mui.toast('提现金额不正确');}
+                            else if(data['status'] == 1017){mui.toast('账号余额不足');}
+                            else if(data['status'] == 1021){
+                                mui.toast('您未完善个人信息，请完善个人信息');
+                                setTimeout(function(){mui.openWindow('../user/idcard.html');},1500);
+                            }
+                            else{mui.toast('提现失败，错误代码：'+data['status']+'请截图联系公司');}
+                        }
+                    });
+                }
+            });
+        </script>
+	</body>
+</html>
+
+

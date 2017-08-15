@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>支付处理中</title>
+    <link rel="stylesheet" href="../../resource/css/common/mui.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../resource/css/common/common.css"/>
+    <link rel="stylesheet" type="text/css" href="../../resource/css/money/mycard.css"/>
+    <style type="text/css">
+
+    </style>
+    <script src="../../resource/js/mui.min.js"></script>
+    <script src="../../resource/js/jQuery/jquery-1.11.3.min.js"></script>
+    <script type="text/javascript">
+        $(function(){
+            mui.init;
+            function getUrlVars(){
+                var vars = [], hash;
+                var hashes = window.location.href.slice(window.location.href.indexOf('?')+1).split('&');
+                for(var i = 0; i < hashes.length; i++) {
+                    hash = hashes[i].split('=');
+                    vars.push(hash[0]);
+                    vars[hash[0]] = hash[1];
+                }
+                return vars;
+            }
+            var params=getUrlVars();
+            var orderNum= params[params[0]];
+            var state= params[params[1]];
+            var storage = window.localStorage;
+            var tokens  = storage.getItem("token");
+            $.ajax({
+                url: "/api/pay/status",
+                data: {
+                    token   : tokens,
+                    orderNum: orderNum
+                },
+                type: "post",
+                dataType: "json",
+                success: function(data){
+                    if(state == 1){ //支付成功
+                        if(data['status'] == 0){    //已获取到订单号
+//                            console.log(data['data']['returnCode']);
+                            if(data['data']['returnCode'] == 0){mui.toast('等待支付结果');setTimeout(function(){location.reload();}, 2500);}
+                            else if(data['data']['returnCode'] == 1){mui.toast('支付成功');setTimeout(function(){window.history.go(-4);}, 1500);}
+                            else if(data['data']['returnCode'] == 2){mui.toast('支付失败，请重新支付');setTimeout(function(){window.history.go(-4);}, 1500);}
+                        }
+                        //1015：订单号不存在
+                        else if(data['status'] == 1015){mui.toast('系统支付失败，请重新支付');setTimeout(function(){window.history.go(-3);}, 1500);}
+                        else{mui.toast('发生错误，错误代码' + data['data']['returnCode'] + ',请截图联系公司！');}
+                    }else{mui.toast('您已取消支付，请重新支付');setTimeout(function(){window.history.go(-3);}, 1500);}
+                }
+            });
+        });
+    </script>
+
+</head>
+<body style="background: #fff;">
+<!--<img src="../../resource/img/login/login_top_img.png" style="width:80%;position:absolute;top:0;left:0;z-index:-1;">-->
+<div style="">
+    <p style="margin-left: 5rem;margin-top: 10rem;">支付处理中，请不要关闭页面...</p>
+</div>
+</body>
+</html>

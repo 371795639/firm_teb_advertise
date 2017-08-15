@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>添加银行卡</title>
+    <link rel="stylesheet" href="../../resource/css/common/mui.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../resource/css/common/common.css"/>
+    <link rel="stylesheet" href="../../resource/css/money/submitCardInfo.css"/>
+</head>
+<body>
+    <header class="mui-bar mui-bar-nav lql_head_new">
+        <a href="javascript:" onclick="self.location=document.referrer;" class="mui-icon mui-icon-left-nav mui-pull-left"></a>
+        <h1 class="mui-title">添加银行卡</h1>
+    </header>
+    <div class="mui-content">
+        <span style="color: #9B9B9B;">请绑定本人银行卡号信息</span>
+        <div class="form">
+            <div class="text-box" style="border-top: 1px solid #e8e8e8;">
+                <label >持卡人：</label>
+                <input type="text"  id="name" name="holder_name"/>
+            </div>
+            <div class="text-box" >
+                <label >卡号：</label>
+                <input type="text" id="cardNum" name="card"/>
+            </div>
+            <div class="text-box">
+                <label >选择银行：</label>
+                <select name="bank_type" id="selectBank" style="font-size: 16px;">
+                    <option value="中国银行">中国银行</option>
+                    <option value="农业银行">农业银行</option>
+                    <option value="工商银行">工商银行</option>
+                    <option value="建设银行">建设银行</option>
+                </select>
+            </div >
+            <div class="text-box">
+                <label >开户支行：</label>
+                <input type="text"  id = "address" name="subbranch"/>
+            </div>
+            <div class="btn-box">
+                <button id="submit" type="button">提交</button>
+            </div>
+        </div>
+    </div>
+    <script src="../../resource/js/mui.min.js"></script>
+    <script src="../../resource/js/jQuery/jquery-1.11.3.min.js"></script>
+    <script type="text/javascript">
+
+        $("#submit").attr("disabled","disabled").css("background","#CCCCCC");
+        var test = function(){
+            var name = $('#name').val();
+            var cardNum = $('#cardNum').val();
+            var selectBank = $('#selectBank').val();
+            var address = $('#address').val();
+            var isOk = name&&cardNum&&selectBank&&address;
+            if( isOk ){
+                $("#submit").removeAttr("disabled").css("background","#ff0000");
+            }else{
+                $("#submit").attr("disabled","disabled").css("background","#CCCCCC");
+            }
+        }
+        //input框绑定事件
+        $('input').bind('keyup',function(){
+            //验证空值；
+            test();
+        });
+        $("#selectBank").change(function () {
+            test();
+        })
+        //正则验证银行卡   暂定15~19位卡号数；
+        $("#cardNum").change(function () {
+            var cardNum = $('#cardNum').val();
+            checkcard( cardNum );
+        })
+        var checkcard = function(str){
+            var reg = /^(\d{15}|\d{16}|\d{17}|\d{18}|\d{19})$/;
+            if (reg.test(str)) {
+                return null;
+            } else {
+                mui.toast("该卡暂不支持！");
+                $("#cardNum").val("");
+             }
+        }
+
+        //绑定银行卡接口
+        $('#submit').on('click',function () {
+            var storage     = window.localStorage;
+            var tokens      = storage.getItem("token");
+            var holder_name = $('#name').val();
+            var card        = $('#cardNum').val();
+            var bank_name   = $('#selectBank').val();
+            var subbranch   = $('#address').val();
+//            console.log(tokens);
+//            console.log(holder_name);
+//            console.log(card);
+//            console.log(bank_name);
+//            console.log(subbranch);
+            $.ajax({
+                url:"/api/coin/bank/add",
+                type:'post',
+                dataType:'json',
+                data:{
+                    userName    : holder_name,
+                    bankName    : bank_name,
+                    branchName  : subbranch,
+                    bankNum     : card,
+                    token       : tokens
+                },
+                success:function(data){
+                    console.log(data['code']);
+                    if(data['status'] == 0){mui.toast("银行卡绑定成功!");setTimeout(function(){mui.back()},1500)}
+                    else if(data['status'] == 1016){mui.toast('银行卡号不正确');}
+                    else{mui.toast('发生错误，请截图联系公司！');}
+                }
+            });
+        })
+    </script>
+</body>
+</html>
+
+

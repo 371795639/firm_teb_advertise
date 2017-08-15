@@ -3,32 +3,33 @@
 }
 input[type=button]{
 	padding: 0;
-	display:block
-	text-align:right;
-	border: 1px solid #38B7EE;
+	display:block;
+	text-align:center;
+	border: 1px solid #FC4C61;
 	color: #fff;
-	background-color: #38B7EE;
+    background: #FC4C61;
 	border-radius:5px;
 }
 #login-form{
 	margin-top:20px ;
 }
 #getTestNum{
-	width:98px;
-	height:30px;
+	width:7.6rem;
+	height:2.2rem;
+    line-height: 2.2rem;
 	color:#FFF;
-	font-size:15px;
+	font-size: 1.2rem;
 	font-weight: bold;
 	float:left;
-	margin-top: 4px;
+	margin-top: 1.4rem;
 }
 #testNum{
-	width:calc(65% - 100px);
+	width:calc(52% - 100px);
 	float:left;
 }
 
 #register-form{
-	font-size: 16px;
+	font-size: 1.4rem;
 	border: none;
 	background: transparent;
 }
@@ -51,10 +52,26 @@ input[type=button]{
 /************按钮****************/
 #regBtn,#compelet{
 	display: block;
-	width: 80%;
-	height: 40px;
-	line-height: 15px;
+	width: 90%;
+	height: 4rem;
 	margin: 20px auto;
 	color: #FFF;
-	font-size: 18px;
+    border-radius: 0.8rem;
+	font-size: 1.6rem;
+}
+.mui-input-group .mui-input-row {
+    height: 5rem;
+    line-height: 5rem;
+    border-bottom: none;
+}
+.mui-input-group .mui-input-row label,
+.mui-input-group .mui-input-row input,
+#checkBox{
+    margin-top: 1rem;
+}
+.mui-input-row label{
+    width: 48%;
+}
+.mui-input-row label ~ input{
+    width: 52%;
 }

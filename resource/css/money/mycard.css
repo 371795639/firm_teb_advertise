@@ -1,0 +1,50 @@
+.mui-content a{
+	color: #AAAAAA;
+	display: block;
+	text-align: center;
+}
+.mui-content a .mui-icon.mui-icon-plusempty{
+	font-size: 10rem;
+}
+.mui-content a span{
+	font-weight: 500;
+}
+/*************************卡列表*********************/
+.ul{
+	background: transparent;
+	padding: 0 15px;
+	list-style: none;
+}
+.list-unit{
+	margin-top: 14px;
+	border-radius:1rem 1rem 0px 0px;
+	padding: 0;
+	min-height: 8rem;
+	position: relative;
+	background: transparent;
+}
+.bank-img{
+	width: 36px;
+	border: 5px solid #FFF;
+	position: absolute;
+	border-radius: 50%;
+	top:2rem ;
+	left: 15px;
+} 
+.bank-info{
+	font-size: 16px;
+	position: absolute;
+	top: 1.5rem;
+	left: 5rem;
+	width:calc(100% - 5rem);
+	width: -moz-calc(100% - 5rem);
+	width: -webkit-calc(100% - 5rem);
+	text-align: left;
+	color: #fff;
+} 
+.card-info {
+	font-size: 15px;
+	margin-top: 1.5rem;
+	color: #fff;
+	margin-bottom: 0;
+} 	

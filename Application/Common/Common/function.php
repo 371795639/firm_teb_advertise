@@ -1029,7 +1029,6 @@ function service_awards($type,$service_id,$money){
     $exchange = D('exchange');
     $exchange->serviceCharge($service_id);
     $result_message = $exchange->allMessages;
-
     //新推广专员注册获得的服务费
     if ($type == 'register'){
         $a = 0;

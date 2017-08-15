@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+	<title>为他人注册页面</title>
+	<link href="../../resource/css/common/mui.css" rel="stylesheet"/>
+	<!--自定义样式-->
+	<link rel="stylesheet" href="../../resource/css/login/register.css" />
+	<link rel="stylesheet" href="../../resource/css/common/common.css" />
+    <style type="text/css">
+        .reg_money{
+            height: 8rem;
+        }
+        .reg_notice{
+            height :7rem;
+            background: #fff;
+            font-size: 3rem;
+            padding-top: 3rem;
+            padding-left: 2rem;
+        }
+        .reg_notice>span{
+            font-size: 1rem;
+            text-indent: 1em;
+        }
+    </style>
+</head>
+<body>
+<header id="header" class="mui-bar mui-bar-nav lql_head_new">
+	<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+	<h1 class="mui-title">为他人注册</h1>
+</header>
+<div class="mui-content">
+	<div style="height: 20px;width: 100%;"></div>
+	<div id='register-form' class="mui-input-group">
+        <div class="reg_money">
+            <div class="reg_notice">
+                ￥1000
+                <span>注册币</span>
+            </div>
+        </div>
+        <p style="text-indent: 2em;color:red;font-size: 1rem;">请填写正确的注册信息，注册成功则无法进行修改！</p>
+		<div class="mui-input-row">
+			<label>被注册人手机号：</label>
+			<input id='phoneNum' name="phoneNum" type="text" class="mui-input-clear mui-input" placeholder="">
+		</div>
+        <div class="mui-input-row">
+            <label>推荐人手机号：</label>
+            <input id='refPhoneNum' name="refPhoneNum" type="text" class="mui-input-clear mui-input" placeholder="">
+        </div>
+		<div class="mui-input-row">
+			<label>密&nbsp;&nbsp;码：</label>
+			<input id='password1' name="password1" type="password" class="mui-input-clear mui-input" placeholder="">
+		</div>
+		<div class="mui-input-row">
+			<label>确认密码：</label>
+			<input id='password2' name="password2" type="password" class="mui-input-clear mui-input" placeholder="">
+		</div>
+		<div class="mui-input-row mui-checkbox mui-left" >
+            <input style="margin-top: 1.2rem;" id="checkBox" name="checkbox" value="Item 1" type="checkbox" checked onclick="isChecked()" />
+            <div style="font-size: 1.2rem;margin-left: 50px;line-height:5rem;display: inline-block;" >
+                已阅读并同意
+                <a style="color: #FC4C61;" href="decla.html">《兔尔宝推广专员委任协议》</a>
+            </div>
+		</div>
+		<div class="mui-content-padded">
+			<button id='regBtn'  class="mui-btn mui-btn-block lql_new_btns" onclick="subsub()">注册</button>
+		</div>
+	</div>
+</div>
+<script src="../../resource/js/mui.min.js"></script>
+<script src="../../resource/js/jQuery/jquery-1.11.3.min.js"></script>
+
+<script type="text/javascript" charset="utf-8">
+    mui.init();
+    $("#regBtn").attr("disabled","disabled");
+    var test = function(){
+        var val0 = $("#refPhoneNum").val();
+        var val1 = $("#phoneNum").val();
+        var val3 = $("#password1").val();
+        var val4 = $("#password2").val();
+        var bb = val0&&val1&&val3&&val4;
+        return bb;
+    }
+    var isChecked = function(){
+        var val6 = $("input[name = checkbox]").is(':checked');
+        var cc = test();
+        var isOk = val6&&cc;
+        btn(isOk);
+    }
+    //按钮逻辑处理方法
+    var btn = function(a){
+        if( a ){
+            $("#regBtn").removeAttr("disabled");
+        }else{
+            $("#regBtn").attr("disabled","disabled");
+        }
+    }
+    //input框绑定事件
+    $('input').bind('keyup',function(){
+        //验证空值；
+        test();
+        isChecked();
+    });
+    //验证手机号码；
+    $("#phoneNum").blur(function(){
+        var val1 = $("#phoneNum").val();
+        checkMobile(val1);
+        btn(0);
+    });
+    //验证推荐人手机号码；
+    $("#refPhoneNum").blur(function(){
+        var val0 = $("#refPhoneNum").val();
+        checkMobile(val0);
+        btn(0);
+    });
+    var checkMobile = function(str){
+        var val0 = $("#refPhoneNum").val();
+        var val1 = $("#phoneNum").val();
+        var reg = /^1\d{10}$/;
+        if (reg.test(str)) {
+            return null;
+        }else{
+            mui.toast("请填写正确的手机号码！");
+            if(str == val0){
+                $("#refPhoneNum").val("");
+            }else if(str == val1){
+                $("#phoneNum").val("");
+            }else{
+                return null;
+            }
+        }
+    }
+    //密码长度在6-15位
+    $("#password1").blur(function(){
+        var val3 = $("#password1").val();
+        if(val3.length <= 5 || val3.length >= 16){
+            mui.toast("请设置6到15位的密码！");
+            $("#password1").val("");
+        }
+    });
+    //双密码一致验证；
+    $("#password2").blur(function(){
+        //验证两次输入密码；
+        testPsd();
+    });
+    var testPsd = function(){
+        var val3 = $("#password1").val();
+        var val4 = $("#password2").val();
+        if( val3==val4 ){
+            return null;
+        }else{
+            mui.toast("两次密码不一致！"); // 两次密码不一致时，提交按钮还是不可提交状态
+            $("#password1").val("");
+            $("#password2").val("");
+        }
+    }
+    //为他人注册接口
+    function subsub(){
+        var phone   = $("#phoneNum").val();
+        var pass    = $("#password1").val();
+        var storage = window.localStorage;
+        var tokens  = storage.getItem("token");
+        var parentMobile = $("#refPhoneNum").val();
+        console.log(tokens);
+        console.log(parentMobile);
+        console.log(phone);
+        console.log(pass);
+        $.ajax({
+            url:'/api/user/registerperson',
+            data:{
+                token   : tokens,
+                mobile  : phone,
+                pass    : pass,
+                parentMobile : parentMobile
+            },
+            type:'post',
+            dataType:'json',
+            success:function(data) {
+                console.log(data['status']);
+                var storage = window.localStorage;
+                if(data['status'] == 0){
+                    mui.toast('注册成功');
+                    setTimeout(function(){mui.openWindow('../user/index.html')},1500);
+                }
+                else if(data['status'] == 1001){mui.toast('该手机号码已被注册');}
+                else if(data['status'] == 1004){mui.toast('账号或密码不能为空');}
+                else if(data['status'] == 1005){mui.toast('密码长度不正确');}
+                else if(data['status'] == 1009){mui.toast('短信验证码不正确');}
+                else if(data['status'] == 1010){mui.toast('注册信息不全');}
+                else if(data['status'] == 1011){mui.toast('推荐人手机号码不正确');}
+                else if(data['status'] == 1017){mui.toast('账号余额不足');}
+                else if(data['status'] == 1018){mui.toast('游戏币余额不足');}
+                else {mui.toast('发生错误，错误代码'+data['status']+',请截图联系公司！');}
+            }
+        });
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,102 @@
+.user_info{
+    /*border: 1px solid purple;*/
+    margin: 1.8rem auto 0;
+    height: 14rem;
+    width: 98%;
+    color: #fff;
+    text-align: center;
+}
+.qr{
+    color:#fff;
+    position: absolute;
+    right:0.6rem;
+    top:0.6rem;
+}
+.user_info_f{
+    /*border: 1px solid green;*/
+    margin: 0 auto;
+    height: 2rem;
+}
+.user_info_ff{
+    /*border: 1px solid green;*/
+    margin: 2rem auto 0;
+    height: 2rem;
+    font-size: 3rem;
+}
+.user_info_fff{
+    /*border: 1px solid green;*/
+    margin: 1.4rem auto 0;
+    height: 8rem;
+}
+.user_info_fff_block{
+    height: 5rem;
+    width:33.33%;
+    line-height: 2.5rem;
+    font-size: 1.4rem;
+    display: block;
+    float:left;
+}
+.user_info_fff_block:nth-child(2){
+    border-left: 1px solid rgba(200,200,200,0.5);
+    border-right: 1px solid rgba(200,200,200,0.5);
+}
+.user_two{
+    margin:2rem auto 0;
+    height: 3rem;
+    /*border: 1px solid green;*/
+    background-color: #fff;
+}
+.graf{
+    /*border: 1px solid red;*/
+    height: 3rem;
+    line-height: 3rem;
+    width:50%;
+    text-align: center;
+    border-right: 1px solid rgba(200,200,200,0.5);
+    display: block;
+    float: left;
+}
+.user_four{
+    margin: 0.8rem auto 0;
+    height: 8rem;
+    width: 98%;
+    background: #fff;
+}
+.user_four_block{
+    height: 8rem;
+    width: 25%;
+    font-size: 1.2rem;
+    display: block;
+    float: left;
+    text-align: center;
+    padding-top: 1.2rem;
+}
+.user_four_block>img{
+    margin-top: 0.4rem;
+    width: 35%;
+}
+.user_four_con{
+    color:#000;
+}
+.user_six{
+    border-top: 1px solid rgba(200,200,200,0.5);
+    margin: 0.8rem auto 0;
+    height: 24rem;
+    background: #fff;
+}
+.user_six_fff{
+    border-right: 1px solid rgba(200,200,200,0.5);
+    border-bottom: 1px solid rgba(200,200,200,0.5);
+    width: 33.33%;
+    height: 12rem;
+    text-align: center;
+    display: block;
+    float: left;
+}
+.user_six_block{
+    margin-top: 2.8rem;
+    font-size: 1.2rem;
+}
+.user_six_block>img{
+    width: 46%;
+}

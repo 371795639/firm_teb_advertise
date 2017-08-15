@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>登陆</title>
+    <link rel="stylesheet" type="text/css" href="../../resource/css/common/mui.css"/>
+    <link rel="stylesheet" type="text/css" href="../../resource/css/login/login.css"/>
+    <link rel="stylesheet" type="text/css" href="../../resource/css/common/common.css"/>
+    <style type="text/css">
+        .link-area a{
+            text-decoration: none;
+        }
+        body{
+            background: transparent !important;
+        }
+    </style>
+</head>
+<body>
+<img src="../../resource/img/login/login_top_img.png" style="width:100%;position:absolute;top:0;left:0;z-index:-1;">
+<div id="login">
+    <div id='login-form' onsubmit="return checkPhone()">
+        <div class="hr">
+            <label><img src="../../resource/img/login/ql_user.png"></label>
+            <input id='user' name="username" type="text"  placeholder="请输入手机号" onfocus="this.placeholder=''" onblur="this.placeholder='请输入手机号'" onkeyup="login()">
+        </div>
+        <div class="hr">
+            <label><img src="../../resource/img/login/ql_lock.png"></label>
+            <input id='psd' name="password" type="password"  placeholder="请输入密码" onfocus="this.placeholder=''" onblur="this.placeholder='请输入密码'"  onkeyup="login()">
+        </div>
+        <div class="link-area">
+            <a id='reg' onclick="goResg()">注册</a>
+            <!--<a id='reg' onclick="goResg()">为他人注册</a> -->
+            <a id='forgetPassword' class="right" onclick="gofgpsd()">忘记密码？</a>
+        </div>
+        <div class="mui-content-padded">
+            <button id='btn' class="mui-btn mui-btn-block lql_new_btns" type="submit" onclick="gologin()">登录</button>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="../../resource/js/jQuery/jquery-1.11.3.min.js" ></script>
+<script src="../../resource/js/mui.min.js"></script>
+<script type="text/javascript">
+    //验证手机号码
+    $("#user").blur(function(){
+        var val1 = $("#user").val();
+        checkMobile(val1);
+    });
+    //正则验证手机号
+    function checkMobile(str){
+        if(!(/^1(3|4|5|7|8)\d{9}$/.test(str)) || str.length != 11){
+            mui.toast("手机号码有误！");
+            $('#user').val("");
+            return false;
+        }
+    }
+    $("#btn").attr("disabled","disabled");
+    var login = function(){
+        var val1 = $("#user").val();
+        var val2 = $("#psd").val();
+        btn( val1&&val2 );
+    }
+    //按钮逻辑处理方法
+    var btn = function(a){
+        if( a ){
+            $("#btn").removeAttr("disabled");
+        }else{
+            $("#btn").attr("disabled","disabled");
+        }
+    }
+
+    function goResg(){
+        mui.openWindow("./register.html");
+    }
+    function gofgpsd(){
+        mui.openWindow("./reget_pwd.html");
+    }
+
+    function gologin(){
+        var phone = $("#user").val();
+        var pass  = $("#psd").val();
+        $.ajax({
+            url:'/api/user/login',
+            data:{
+                mobile  : phone,
+                pass    : pass
+            },
+            type:'post',
+            dataType:'json',
+            success:function(data) {
+                var storage = window.localStorage;
+                if(data['data']['token'] != undefined){
+                    storage["token"] = data['data']['token']; //写入token
+                }
+                if(data['status'] == 0){mui.openWindow('../user/index.html');}
+                else if(data['status'] == 1000){mui.toast('此账号不存在');}
+                else if(data['status'] == 1002){mui.toast('此手机号未注册');}
+                else if(data['status'] == 1003){mui.toast('账号或密码不正确');}
+                else if(data['status'] == 1004){mui.toast('账号或密码不能为空');}
+                else if(data['status'] == 1005){mui.toast('密码长度不够');}
+                else if(data['status'] == 1008){mui.toast('您尚未缴费，请完成缴费后再登陆');setTimeout(function(){mui.openWindow('register_recharge.html')},1500);}
+                else if(data['status'] == 1012){mui.toast('您尚未绑定游戏账号，请绑定游戏账号后再登陆');setTimeout(function(){mui.openWindow('game_id.html')},1500);}
+                else {mui.toast('发生错误，错误代码'+data['status']+',请截图联系公司！');}
+            }
+        });
+    }
+</script>
+</body>
+</html>

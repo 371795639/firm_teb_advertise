@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>我的收入</title>
+    <link href="../../resource/css/common/mui.css" rel="stylesheet"/>
+    <link rel="stylesheet" type="text/css" href="../../resource/css/common/common.css"/>
+    <link rel="stylesheet" href="../../resource/css/money/cash_recoder.css"/>
+    <style type="text/css">
+        .text-overflow {
+            display:inline-block;
+            width:20rem;
+            word-break:keep-all;
+            white-space:nowrap;
+            overflow:hidden;
+            text-overflow:ellipsis;
+        }
+        .inline .mui-control-item {
+            width: 80px;
+        }
+        a:active {
+            background-color:#ee3d52;
+        }
+    </style>
+    <!--<script src="../../resource/js/mui.min.js"></script>-->
+    <script src="../../resource/js/jQuery/jquery-1.11.3.min.js"></script>
+    <script type="text/javascript">
+        $(function(){
+            var storage = window.localStorage;
+            var tokens  = storage.getItem("token");
+            $.ajax({
+                url:'/api/user/income',
+                data:{
+                    token:tokens
+                },
+                type:'post',
+                dataType:'json',
+                success:function(data){
+                    if(data['status'] == 0){
+                        var agent           = data['data']['agent'];
+                        var burn_recharge   = data['data']['burn_recharge'];
+                        var burn_recommend  = data['data']['burn_recommend'];
+                        var recharge        = data['data']['recharge'];
+                        var recommend       = data['data']['recommend'];
+                        var showDivs        = '';
+                        var list            = document.getElementById('list');
+                        var recommendI = 0;
+                        for(recommendI = 0;recommendI<recommend.length;recommendI++){
+                            showDivs +=
+                                '<div class="mui-control-content item1" style="display: block">' +
+                                '   <ul>' +
+                                '       <li>' +
+                                '           <div class="left">' +
+                                '               <span class="text-overflow">推荐收入</span>' +
+                                '               <span class="time">'+ recommend[recommendI]['time'] +'</span>' +
+                                '           </div>' +
+                                '           <div class="right"> +'+ recommend[recommendI]['amount'] +
+                                '           </div>' +
+                                '       </li>' +
+                                '   </ul>' +
+                                '</div>';
+                        }
+                        var rechargeI = 0;
+                        for(rechargeI = 0;rechargeI<recharge.length;rechargeI++){
+                            showDivs +=
+                                '<div class="mui-control-content item2" style="display: none">' +
+                                '   <ul>' +
+                                '       <li>' +
+                                '           <div class="left">' +
+                                '               <span class="text-overflow">充值收入</span>' +
+                                '               <span class="time">'+ recharge[rechargeI]['time'] +'</span>' +
+                                '           </div>' +
+                                '           <div class="right"> +'+ recharge[rechargeI]['amount'] +
+                                '           </div>' +
+                                '       </li>' +
+                                '   </ul>' +
+                                '</div>';
+                        }
+
+                        var burn_recommendI = 0;
+                        for(burn_recommendI = 0;burn_recommendI<burn_recommend.length;burn_recommendI++){
+                            showDivs +=
+                                '<div class="mui-control-content item3" style="display: none">' +
+                                '   <ul>' +
+                                '       <li>' +
+                                '           <div class="left">' +
+                                '               <span class="text-overflow">董事推荐收入</span>' +
+                                '               <span class="time">'+ burn_recommend[burn_recommendI]['time'] +'</span>' +
+                                '           </div>' +
+                                '           <div class="right"> +'+ burn_recommend[burn_recommendI]['amount'] +
+                                '           </div>' +
+                                '       </li>' +
+                                '   </ul>' +
+                                '</div>';
+                        }
+
+                        var burn_rechargeI = 0;
+                        for(burn_rechargeI = 0;burn_rechargeI<burn_recharge.length;burn_rechargeI++){
+                            showDivs +=
+                                '<div class="mui-control-content item4" style="display: none">' +
+                                '   <ul>' +
+                                '       <li>' +
+                                '           <div class="left">' +
+                                '               <span class="text-overflow">董事充值收入</span>' +
+                                '               <span class="time">'+ burn_recharge[burn_rechargeI]['time'] +'</span>' +
+                                '           </div>' +
+                                '           <div class="right"> +'+ burn_recharge[burn_rechargeI]['amount'] +
+                                '           </div>' +
+                                '       </li>' +
+                                '   </ul>' +
+                                '</div>';
+                        }
+                        var agentI = 0;
+                        for(agentI = 0;agentI<agent.length;agentI++){
+                            showDivs +=
+                                '<div class="mui-control-content item5" style="display: none">' +
+                                '   <ul>' +
+                                '       <li>' +
+                                '           <div class="left">' +
+                                '               <span class="text-overflow">分享收入</span>' +
+                                '               <span class="time">'+ agent[agentI]['time'] +'</span>' +
+                                '           </div>' +
+                                '           <div class="right"> +'+ agent[agentI]['amount'] +
+                                '           </div>' +
+                                '       </li>' +
+                                '   </ul>' +
+                                '</div>';
+                        }
+                        $("#list").html(showDivs);
+                    }
+                    else if(data['status'] == 1006){mui.toast('授权已过期，请重新登陆');setTimeout(function(){mui.openWindow('../login/login.html')},1000);}
+                    else if(data['status'] == 1007){mui.toast('授权已过期，请重新登陆');setTimeout(function(){mui.openWindow('../login/login.html')},1000);}
+                    else{alert("信息获取失败，错误代码"+data['status']+"，请截图联系公司");}
+                }
+            });
+        });
+
+    </script>
+</head>
+<body>
+<header class="mui-bar mui-bar-nav lql_head_new">
+    <a class="mui-icon mui-icon-left-nav mui-pull-left" href="../user/index.html"></a>
+    <h1 class="mui-title">我的收入</h1>
+</header>
+<div class="mui-content">
+    <div class="lql_head_new" style="width: 100%; padding: 0.5rem;">
+        <div id="segmentedControl" class="mui-segmented-control lql_head_new">
+            <div class="inline">
+                <a class="mui-control-item" href="#item1" data-id="1">
+                    推荐
+                </a>
+            </div>
+            <div class="inline">
+                <a class="mui-control-item" href="#item2" data-id="2">
+                    充值
+                </a>
+            </div>
+            <div class="inline">
+                <a class="mui-control-item" href="#item3" data-id="3">
+                    董事推荐
+                </a>
+            </div>
+            <div class="inline">
+                <a class="mui-control-item" href="#item4" data-id="4">
+                    董事充值
+                </a>
+            </div>
+            <div class="inline">
+                <a class="mui-control-item" href="#item5" data-id="5">
+                    分享
+                </a>
+            </div>
+        </div>
+    </div>
+    <div id="list">
+        <div id="item4" class="mui-control-content" style="display: block"></div>
+
+        <!--
+        <div id="item1" class="mui-control-content mui-active">
+            <ul>
+                <li>
+                    <div class="left">
+                        <span class="text-overflow">推荐收入</span>
+                        <span class="time">2017.5.20 5:20</span>
+                    </div>
+                    <div class="right">
+                        + 5200
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <div id="item3" class="mui-control-content">
+            <ul>
+                <li>
+                    <div class="left">
+                        <span class="text-overflow">董事推荐收入</span>
+                        <span class="time">2017.5.20 5:20</span>
+                    </div>
+                    <div class="right">
+                        + 5001
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div id="item2" class="mui-control-content">
+            <ul>
+                <li>
+                    <div class="left">
+                        <span class="text-overflow">充值收入</span>
+                        <span class="time">2017.5.20 5:20</span>
+                    </div>
+                    <div class="right">
+                        + 5234
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div id="item4" class="mui-control-content">
+            <ul>
+                <li>
+                    <div class="left">
+                        <span class="text-overflow">董事充值收入</span>
+                        <span class="time">2017.5.20 5:20</span>
+                    </div>
+                    <div class="right">
+                        + 1234
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div id="item5" class="mui-control-content">
+            <ul>
+                <li>
+                    <div class="left">
+                        <span class="text-overflow">分享收入</span>
+                        <span class="time">2017.5.20 5:20</span>
+                    </div>
+                    <div class="right">
+                        + 4567
+                    </div>
+                </li>
+            </ul>
+        </div>
+        -->
+    </div>
+</div>
+<script>
+    $(" .inline .mui-control-item").on('click',function(){
+        var id = $(this).attr("data-id");
+        $(".item1").css("display","none");
+        $(".item2").css("display","none");
+        $(".item3").css("display","none");
+        $(".item4").css("display","none");
+        $(".item5").css("display","none");
+        $(".item" + id).css("display","block");
+    });
+</script>
+</body>
+</html>

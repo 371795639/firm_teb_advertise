@@ -1,0 +1,42 @@
+
+.mui-content>span{
+	background: #fff;
+	display: block;
+	padding: 5px 15px;    		
+	margin-top: 14px;
+	font-size: 14px;
+	color: #CCCCCC !important;
+}
+.mui-content .form{
+	/**/   	
+	font-size: 16px;
+}
+.mui-content .form label{
+	display: inline-block;
+	width: 9rem;
+	height: 40px;
+	line-height: 40px;
+}
+.mui-content .form input,#selectBank{
+	font-size: 16px;
+	display: inline-block;
+	width: calc(100% - 9.9rem);
+	border: 1px solid transparent !important;
+	margin-bottom: 0 !important;   		
+	
+}
+.text-box{
+	border-bottom: 1px solid #e8e8e8;
+	background: #FFF;
+	padding: 5px 15px;
+}
+.btn-box{
+	padding: 10px 15px;
+	margin: 5px 0;
+}
+.mui-content .form button{
+	height: 40px;
+	width: 100%;
+	font-size: 16px;
+	color: #fff;
+}

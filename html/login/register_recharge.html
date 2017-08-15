@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>选择充值方式</title>
+    <link rel="stylesheet" type="text/css" href="../../resource/css/common/common.css"/>
+    <link rel="stylesheet" href="../../resource/css/login/register.css" />
+    <link href="../../resource/css/common/mui.css" rel="stylesheet"/>
+  	<style type="text/css">
+        body{
+            background-color: #F6F5FB;
+        }
+        .re_all{
+            width: 96%;
+            height:50rem;
+            margin:auto;
+        }
+        .re_head{
+            background-color: #FFF;
+            height: 10rem;
+            margin: 1rem auto;
+        }
+        .re_head_cont{
+            font-size: 3rem;
+            padding-top: 4rem;
+            margin-left:1rem;
+        }
+        .re_head_cont>p{
+            font-size: 1rem;
+            text-indent: 1em;
+        }
+        .re_body{
+            background-color: #FFF;
+            height: 13rem;
+            margin: 1rem auto;
+        }
+        .pay_method{
+            background-color: #FFF;
+            height: 6rem;
+            padding-top: 0.2rem;
+            margin-top: 0.8rem;
+        }
+        .pay_left{
+            position:absolute;
+            width:15rem;
+            float:left;
+            margin:1rem auto;
+        }
+        .pay_icon{
+            float:left;
+            width:40%;
+        }
+        .pay_icon>img{
+            width:4.2rem;
+            padding-left: 0.8rem;
+        }
+        .pay_words{
+            padding-top: 0.2rem;
+            margin-left: 3rem;
+            font-size: 1.6rem;
+            width:80%;
+        }
+        .pay_words>p{
+            font-size: 0.8rem;
+            color:grey;
+        }
+        .mui-radio input[type='radio']:before, .mui-checkbox input[type='checkbox']:before {
+            line-height: 2.2;
+        }
+        .mui-radio input[type='radio']:checked:before, .mui-checkbox input[type='checkbox']:checked:before{
+            color:red;
+        }
+        #regBtn{
+            width: 100%;
+        }
+        .mui-content-padded{
+            margin-top:2.5rem;
+        }
+        .mui-icon-back:before, .mui-icon-left-nav:before,.mui-bar .mui-title{
+            color : #fff;
+        }
+    </style>
+</head>
+<body>
+<header id="header" class="mui-bar mui-bar-nav lql_head_new">
+    <a class="mui-icon mui-icon-left-nav mui-pull-left" href="register.html"></a>
+    <h1 class="mui-title">注册充值</h1>
+</header>
+<div class="mui-content">
+    <div class="re_all">
+        <div class="re_head">
+            <div class="re_head_cont">
+                ￥1000
+                <p></p>
+                <p>账户充值并进行注册</p>
+            </div>
+        </div>
+        <div class="re_body">
+            <div class="pay_method">
+                <div class="pay_left">
+                    <div class="pay_icon"><img src="../../resource/img/login/wechat.png"></div>
+                    <div class="pay_words">
+                        微信支付
+                        <p>快捷支付</p>
+                    </div>
+                </div>
+                <div class="mui-radio mui-right">
+                    <input id="radio1" name="radio" type="radio" />
+                </div>
+            </div>
+            <div class="pay_method">
+                <div class="pay_left">
+                    <div class="pay_icon"><img src="../../resource/img/login/alipay.png"></div>
+                    <div class="pay_words">
+                        支付宝
+                        <p>快捷支付</p>
+                    </div>
+                </div>
+                <div class="mui-radio mui-right">
+                    <input id="radio2" name="radio" type="radio" />
+                </div>
+            </div>
+            <div class="mui-content-padded">
+                <button id='regBtn' class="mui-btn mui-btn-block lql_new_btns" onclick="subsub()">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="../../resource/js/mui.min.js"></script>
+<script src="../../resource/js/jQuery/jquery-1.11.3.min.js"></script>
+
+<script type="text/javascript" charset="utf-8">
+    function subsub(){
+        var radio1 = $("input[id = radio1]").is(':checked');
+        var radio2 = $("input[id = radio2]").is(':checked');
+        if(radio1 == false && radio2 == false){
+            mui.toast('请选择一种支付方式');
+        }else{
+            if(radio1 == true){
+                var res = 'wxpay';
+            }else if(radio2 == true){
+                var res = 'alipay';
+            }else{
+                mui.toast('支付方式选择失败，请截图联系公司');
+            }
+            var storage = window.localStorage;
+            var tokens  = storage.getItem("token");
+            console.log(tokens);
+            $.ajax({
+                url: "/api/pay/registerrecharge",
+                data: {
+                    token   : tokens,
+                    payType : res
+                },
+                type: "post",
+                dataType: "json",
+                success: function(data){
+//                    console.log(data);
+//                    console.log(data['data']);  //url
+//                    console.log(data['status']);
+                    if(data['status'] == 0){
+                        mui.openWindow(data['data']);
+                    }
+                    else if(data['status'] == 1007){mui.toast('请先登陆');}
+                    else{mui.toast('发生错误，请截图联系公司！');}
+                }
+            });
+        }
+    }
+</script>
+</body>
+</html>

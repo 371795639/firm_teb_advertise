@@ -5,6 +5,10 @@ use Think\Controller;
 
 class TaskController extends HomeController {
 
+    public function index(){
+        $this -> display();
+    }
+
     /**任务大厅**/
     public function taskOffice(){
         $dbStaff            = D('Staff');

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>游戏充值记录</title>
+    <link href="../../resource/css/common/mui.css" rel="stylesheet"/>
+    <link rel="stylesheet" type="text/css" href="../../resource/css/common/common.css"/>
+    <link rel="stylesheet" href="../../resource/css/money/cash_recoder.css"/>
+    <style>
+        .text-overflow {
+            display:inline-block;
+            width:16rem;
+            word-break:keep-all;
+            white-space:nowrap;
+            overflow:hidden;
+            text-overflow:ellipsis;
+        }
+        .mui-control-content ul li{
+            height: 5rem;
+        }
+    </style>
+
+    <script src="../../resource/js/mui.min.js"></script>
+    <script src="../../resource/js/jQuery/jquery-1.11.3.min.js"></script>
+    <script type="text/javascript">
+        $(function(){
+            var storage = window.localStorage;
+            var tokens  = storage.getItem("token");
+            $.ajax({
+                url:'/api/game/exchangeold',
+                data:{
+                    token:tokens
+                },
+                type:'post',
+                dataType:'json',
+                success:function(data){
+                    console.log(data['status']);
+                    console.log(data['data']);
+                    if(data['status'] == 0){
+                        var list = data['data']['list'];
+                        var casshow = "";
+                        var gameChrRec = document.getElementById('gameChrRec');
+                        var i = 0;
+                        for(i = 0;i<list.length;i++){
+                            casshow +=
+                                '<li>' +
+                                '   <div class="left ">' +
+                                '       <span class="text-overflow">' +
+                                '           游戏充值：' + list[i]['gameid'] +
+                                '       </span>' +
+                                '       <span class="time">'+list[i]['time']+'</span>' +
+                                '   </div>' +
+                                '   <div class="right">' + list[i]['amount'] +
+                                '   </div>' +
+                                '</li>';
+                            gameChrRec.innerHTML = casshow;
+                        }
+                    }
+                    else{mui.toast("信息获取失败，错误代码"+data['status']+"，请截图联系公司");}
+                }
+            });
+        });
+    </script>
+
+
+</head>
+<body>
+<header class="mui-bar mui-bar-nav lql_head_new">
+    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+    <h1 class="mui-title">游戏充值记录</h1>
+</header>
+<div class="mui-content">
+    <div class="mui-control-content mui-active">
+        <ul id="gameChrRec">
+            <!--
+            <li>
+                <div class="left ">
+                    <span class="text-overflow">
+                        游戏充值
+                    </span>
+                    <span class="time">2017.5.20</span>
+                </div>
+                <div class="right">
+                    -100
+                </div>
+            </li>
+            -->
+        </ul>
+    </div>
+</div>
+</body>
+</html>
+
+

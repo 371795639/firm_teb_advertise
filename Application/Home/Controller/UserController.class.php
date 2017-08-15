@@ -73,7 +73,7 @@ class UserController extends HomeController {
                                     	$refDateRecommend['recommend_num'] = $refStaffExist['recommend_num'] + 1;
                                    	 $refAdd = $dbStaff ->  save_staff_by_id($refStaffExist['id'],$refDateRecommend);
                                    	 if($ref && $refAdd){
-                                        	recommend($refStaffExist['id']);
+//                                        	recommend($refStaffExist['id']);
                                         	$this->redirect('User/index');
                                     	}
                                    }

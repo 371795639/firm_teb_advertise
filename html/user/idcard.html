@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>绑定身份证号</title>
+    <link href="../../resource/css/common/mui.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="../../resource/css/login/register.css" />
+    <link rel="stylesheet" href="../../resource/css/common/common.css" />
+</head>
+
+
+
+
+<body>
+<header id="header" class="mui-bar mui-bar-nav lql_head_new">
+    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+    <h1 class="mui-title">绑定身份证号</h1>
+</header>
+<div class="mui-content">
+    <div style="height: 20px;width: 100%;"></div>
+    <div id='register-form' class="mui-input-group">
+        <div class="mui-input-row">
+            <label>姓名：</label>
+            <input id='name' type="text" class="mui-input-clear mui-input" placeholder="">
+        </div>
+        <div class="mui-input-row">
+            <label>身份证号：</label>
+            <input id='card'  type="text" class="mui-input-clear mui-input" placeholder="">
+        </div>
+        <div class="mui-content-padded">
+            <button id='regBtn' class="mui-btn mui-btn-block lql_new_btns" onclick="subsub()">确定</button>
+        </div>
+    </div>
+</div>
+
+
+<script src="../../resource/js/mui.min.js"></script>
+<script src="../../resource/js/jQuery/jquery-1.11.3.min.js"></script>
+
+<script type="text/javascript" charset="utf-8">
+    function subsub(){
+        var name = $("#name").val();
+        var card = $("#card").val();
+
+        if(name == '' && card == ''){
+            mui.toast('请输入姓名和身份证号码');
+        }else if(name == ''){
+            mui.toast('请输入姓名');
+        }else if(card == ''){
+            mui.toast('请输入身份证号码');
+        }else{
+            var storage = window.localStorage;
+            var tokens  = storage.getItem("token");
+            $.ajax({
+                url: "/api/cash/bindmsg",
+                data: {
+                    token   : tokens,
+                    name    : name,
+                    credit  : card
+                },
+                type: "post",
+                dataType: "json",
+                success: function(data){
+                    console.log(data['status']);
+                    if(data['status'] == 0){
+                        mui.toast('绑定成功');
+                        setTimeout(function(){
+                            mui.openWindow('index.html')
+                        }, 1500);
+                    }
+                    else if(data['status'] == 1022){mui.toast('此身份证号已被绑定，请勿重复绑定');}
+                    else{mui.toast('错误代码'+data['status']+'，请截图联系公司！');}
+                }
+            });
+        }
+    }
+</script>
+
+</body>
+</html>
