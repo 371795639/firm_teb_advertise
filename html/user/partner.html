@@ -45,8 +45,11 @@
             padding: 0;
             height: 13px;
         }
+        a:active{
+            background-color:#ee3d52;
+        }
     </style>
-    <script src="../../resource/js/mui.min.js"></script>
+    <!--<script src="../../resource/js/mui.min.js"></script>-->
     <script src="../../resource/js/jQuery/jquery-1.11.3.min.js"></script>
     <script type="text/javascript">
         $(function(){
@@ -65,7 +68,6 @@
                         var gameList        = data['data']['gameList'];
                         var recommendList   = data['data']['recommendList'];
                         var showDivs        = '';
-                        var list            = document.getElementById('list');
                         var gameListI = 0;
                         for(gameListI = 0;gameListI<gameList.length;gameListI++){
                             showDivs +=
@@ -87,7 +89,7 @@
                             recommendList[recommendListI]['mobile2'] = recommendList[recommendListI]['mobile'].substring(recommendList[recommendListI].mobile.length-4,recommendList[recommendListI].mobile.length);;
                             recommendList[recommendListI]['mobiles'] = recommendList[recommendListI]['mobile1'] + '****' + recommendList[recommendListI]['mobile2'];
                             showDivs +=
-                                '<div class="mui-control-content item2" style="display: none">' +
+                                '<div class="mui-control-content item2"  style="display: none">' +
                                 '   <ul>' +
                                 '       <li>' +
                                 '           <div class="lefts">' +
@@ -107,19 +109,18 @@
                 }
             });
         });
-
     </script>
 </head>
 <body>
 <header class="mui-bar mui-bar-nav lql_head_new">
-    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+    <a class="mui-icon mui-icon-left-nav mui-pull-left" href="index.html"></a>
     <h1 class="mui-title">合作伙伴</h1>
 </header>
 <div class="mui-content">
     <div class="lql_head_new" style="width: 100%; padding: 0.5rem;">
         <div id="segmentedControl" class="mui-segmented-control lql_head_new">
             <div class="inline">
-                <a class="mui-control-item mui-active" href="#item1" data-id="1">
+                <a class="mui-control-item" href="#item1" data-id="1">
                     我的推荐玩家
                 </a>
             </div>
@@ -160,11 +161,11 @@
     </div>
 </div>
 <script>
-    $(" .inline .mui-control-item").on('click',function(){
+    $(".inline .mui-control-item").delegate('','click',function(){
         var id = $(this).attr("data-id");
         $(".item1").css("display","none");
         $(".item2").css("display","none");
-        $(".item" + id).css("display","block");
+        $(".item"+id).css("display","block");
     });
 </script>
 </body>
