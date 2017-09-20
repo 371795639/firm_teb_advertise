@@ -19,6 +19,23 @@
         .mui-control-content ul li{
             height: 5rem;
         }
+        .cash{
+            height: 4rem;
+            line-height: 4rem;
+            background-color: #fff;
+        }
+        .cashLeft{
+            padding-left: 15px;
+        }
+        .cashRight{
+            position: absolute;
+            right: 15px;
+            top: 1px;
+            color: #999;
+        }
+        #cashRec{
+            margin-top: 0.4rem;
+        }
     </style>
 
     <script src="../../resource/js/mui.min.js"></script>
@@ -71,6 +88,14 @@
     </header>
     <div class="mui-content">
         <div class="mui-control-content mui-active">
+            <div class="cash">
+                <a href="cash.html" style="color: black">
+                    <div>
+                        <span class="cashLeft">提现</span>
+                        <span class="cashRight"> > </span>
+                    </div>
+                </a>
+            </div>
             <ul id="cashRec">
                 <!--
                 <li>
@@ -81,7 +106,7 @@
                         <span class="time">2017.5.20</span>
                     </div>
                     <div class="right">
-                        -100
+                         -100
                     </div>
                 </li>
                 -->

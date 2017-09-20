@@ -11,7 +11,7 @@
     border: transparent;
 }
 .mui-control-content{
-    background: #fff;
+    background: #eee;
 }
 .mui-control-content.mui-active	.date{
     display: block;
@@ -23,10 +23,10 @@
 .mui-control-content ul{
     list-style: none;
 }
-
 .mui-control-content ul li{
     border-bottom:1px solid #e8e8e8 ;
     padding: 0 15px;
+    background-color: #fff;
 }
 .mui-control-content ul li:first-child{
     border-top:1px solid #e8e8e8 ;
@@ -54,7 +54,7 @@
 }
 .mui-control-content .time{
     font-size: 13px !important;
-    color: #ccc;
+    color: #999;
     padding: 0;
     height: 13px;
 }

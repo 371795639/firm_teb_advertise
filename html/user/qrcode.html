@@ -2,50 +2,116 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
     <title>我的二维码</title>
-    <link rel="stylesheet" href="../../resource/css/common/mui.min.css" />
-    <link rel="stylesheet" type="text/css" href="../../resource/css/common/common.css"/>
-    <link rel="stylesheet" type="text/css" href="../../resource/css/user/index.css"/>
-</head>
-
-<script src="../../resource/js/mui.min.js"></script>
-<script src="../../resource/js/jQuery/jquery-1.11.3.min.js"></script>
-<script type="text/javascript" charset="utf-8">
-    $(function(){
-        var storage = window.localStorage;
-        var tokens  = storage.getItem("token");
-        $.ajax({
-            url: "/api/qrcode",
-            data: {
-                token : tokens
-            },
-            type: "post",
-            dataType: "json",
-            success: function(data){
-                if(data['status'] == 0){
-                    mui.toast('您的专属二维码，快去推广吧。');
-                    qrsrc = data['data']['picSrc'];
-                    var qrimg = document.getElementById('qrimg');
-                    qrshow = '<img src="'+qrsrc+'"/>';
-                    qrimg.innerHTML = qrshow;
-
+    <style type="text/css">
+        html{color:#000;overflow-y:scroll;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%}
+        html *{outline:0;-webkit-text-size-adjust:none;-webkit-tap-highlight-color:rgba(0,0,0,0);}
+        body {sbackground:#FFF;color:#4a4f5a;font: 400 14px/1.5 "微软雅黑",Helvetica,STHeiti,Droid Sans Fallback;-webkit-text-size-adjust: 100%;-ms-text-size-adjust: 100%;-webkit-tap-highlight-color:rgba(0,0,0,0);}
+        body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,textarea,p,blockquote,th,td,hr,button,article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section{margin:0;padding:0}
+        input,select,textarea{font-size:100%}
+        article,aside,footer,header,nav,section,audio,canvas,video,img {display: block;}
+        table{border-collapse:collapse;border-spacing:0}
+        fieldset,img{border:0}
+        abbr,acronym{border:0;font-variant:normal}
+        del{text-decoration:line-through}
+        address,caption,cite,code,dfn,em,th,var{font-style:normal;font-weight:normal}
+        ol,ul{list-style:none}
+        caption,th{text-align:left}
+        h1,h2,h3,h4,h5,h6{font-size:100%;font-weight:normal}
+        q:before,q:after{content:''}
+        button{outline:0;border:none;}
+        a:hover{text-decoration:none}
+        ins,a{text-decoration:none}
+        textarea {resize: none;}
+        iframe,img {border:0;}
+        img{display:block;width:100%;}
+        ul,ol {list-style:none;}
+        input,select,textarea {outline: 0;-webkit-user-modify: read-write-plaintext-only;}
+        input {-webkit-appearance: none;}
+        .clearfix:after{content:".";display:block;height:0;clear: both;visibility:hidden;}
+        .clearfix{*zoom:1;}
+        .wrapper04 {position:relative;height: 14rem;width:8rem;overflow: hidden;margin-top: 1rem;margin-left: 1rem;}
+        .wrapper04 .scroller {position:absolute;}
+        .wrapper04 .scroller li {float: left;vertical-align: middle;text-align: center;}
+        .wrapper04 .scroller li a{height: 14rem;display:block;width: 7rem;}
+        .qrcode{
+            z-index:1 ;width:2.3rem;height: 2.3rem;position:relative;bottom: 5.75rem;left: 2.3rem;
+        }
+    </style>
+    <script src="../../resource/js/jQuery/jquery-1.11.3.min.js"></script>
+    <script type="text/javascript" charset="utf-8">
+        $(function(){
+            var storage = window.localStorage;
+            var tokens  = storage.getItem("token");
+            $.ajax({
+                url: "/api/qrcode",
+                data: {
+                    token : tokens
+                },
+                type: "post",
+                dataType: "json",
+                success: function(data){
+                    if(data['status'] == 0){
+                        qrsrc = data['data']['picSrc'];
+                        qrshow = '<img class="qrcode" src="'+qrsrc+'"/>';
+                        $(".qrcode").replaceWith(qrshow);
+						console.log($(".qrcode").html());
+                    }
+                    else if(data['status'] == 1007){alert('请先登陆');}
+                    else{alert('错误代码'+data['status']+'，请截图联系公司！');}
                 }
-                else if(data['status'] == 1007){mui.toast('请先登陆');}
-                else{mui.toast('错误代码'+data['status']+'，请截图联系公司！');}
-            }
+            });
         });
+    </script>
+</head>
+<body>
+<div style="height:1rem;width:100%;background-color:#666;line-height:1rem;">
+	<a href="index.html" style="margin-left:.4rem;color:#fff;font-size:14px;"> < 返回</a>
+</div>
+<div class="wrapper wrapper04" id="sass">
+    <div class="scroller">
+        <ul class="clearfix">
+            <li>
+                <a href="javascript:void(0)">
+                    <div class="mycode">
+                        <img src="../../resource/img/user/code1.jpg" style="z-index: -1">
+                        <img class="qrcode" src="">
+                    </div>
+                </a>
+            </li>
+            <li style="padding-left: 0.6rem;padding-right: 0.6rem;">
+                <a href="javascript:void(0)">
+                    <div class="mycode">
+                        <img src="../../resource/img/user/code2.jpg" style="z-index: -1">
+                        <img class="qrcode" src="">
+                    </div>
+                </a>
+            </li>
+            <li>
+                <a href="javascript:void(0)">
+                    <div class="mycode">
+                        <img src="../../resource/img/user/code3.jpg" style="z-index: -1">
+                        <img class="qrcode" src="">
+                    </div>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+<script type="text/javascript" src="../../resource/js/newcode/jquery.min.js"></script>
+<script type="text/javascript" src="../../resource/js/newcode/flexible.js"></script>
+<script type="text/javascript" src="../../resource/js/newcode/iscroll.js"></script>
+<script type="text/javascript" src="../../resource/js/newcode/navbarscroll.js"></script>
+<script type="text/javascript">
+    $(function(){
+        //demo示例一到四 通过lass调取，一句可以搞定，用于页面中可能有多个导航的情况
+        $('.wrapper').navbarscroll();
     });
 </script>
-<body>
-
-<header class="mui-bar mui-bar-nav lql_head_new">
-    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
-    <h1 class="mui-title">我的二维码</h1>
-</header>
-
-<div id="qrimg" style="width:96%;margin:10rem auto;text-align: center;">
-</div>
-
-
 </body>
+</html>

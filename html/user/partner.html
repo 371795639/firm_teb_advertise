@@ -161,11 +161,11 @@
     </div>
 </div>
 <script>
-    $(".inline .mui-control-item").delegate('','click',function(){
+    $(" .inline .mui-control-item").on('click',function(){
         var id = $(this).attr("data-id");
         $(".item1").css("display","none");
         $(".item2").css("display","none");
-        $(".item"+id).css("display","block");
+        $(".item" + id).css("display","block");
     });
 </script>
 </body>

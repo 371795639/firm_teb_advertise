@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>游戏分享二维码</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="stylesheet" href="../../resource/css/common/mui.min.css">
+    <link rel="stylesheet" type="text/css" href="../../resource/css/common/common.css"/>
+    <style>
+        .iimg{
+            margin: 3rem auto;
+            width: 100%;
+            text-align: center;
+        }
+        .inotice{
+            font-size: 1.2rem;
+            color: #999;
+            margin-top: 0.8rem;
+        }
+    </style>
+    <script src="../../resource/js/mui.min.js"></script>
+    <script src="../../resource/js/jQuery/jquery-1.11.3.min.js"></script>
+
+    <script type="text/javascript" charset="utf-8">
+        $(function(){
+            var storage = window.localStorage;
+            var tokens  = storage.getItem("token");
+            $.ajax({
+                url: "/api/gameqrcode ",
+                data: {token : tokens},
+                type: "post",
+                dataType: "json",
+                success: function(data){
+                    if(data['status'] == 0){
+                        $("#qrimg").attr('src',data['data']['picSrc']);
+                    }
+                    else if(data['status'] == 1006 || data['status'] == 1007){mui.toast('授权已过期，请重新登陆');setTimeout(function(){mui.openWindow('../login/login.html')},1000);}
+                    else{mui.toast('错误代码'+data['status']+'，请截图联系公司！');}
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <header class="mui-bar mui-bar-nav lql_head_new">
+        <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+        <h1 class="mui-title">游戏分享二维码</h1>
+    </header>
+    <div class="mui-content">
+        <div class="iimg">
+            <img src="" id="qrimg">
+            <div class="inotice">扫描此二维码即可注册</div>
+        </div>
+    </div>
+</body>
+<script>
+    mui.init({
+        swipeBack:true //启用右滑关闭功能
+    });
+</script>
+</html>

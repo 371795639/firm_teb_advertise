@@ -19,6 +19,40 @@
         .mui-control-content ul li{
             height: 5rem;
         }
+        #gameChrRec{
+            margin-top: 0.6rem;
+        }
+        .recharge{
+            margin-top: 0.6rem;
+            text-align: center;
+            height: 4.4rem;
+            background-color: #fff;
+        }
+        .btns{
+            width: 50%;
+            float: left;
+            display: block;
+        }
+        .btns a,.btns a:active{
+            color: #000;
+        }
+        .mui-btn{
+            border-radius: 20px;
+        }
+        .ibtn{
+            margin-top: 5%;
+            height: 3rem;
+            width: 80%;
+        }
+        .ibtn img{
+            width: 15%;
+        }
+        .ibtn strong{
+            position: relative;
+            left:1px;
+            top:-4px;
+            font-size: 14px;
+        }
     </style>
 
     <script src="../../resource/js/mui.min.js"></script>
@@ -35,8 +69,6 @@
                 type:'post',
                 dataType:'json',
                 success:function(data){
-                    console.log(data['status']);
-                    console.log(data['data']);
                     if(data['status'] == 0){
                         var list = data['data']['list'];
                         var casshow = "";
@@ -63,15 +95,28 @@
         });
     </script>
 
-
 </head>
 <body>
 <header class="mui-bar mui-bar-nav lql_head_new">
-    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+    <a href="../user/index.html" class="mui-icon mui-icon-left-nav mui-pull-left"></a>
     <h1 class="mui-title">游戏充值记录</h1>
 </header>
 <div class="mui-content">
     <div class="mui-control-content mui-active">
+        <div class="recharge">
+            <div class="btns">
+                <a href="game_recharge.html" class="mui-btn ibtn">
+                    <img src="../../resource/img/user/1231.png">
+                    <strong style="top: -4px;">游戏充值</strong>
+                </a>
+            </div>
+            <div class="btns">
+                <a href="coin_recharge.html" class="mui-btn ibtn">
+                    <img src="../../resource/img/user/1213.png" style="padding-top: 0.2rem;">
+                    <strong>注册币充值</strong>
+                </a>
+            </div>
+        </div>
         <ul id="gameChrRec">
             <!--
             <li>

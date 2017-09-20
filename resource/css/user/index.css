@@ -1,6 +1,6 @@
 .user_info{
     /*border: 1px solid purple;*/
-    margin: 1.8rem auto 0;
+    margin: 0.8rem auto 0;
     height: 14rem;
     width: 98%;
     color: #fff;
@@ -15,46 +15,45 @@
 .user_info_f{
     /*border: 1px solid green;*/
     margin: 0 auto;
-    height: 2rem;
+    width: 50%;
 }
 .user_info_ff{
     /*border: 1px solid green;*/
-    margin: 2rem auto 0;
-    height: 2rem;
-    font-size: 3rem;
+    margin: 0.8rem auto 0;
+    font-size: 1.4rem;
 }
 .user_info_fff{
     /*border: 1px solid green;*/
-    margin: 1.4rem auto 0;
+    margin: 1.1rem auto 0;
     height: 8rem;
 }
 .user_info_fff_block{
     height: 5rem;
-    width:33.33%;
+    width:25%;
     line-height: 2.5rem;
     font-size: 1.4rem;
     display: block;
     float:left;
 }
-.user_info_fff_block:nth-child(2){
-    border-left: 1px solid rgba(200,200,200,0.5);
-    border-right: 1px solid rgba(200,200,200,0.5);
-}
 .user_two{
-    margin:2rem auto 0;
-    height: 3rem;
+    margin:3rem auto 0;
+    height: 6rem;
     /*border: 1px solid green;*/
     background-color: #fff;
 }
 .graf{
     /*border: 1px solid red;*/
-    height: 3rem;
+    height: 6rem;
     line-height: 3rem;
     width:50%;
     text-align: center;
     border-right: 1px solid rgba(200,200,200,0.5);
     display: block;
     float: left;
+}
+.graf img{
+    width: 20%;
+    margin-bottom: -1.4rem;
 }
 .user_four{
     margin: 0.8rem auto 0;
@@ -99,4 +98,41 @@
 }
 .user_six_block>img{
     width: 46%;
+}
+.uls{
+    /*border: 1px solid red;*/
+    background-color: #fff;
+    height: 16rem;
+    margin: 0.6rem auto 0;
+}
+.uls ul li{
+    height: 4rem;
+    line-height: 4rem;
+    vertical-align: middle;
+}
+.uls li a{
+    color: #000;
+}
+.uls li a .leftImg{
+    width: 6%;
+    margin-bottom: 0.35rem;
+}
+.uls ul li a .rights{
+    color: #999;
+}
+.mui-table-view-cell>a>.mui-badge{
+    top: 36%;
+    right: 15px;
+}
+.mui-badge {
+    font-size: 16px;
+    line-height: 1;
+    color: #999;
+    background-color: #fff;
+}
+.itexts{
+    position: absolute;
+    top: 3%;
+    left: 12%;
+    font-size: 1.4rem;
 }
